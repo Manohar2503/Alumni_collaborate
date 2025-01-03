@@ -10,7 +10,7 @@ const JobsPage = () => {
     <div className='my-[80px]'>
       
       <h1 className="text-6xl font-bold text-center drop-shadow-md hover:drop-shadow-xl">
-        Make your dream big
+        Make your dream big and Aim for great goals
       </h1>
       
     </div>
