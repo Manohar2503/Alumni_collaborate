@@ -74,18 +74,16 @@ const loginUser = asyncHandler(async (req, res) => {
     const isPassword = await bcrypt.compare(password, user.password);
     if (user && isPassword) {
         const token = generateToken(user._id);
-        console.log(token);
+       // console.log(token);
         res.cookie("token", token, {
-            httpOnly: true,         // ensures the cookie can't be accessed via JS
-            secure: false,  // should be true in production
-            sameSite: "strict",     // ensures cookies are only sent in same-site requests
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            httpOnly: true,         
+            secure: false,  
+            sameSite: "strict",     
+            maxAge: 7 * 24 * 60 * 60 * 1000, 
         });
-
-        console.log("Set-Cookie:", res.getHeaders()["set-cookie"]);
-        
+     //   console.log("Set-Cookie:", res.getHeaders()["set-cookie"]);
         res.status(201).json({
-            message: "User logged in successfully",
+            message: "User logged in successfully",token:token
         });
     } else {
         res.status(400);

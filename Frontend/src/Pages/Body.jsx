@@ -1,6 +1,5 @@
 import React from "react";
 import pic3 from "../assets/pic3.jpeg";
-
 import Slider from "../Components/Slider";
 import About from "../Components/About";
 import HomeEvent from "../Components/HomeEvent";

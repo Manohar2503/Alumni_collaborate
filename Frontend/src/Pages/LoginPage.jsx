@@ -15,9 +15,13 @@ const LoginPage = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:5000/api/users/login",{email,password})
+        axios.post("http://localhost:5000/api/users/login",{email,password},{
+            withCredentials :true,
+        })
         .then(result=>{
             console.log("result",result);
+            // const token = result.data.token;
+            // localStorage.setItem('authToken', token);
             navigate("/");
         })
     };

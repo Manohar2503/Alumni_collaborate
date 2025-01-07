@@ -19,20 +19,30 @@ if(!mentorData.image || !mentorData.topic || !mentorData.video){
   alert("All fields are required!");
   return;
 }
-axios.post("http://localhost:5000/api/mentor",mentorData)
-.then((result) => {
-  console.log("Response:", result.data);
-  alert("session details submitted successfully!");
-  navigate("/mentor");
-})
-.catch((err) => {
-  console.error("Error:", err);
-  alert(
-      err.response && err.response.data.message
-          ? err.response.data.message
-          : "An error occurred while submitting the session details. Please try again."
-  );
-});
+//const token = localStorage.getItem('authToken');
+//console.log(token)
+// if(!token){
+//   alert("Go to login page")
+// }
+// else{
+  axios.post("http://localhost:5000/api/mentor",mentorData,{
+    withCredentials : true,
+    
+  })
+  .then((result) => {
+    console.log("Response:", result.data);
+    alert("session details submitted successfully!");
+    navigate("/mentor");
+  })
+  .catch((err) => {
+    console.error("Error:", err);
+    alert(
+        err.response && err.response.data.message
+            ? err.response.data.message
+            : "An error occurred while submitting the session details. Please try again."
+    );
+  });
+//}
 }
 
   return (

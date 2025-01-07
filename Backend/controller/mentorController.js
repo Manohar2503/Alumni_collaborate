@@ -3,6 +3,11 @@ const asyncHandler = require('express-async-handler');
 
 const createMentor = asyncHandler(async (req, res) => {
 const {image,topic, video} = req.body;
+const token = req.cookies.token;
+//console.log(token);
+if(!token){
+    res.status(500).json({message : "Go to Login page"})
+}
 if (!image || !topic || !video) {
 res.status(400);
 throw new Error("Please fill all fields");
