@@ -1,63 +1,218 @@
-import React from 'react'
-import LatestJobs from '../LatestJobs'
-import { Link } from 'react-router-dom'
-import LatestInternships from '../LatestInternships'
+import React, { useEffect, useState } from "react";
+import jobs from "../../assets/data/Jobs";
+import { FaBriefcase } from "react-icons/fa";
+import { FaLocationDot } from "react-icons/fa6";
+import { FaBuildingColumns } from "react-icons/fa6";
+import { IoPerson } from "react-icons/io5";
+
+const Card = ({ job }) => {
+  return (
+    <div className="bg-white w-full border border-gray-300 rounded-xl shadow-lg p-5 mb-5 hover:bg-gray-100 transition-colors duration-300">
+      <div className="flex justify-between">
+        <div>
+          <h3 className="text-xs mb-1">{job.JobType.toUpperCase()}</h3>
+          <h2 className="font-semibold text-gray-900 mb-5">{job.JobRoles}</h2>
+        </div>
+        <h3 className="text-gray-500 text-sm">{job.PostedOn}</h3>
+      </div>
+      <div className="pl-10">
+        {job.Company && (
+          <h2 className="text-gray-400 text-sm mb-2">
+            COMPANY : <span className="text-black text-md">{job.Company}</span>
+          </h2>
+        )}
+        {job.Location && (
+          <h2 className="text-gray-400 text-sm mb-2">
+            LOCATION :{" "}
+            <span className="text-black text-md">{job.Location}</span>
+          </h2>
+        )}
+        {job.JobRoles && (
+          <h2 className="text-gray-400 text-sm mb-2">
+            ROLE : <span className="text-black text-md">{job.JobRoles}</span>
+          </h2>
+        )}
+        {job.Skills && (
+          <h2 className="text-gray-400 mb-2 text-sm">
+            SKILLS : <span className="text-black text-md">{job.Skills}</span>
+          </h2>
+        )}
+      </div>
+      <div className="mt-5 text-right">
+        <button className="bg-blue-500 text-white px-10 py-2 rounded hover:bg-blue-600">
+          <a href={job.ApplyLink} target="_blank" rel="noopener noreferrer">
+            Apply
+          </a>
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const JobsPage = () => {
-  return (
-    <div className="flex flex-col items-center justify-center ">
-      <img src="../src/assets/job_poster.png" className="w-full h-[300px] object-cover" alt="Description of image" />
-    <div className='my-[80px]'>
-      
-      <h1 className="text-6xl font-bold text-center drop-shadow-md hover:drop-shadow-xl">
-        Make your dream big and Aim for great career
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedFilter, setSelectedFilter] = useState("");
+    const [filter, setFilter] = useState(false);
+    const [jobsData, setJobsData] = useState(null);
+    useEffect(() => {
+        const GetAllPosts = async ()=>{
+            try{
+                
+                const res = await fetch("http://localhost",{
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
 
-      </h1>
-      
-    </div>
-    
-    <div className='bg-gray-100 py-20'>
-    <div><h1 className="text-4xl  text-center justify-center">Latest Jobs</h1></div>
-    <div className='my-4'>
-    <ul className='flex space-x-5 justify-center item-center  '>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Work from home </li>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Part Time</li>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Engineering</li>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Design</li>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Data Science</li>
-    </ul>
+                if(res.ok){
+                    const result = res.json();
+                    setJobsData(result.data);
+                }
+            }catch(e){
+                alert("Error: " + e.message);
+            }
+        }
 
-    </div>
-      <div><LatestJobs/></div>
-      <div className="relative">
-  <Link to='/'><button className="absolute right-0 top-0 bg-blue-500 mt-4 text-white px-4 py-2 hover:bg-blue-600 mx-10 rounded-2xl">
-    Share 
-  </button></Link>
-</div>
-
-
-<div><h1 className="text-4xl  text-center justify-center mt-20">Latest Internships</h1></div>
-    <div className='my-4'>
-    <ul className='flex space-x-5 justify-center item-center  '>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Work from home </li>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Part Time</li>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Engineering</li>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Design</li>
-      <li className='border border-gray-300 rounded-2xl px-2 py-1 hover:bg-[#38bdf8]'>Data Science</li>
-    </ul>
-
-    </div>
-      <div><LatestInternships/></div>
-      <div className="relative">
-  <Link to='/'><button className="absolute right-0 top-0 bg-blue-500 mt-4 text-white px-4 py-2 hover:bg-blue-600 mx-10 rounded-2xl">
-    Share 
-  </button></Link>
-</div>
-
-
-    </div>
-  </div>
-  )
-}
-
-export default JobsPage
+        // call the function
+    },[]);
+  
+    const locations = [...new Set(jobs.map((job) => job.Location))];
+    const companies = [...new Set(jobs.map((job) => job.Company))];
+  
+    // Filter jobs based on search query and selected filter
+    const filteredJobs = jobs.filter((job) => {
+      const query = searchQuery.toLowerCase();
+  
+      return (
+        job.JobRoles.toLowerCase().includes(query) ||
+        job.Location.toLowerCase().includes(query) ||
+        job.Company.toLowerCase().includes(query)
+      );
+    });
+  
+    const selectedFilterJobs = jobs.filter((job) => {
+      const query = selectedFilter.toLowerCase();
+  
+      return (
+        job.JobType.toLowerCase().includes(query) ||
+        job.Location.toLowerCase().includes(query) ||
+        job.Company.toLowerCase().includes(query)
+      );
+    });
+  
+    // Handle Clear Filter
+    const clearFilter = () => {
+      setSearchQuery("");
+      setSelectedFilter("");
+      setFilter(false);
+    };
+  
+    return (
+      <div className="flex flex-wrap h-auto min-h-screen bg-[#fffbeb]">
+        {/* Left Sidebar */}
+        <aside className=" w-full h-full md:w-1/4 bg-white text-black p-3 m-2 md:m-10 border border-gray-300 rounded-lg shadow-md " >
+          <div >
+            <div
+              className="flex p-2 border-b border-gray-300 cursor-pointer hover:bg-gray-200"
+              onClick={() => {
+                setSelectedFilter("Full Time");
+                setFilter(true);
+              }}
+            >
+              <FaBriefcase size={40} color="black" className="h-6 w-6" />
+              <h1 className="pl-5">Jobs</h1>
+            </div>
+            <div
+              className="flex p-2 border-b border-gray-300 cursor-pointer hover:bg-gray-200"
+              onClick={() => {
+                setSelectedFilter("Internship");
+                setFilter(true);
+              }}
+            >
+              <IoPerson size={40} color="black" className="h-6 w-6" />
+              <h1 className="pl-5">Internships</h1>
+            </div>
+            <div>
+              <div className="flex p-2 border-b border-gray-300 cursor-pointer hover:bg-gray-200">
+                <FaBuildingColumns size={40} color="black" className="h-6 w-6" />
+                <h1 className="pl-5">Company</h1>
+              </div>
+              <div className="max-h-40 overflow-y-auto">
+                {companies.map((company, index) => (
+                  <h1
+                    key={index}
+                    onClick={() => {
+                      setSelectedFilter(company);
+                      setFilter(true);
+                    }}
+                    className="pl-12 py-2 text-xs border-b border-gray-300 cursor-pointer hover:bg-gray-100"
+                  >
+                    {company}
+                  </h1>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="flex p-2 border-b border-gray-300 cursor-pointer hover:bg-gray-200">
+                <FaLocationDot size={40} color="black" className="h-6 w-6" />
+                <h1 className="pl-5">Location</h1>
+              </div>
+              <div className="max-h-40 overflow-y-auto">
+                {locations.map((location, index) => (
+                  <h1
+                    key={index}
+                    onClick={() => {
+                      setSelectedFilter(location);
+                      setFilter(true);
+                    }}
+                    className="pl-12 py-2 text-xs border-b border-gray-300 cursor-pointer hover:bg-gray-100"
+                  >
+                    {location}
+                  </h1>
+                ))}
+              </div>
+            </div>
+          </div>
+        </aside>
+  
+        {/* Main Content */}
+        <main className="w-full md:flex-1 p-3 m-2 md:my-10 md:mr-5">
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="Type a Job Area, Location or a Job Title to filter the jobs"
+              className="p-3 w-full border border-gray-300 shadow-md rounded-md focus:outline-none focus:ring-1 focus:ring-blue-100"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <p className="text-xs pl-3 pt-2 text-gray-500">
+              Apply multiple filters to your search. Simply type and enter in the search box above, or choose from the options on the left
+            </p>
+  
+            {filter && (
+              <div className="flex justify-between mt-5 ">
+                <h1 className="text-gray-500 text-sm pt-2">
+                  Selected Filter: <span className="text-black font-semibold">{selectedFilter}</span>
+                </h1>
+                <button
+                  onClick={clearFilter}
+                  className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                >
+                  Clear Filter
+                </button>
+              </div>
+            )}
+          </div>
+  
+          {/* Render filtered jobs */}
+          {filter
+            ? selectedFilterJobs.map((job, index) => <Card key={index} job={job} />)
+            : filteredJobs.map((job, index) => <Card key={index} job={job} />)}
+        </main>
+      </div>
+    );
+  };
+  
+  export default JobsPage;
+  
