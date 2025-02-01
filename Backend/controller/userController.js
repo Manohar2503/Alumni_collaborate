@@ -32,6 +32,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     try {

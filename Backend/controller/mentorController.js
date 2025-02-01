@@ -44,7 +44,6 @@ const getAllMentors = asyncHandler(async (req, res) => {
         res.status(500).json({ success:false, message: "Server error" });
        }
 
-
 }); 
 
 const deleteMentor = asyncHandler(async (req, res) => {     

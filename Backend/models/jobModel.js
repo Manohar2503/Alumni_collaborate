@@ -1,35 +1,35 @@
 const mongoose = require("mongoose");
+
 const jobSchema = mongoose.Schema({
-company :{
-    type: String,
-    required: true
+    company : {
+        type: String,
+        required : [true, "please enter the company name"]
+    },
+    location:{
+        type: String,
+        required : [true, "please enter the location"]
+    },
+    role :{
+        type: String,
+        required : [true, "please enter the job role"]
+    },
+    type:{
+        type:String,
+        required : [true, "please enter the job type"]
+    },
+  
+    link:{
+        type: String,
+        required : [true, "please enter the apply link"]
+    },
+    skills:{
+        type: String,
+        required : [true, "please enter the skills"]
+    }
 },
-location :{
-    type: String,
-    required: true
-},
-jobrole :{
-    type: String,
-    required: true
-},
-jobtype :{
-    type: String,
-    required: true
-},
-posted:{
-    type: Date,
-    required: true
-},
-link:{
-    type : String,
-    required: true
-},
-skill:{
-    type: String,
-    required: true
-},
+{
+    timestamps : true
+}
+);
 
-
-})
-
-module.exports = mongoose.model("Job", jobSchema);
+module.exports = mongoose.model("job",jobSchema);

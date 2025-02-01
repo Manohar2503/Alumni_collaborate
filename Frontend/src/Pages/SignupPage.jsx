@@ -13,12 +13,11 @@ const SignupPage = () => {
 
   const onSubmitHandler = (e) => {
     e.preventDefault();
-
     if (!name || !email || !collegeMail || !password) {
       setMessage("All fields are required!");
       return;
     }
-
+ 
     setLoading(true);
     axios
       .post("http://localhost:5000/api/users", { name, email, collegeMail, password })

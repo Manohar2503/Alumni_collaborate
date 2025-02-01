@@ -48,8 +48,6 @@ const Routers = () => {
       <Route path='/mentorform' element={<MentorForm/>}/>
       <Route path='/newmentor' element={<NewmentorForm/>}/>
       <Route path="/eventform" element={<EventForm/>} />
-
-      
     </Routes>
   );
 };

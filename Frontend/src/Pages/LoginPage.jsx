@@ -25,7 +25,7 @@ const LoginPage = () => {
             navigate("/");
         })
     };
-
+    
     return (
         <div className="h-screen bg-cover bg-center bg-fixed flex items-center justify-center"
         style={{ backgroundImage: `url(${pic3})` }}>

@@ -10,37 +10,37 @@ const Card = ({ job }) => {
     <div className="bg-white w-full border border-gray-300 rounded-xl shadow-lg p-5 mb-5 hover:bg-gray-100 transition-colors duration-300">
       <div className="flex justify-between">
         <div>
-          <h3 className="text-xs mb-1">{job.JobType.toUpperCase()}</h3>
-          <h2 className="font-semibold text-gray-900 mb-5">{job.JobRoles}</h2>
+          <h3 className="text-xs mb-1">{job.type.toUpperCase()}</h3>
+          <h2 className="font-semibold text-gray-900 mb-5">{job.role}</h2>
         </div>
-        <h3 className="text-gray-500 text-sm">{job.PostedOn}</h3>
+        <h3 className="text-gray-500 text-sm">{job.createdAt}</h3>
       </div>
       <div className="pl-10">
-        {job.Company && (
+        {job.company && (
           <h2 className="text-gray-400 text-sm mb-2">
-            COMPANY : <span className="text-black text-md">{job.Company}</span>
+            COMPANY : <span className="text-black text-md">{job.company}</span>
           </h2>
         )}
-        {job.Location && (
+        {job.location && (
           <h2 className="text-gray-400 text-sm mb-2">
             LOCATION :{" "}
-            <span className="text-black text-md">{job.Location}</span>
+            <span className="text-black text-md">{job.location}</span>
           </h2>
         )}
-        {job.JobRoles && (
+        {job.role && (
           <h2 className="text-gray-400 text-sm mb-2">
-            ROLE : <span className="text-black text-md">{job.JobRoles}</span>
+            ROLE : <span className="text-black text-md">{job.role}</span>
           </h2>
         )}
-        {job.Skills && (
+        {job.skills && (
           <h2 className="text-gray-400 mb-2 text-sm">
-            SKILLS : <span className="text-black text-md">{job.Skills}</span>
+            SKILLS : <span className="text-black text-md">{job.skills}</span>
           </h2>
         )}
       </div>
       <div className="mt-5 text-right">
         <button className="bg-blue-500 text-white px-10 py-2 rounded hover:bg-blue-600">
-          <a href={job.ApplyLink} target="_blank" rel="noopener noreferrer">
+          <a href={job.link} target="_blank" rel="noopener noreferrer">
             Apply
           </a>
         </button>
@@ -53,12 +53,12 @@ const JobsPage = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedFilter, setSelectedFilter] = useState("");
     const [filter, setFilter] = useState(false);
-    const [jobsData, setJobsData] = useState(null);
+    const [jobsData, setJobsData] = useState([]);
     useEffect(() => {
         const GetAllPosts = async ()=>{
             try{
                 
-                const res = await fetch("http://localhost",{
+                const res = await fetch("http://localhost:5000/api/jobs/getJobs",{
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -66,38 +66,40 @@ const JobsPage = () => {
                 });
 
                 if(res.ok){
-                    const result = res.json();
+                    const result = await res.json();
+                    console.log(result.data);
                     setJobsData(result.data);
+                    
                 }
             }catch(e){
                 alert("Error: " + e.message);
             }
         }
 
-        // call the function
+        GetAllPosts();// call the function
     },[]);
   
-    const locations = [...new Set(jobs.map((job) => job.Location))];
-    const companies = [...new Set(jobs.map((job) => job.Company))];
+    const locations = [...new Set(jobsData.map((job) => job.location))];
+    const companies = [...new Set(jobsData.map((job) => job.company))];
   
     // Filter jobs based on search query and selected filter
-    const filteredJobs = jobs.filter((job) => {
+    const filteredJobs = jobsData.filter((job) => {
       const query = searchQuery.toLowerCase();
   
       return (
-        job.JobRoles.toLowerCase().includes(query) ||
-        job.Location.toLowerCase().includes(query) ||
-        job.Company.toLowerCase().includes(query)
+        job.role.toLowerCase().includes(query) ||
+        job.location.toLowerCase().includes(query) ||
+        job.company.toLowerCase().includes(query)
       );
     });
   
-    const selectedFilterJobs = jobs.filter((job) => {
+    const selectedFilterJobs = jobsData.filter((job) => {
       const query = selectedFilter.toLowerCase();
   
       return (
-        job.JobType.toLowerCase().includes(query) ||
-        job.Location.toLowerCase().includes(query) ||
-        job.Company.toLowerCase().includes(query)
+        job.type.toLowerCase().includes(query) ||
+        job.location.toLowerCase().includes(query) ||
+        job.company.toLowerCase().includes(query)
       );
     });
   

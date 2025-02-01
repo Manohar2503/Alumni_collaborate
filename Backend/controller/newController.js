@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler');
 
 const createNewMentor = async (req, res) => {
     const {title,time,registration} = req.body;
+ 
 try {
   
     if(!title || !time || !registration){
