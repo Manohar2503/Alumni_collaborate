@@ -5,15 +5,16 @@ const userAuth = async (req, res, next) => {
   try {
     //console.log("Set-Cookie:", res.getHeaders()["set-cookie"]);
 
-    const token = req.cookies.token;
-    //console.log("Token: ", token);
-
+    const {token} = req.cookies;
+   
     if (!token) {
       return res.status(401).json({ message: "Token not valid!" });
     }
+
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
     const { _id } = decodedData;
     const user = await User.findById(_id);
+    
     if (!user) {
       return res.status(403).json({ message: "Invalid credentials!" });
     }

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const Leanrning = () => {
   return (
     <div>
-      <h1 className="text-4xl font-bold justify-center text-center my-[20px]">Learning Path</h1>
+      <h1 className="text-4xl font-bold justify-center text-center my-[20px]">Hello, What Do You Want To Learn?</h1>
       <div className='justify-center text-center  m-4 rounded-2'>
         <input className="placeholder:italic placeholder:text-slate-400 block bg-white w-full border border-slate-300 rounded-md py-2 pl-9 pr-3 shadow-sm focus:outline-none focus:border-sky-500 focus:ring-sky-500 focus:ring-1 sm:text-sm" 
           placeholder="Search for Courses..." 

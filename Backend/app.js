@@ -1,5 +1,5 @@
 const express = require("express");
-//const {userAuth} = require('./MiddleWares/authMiddleware');
+const {userAuth} = require('./MiddleWares/authMiddleware');
 const dotenv = require("dotenv").config();
 const { errorHandler } = require('./MiddleWares/goalMiddleware');
 const cookieParser = require('cookie-parser');

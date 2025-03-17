@@ -13,7 +13,7 @@ const Card = ({ job }) => {
           <h3 className="text-xs mb-1">{job.type.toUpperCase()}</h3>
           <h2 className="font-semibold text-gray-900 mb-5">{job.role}</h2>
         </div>
-        <h3 className="text-gray-500 text-sm">{job.createdAt}</h3>
+        <h3 className="text-gray-500 text-sm">{job.createdAt.split('T')[0]}</h3>
       </div>
       <div className="pl-10">
         {job.company && (
@@ -67,7 +67,7 @@ const JobsPage = () => {
 
                 if(res.ok){
                     const result = await res.json();
-                    console.log(result.data);
+                    //console.log(result.data);
                     setJobsData(result.data);
                     
                 }
@@ -76,7 +76,7 @@ const JobsPage = () => {
             }
         }
 
-        GetAllPosts();// call the function
+        GetAllPosts();
     },[]);
   
     const locations = [...new Set(jobsData.map((job) => job.location))];

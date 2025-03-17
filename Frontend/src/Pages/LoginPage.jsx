@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import pic3 from '../assets/pic3.jpeg';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../Layout/Layout';
+
+
+
 const LoginPage = () => {
+    const { state, dispatch } = useContext(UserContext);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -15,13 +21,12 @@ const LoginPage = () => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        axios.post("http://localhost:5000/api/users/login",{email,password},{
-            withCredentials :true,
-        })
+        axios.post("http://localhost:5000/api/users/login",{email,password})
         .then(result=>{
-            console.log("result",result);
+           // console.log("result",result);
             // const token = result.data.token;
             // localStorage.setItem('authToken', token);
+            dispatch({type:"USER",payload:true});
             navigate("/");
         })
     };

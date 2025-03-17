@@ -41,6 +41,26 @@ try {
 
 };
 
+
+
+const updateNewMentor = asyncHandler(async (req, res) => {
+const mentorid = await NewMentor.findById(req.params.id);
+
+if(!mentorid){
+    req.status(400)
+    throw new Error("Mentor not found");
+}
+
+const {title,time,registration} = req.body;
+const newData = await NewMentor.findByIdAndUpdate(req.params.id,req.body,{
+    new:true,
+    runValidators:true
+})
+
+res.status(200).json({ success:true, data: newData});
+});
+
+
 const getNewMentor = asyncHandler(async (req, res) => {
     try {
         const allData = await NewMentor.find({});
@@ -53,7 +73,14 @@ const getNewMentor = asyncHandler(async (req, res) => {
 });
 
 const deleteNewMentor = asyncHandler(async (req, res) => {
+const mentorid = await NewMentor.findById(req.params.id);
+if(!mentorid){
+    res.status(400);
+    throw new Error("Mentor not found");
+}
+await mentorid.deleteOne();
+
 res.status(200).json({ message: "Delete new Mentor" });
 });
 
-module.exports = {createNewMentor,getNewMentor,deleteNewMentor};
+module.exports = {createNewMentor,updateNewMentor,getNewMentor,deleteNewMentor};

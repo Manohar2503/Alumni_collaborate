@@ -1,11 +1,57 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect,useContext } from "react";
 import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import userImg from "../assets/avatar-icon.png";
 
+import { UserContext } from "../Layout/Layout";
+
 const Header = () => {
+  const { state, dispatch } = useContext(UserContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false); 
   const headerRef = useRef(null);
+
+const RenderMenu = () => {
+    
+    if(state){
+      return(
+        <>
+        <div className="hidden md:flex items-center gap-4">
+            <div>
+              <Link to="/body">
+                <figure className="w-[35px] h-[35px] rounded-full cursor-pointer">
+                  <img src={userImg} className="w-full rounded-full" alt="User" />
+                </figure>
+              </Link>
+            </div>
+            
+          </div>
+        
+        </>
+      )
+    }
+    else{
+      return(
+        <>
+        <div className="hidden md:flex items-center gap-4">
+            <div>
+              <Link to="/body">
+                <figure className="w-[35px] h-[35px] rounded-full cursor-pointer">
+                  <img src={userImg} className="w-full rounded-full" alt="User" />
+                </figure>
+              </Link>
+            </div>
+            <Link to="/login">
+              <button className="bg-black py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px] hover:bg-green-600 hover:text-black">
+                Login
+              </button>
+            </Link>
+          </div>
+        </>
+      )
+    }
+
+}
+
 
   const handleStickyHeader = () => {
     window.addEventListener("scroll", () => {
@@ -66,20 +112,7 @@ const Header = () => {
             </button>
           </div>
 
-          <div className="hidden md:flex items-center gap-4">
-            <div>
-              <Link to="/body">
-                <figure className="w-[35px] h-[35px] rounded-full cursor-pointer">
-                  <img src={userImg} className="w-full rounded-full" alt="User" />
-                </figure>
-              </Link>
-            </div>
-            <Link to="/login">
-              <button className="bg-black py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px] hover:bg-green-600 hover:text-black">
-                Login
-              </button>
-            </Link>
-          </div>
+          <RenderMenu />
         </div>
 
         {/* Menu for mobile view */}

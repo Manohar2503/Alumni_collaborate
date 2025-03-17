@@ -24,6 +24,7 @@ const EventCard = ({event})=>{
           <div className="bg-white rounded-lg p-6 shadow-md text-center ">
             <h3 className="text-xl font-bold">{event.title}</h3>
             <p className="text-gray-500 mb-4">{event.time}</p>
+            <p className="text-gray-500 mb-4">{event.createdAt.split('T')[0]}</p>
             <button className="bg-blue-800 text-white px-4 py-2 rounded"><a href={event.registration} target="_blank" rel="noopener noreferrer">Register</a></button>
           </div>
         </div>
@@ -50,7 +51,7 @@ const [eventData, setEventData] = useState([]);
           const result = await response.json();
           setSession(result.data.reverse());
 
-          console.log(result.data);
+          //console.log(result.data);
         }
       } catch (error) {
         alert('Error fetching data: ' + error.message);
