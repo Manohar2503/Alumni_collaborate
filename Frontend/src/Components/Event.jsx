@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import EventsData from "../assets/Data/EventsData";
+import EventsData from "../assets/data/EventsData";
 import EventForm from "../Forms/EventForm";
 
 
