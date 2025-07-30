@@ -66,7 +66,7 @@ const getNewMentor = asyncHandler(async (req, res) => {
         const allData = await NewMentor.find({});
         res.status(200).json({ success:true, data : allData });
        } catch (error) {
-        console.error("Error getting all startups:", error);
+        //console.error("Error getting all startups:", error);
         res.status(500).json({ success:false, message: "Server error" });
        }
 

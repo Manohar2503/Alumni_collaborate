@@ -25,6 +25,8 @@ app.use("/api/mentor", require('./Routes/mentorRoutes'));
 app.use("/api/newMentor", require('./Routes/newMentorRoutes'));
 app.use("/api/goals", require('./Routes/goalsRoutes'));
 app.use("/api/jobs",require('./Routes/jobsRoutes'));
+app.use("/api/request",require('./Routes/requestRoutes'));
+app.use("/api/bookmarks",require('./Routes/bookMarksRoute'));
 app.use(errorHandler);
 
 (async () => {

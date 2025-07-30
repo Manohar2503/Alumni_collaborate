@@ -25,9 +25,8 @@ if(!mentorData.image || !mentorData.topic || !mentorData.video){
 //   alert("Go to login page")
 // }
 // else{
-  axios.post("http://localhost:5000/api/mentor",mentorData,{
-    withCredentials : true,
-    
+  axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/mentor`, mentorData, {
+    withCredentials: true,
   })
   .then((result) => {
     console.log("Response:", result.data);

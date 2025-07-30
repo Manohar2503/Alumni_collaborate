@@ -23,7 +23,7 @@ const StartupForm = () => {
       return;
     }
     axios
-      .post("http://localhost:5000/api/startup", ideaData)
+      .post(`${import.meta.env.VITE_REACT_APP_API_URL}/startup`, ideaData)
       .then((result) => {
         console.log("Response:", result.data);
         alert("Idea submitted successfully!");

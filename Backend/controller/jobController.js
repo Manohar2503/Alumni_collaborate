@@ -47,7 +47,7 @@ const getJobs = async (req, res) => {
         //console.log(jobData);
         res.status(200).json({ success:true, data : jobData });
        } catch (error) {
-        console.error("Error getting all startups:", error);
+        //console.error("Error getting all startups:", error);
         res.status(500).json({ success:false, message: "Server error" });
        }
 

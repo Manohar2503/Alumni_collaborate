@@ -22,13 +22,13 @@ const NewmentorForm = () => {
     try {
       
       const response = await axios.post(
-        "http://localhost:5000/api/newMentor",
-        mentorData,{
-          withCredentials: true, // Important to include cookies
+        `${import.meta.env.VITE_REACT_APP_API_URL}/newMentor`,
+        mentorData,
+        {
+          withCredentials: true,
         }
       );
 
-      console.log("Response:", response.data);
       alert("New mentor session submitted successfully!");
       navigate("/mentor");
     } catch (err) {

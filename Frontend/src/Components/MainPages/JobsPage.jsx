@@ -58,7 +58,7 @@ const JobsPage = () => {
         const GetAllPosts = async ()=>{
             try{
                 
-                const res = await fetch("http://localhost:5000/api/jobs/getJobs",{
+                const res = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/jobs/getJobs`,{
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'

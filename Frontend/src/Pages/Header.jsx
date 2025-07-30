@@ -1,57 +1,99 @@
-import React, { useState, useRef, useEffect,useContext } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import userImg from "../assets/avatar-icon.png";
-
 import { UserContext } from "../Layout/Layout";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { state, dispatch } = useContext(UserContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false); 
   const headerRef = useRef(null);
+  const navigate = useNavigate();
 
-const RenderMenu = () => {
+  const RenderMenu = () => {
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+  
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsDropdownOpen(false);
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
+
+ 
     
-    if(state){
-      return(
-        <>
-        <div className="hidden md:flex items-center gap-4">
-            <div>
-              <Link to="/body">
-                <figure className="w-[35px] h-[35px] rounded-full cursor-pointer">
-                  <img src={userImg} className="w-full rounded-full" alt="User" />
-                </figure>
-              </Link>
-            </div>
+    const handleLogout = async () => {
+      try {
+        await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/users/logout`, {
+        withCredentials: true, // Important to include cookies
+      });
+      dispatch({ type: "USER", payload: false });
+      navigate("/login");
+      alert("Logged out successfully!");
+      } 
+      catch (err) {
+        console.error("Error:", err);
+        alert(
+          err.response && err.response.data.message
+            ? err.response.data.message
+            : "An error occurred while logging out. Please try again."
+   )};
+  };
+    if (state) {
+      return (
+        <div className="hidden md:flex items-center gap-4 relative" ref={dropdownRef}>
+          <div>
+            <figure 
+              className="w-[35px] h-[35px] rounded-full cursor-pointer"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              <img src={userImg} className="w-full rounded-full" alt="User" />
+            </figure>
             
+            {isDropdownOpen && (
+              <div className="absolute right-0 top-12 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
+                <div className="py-1">
+                  <Link 
+                    to="/profile" 
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => setIsDropdownOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        
-        </>
-      )
-    }
-    else{
-      return(
-        <>
+        </div>
+      );
+    } else {
+      return (
         <div className="hidden md:flex items-center gap-4">
-            <div>
-              <Link to="/body">
-                <figure className="w-[35px] h-[35px] rounded-full cursor-pointer">
-                  <img src={userImg} className="w-full rounded-full" alt="User" />
-                </figure>
-              </Link>
-            </div>
-            <Link to="/login">
-              <button className="bg-black py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px] hover:bg-green-600 hover:text-black">
-                Login
-              </button>
-            </Link>
-          </div>
-        </>
-      )
+          <Link to="/login">
+            <button className="bg-black py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px] hover:bg-green-600 hover:text-black transition-colors duration-300">
+              Login
+            </button>
+          </Link>
+        </div>
+      );
     }
-
-}
-
+  };
 
   const handleStickyHeader = () => {
     window.addEventListener("scroll", () => {
@@ -69,7 +111,7 @@ const RenderMenu = () => {
   }, []);
 
   const handleLinkClick = () => {
-    setIsMenuOpen(false); // Close the menu when a link is clicked
+    setIsMenuOpen(false);
   };
 
   return (
@@ -128,7 +170,7 @@ const RenderMenu = () => {
             <Link to='newsMain' onClick={handleLinkClick}><li>News</li></Link>
             <li onClick={handleLinkClick}>IdeaRoom</li>
             <Link to="/contact">
-            <li onClick={handleLinkClick}>Contact</li>
+              <li onClick={handleLinkClick}>Contact</li>
             </Link>
             <Link to="/login" onClick={handleLinkClick}>
               <button className="bg-black py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px] mt-4">

@@ -32,7 +32,7 @@ const Entrepreneurial = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/startup', {
+        const response = await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/startup`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
