@@ -37,7 +37,7 @@ const EventForm = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700">No. of Members</label>
+            <label className="block text-gray-700">Number of Members</label>
             <input
               type="text"
               placeholder="No. of Members"
