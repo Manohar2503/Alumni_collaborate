@@ -24,6 +24,7 @@ import MentorForm from "../Forms/MentorForm";
 import NewmentorForm from "../Forms/NewmentorForm";
 import EventForm from "../Forms/EventForm";
 import Profile from "../Components/MainPages/Profile";
+import Students from "../Components/Students"; // Import Students component
 
 const Routers = () => {
   return (
@@ -50,6 +51,7 @@ const Routers = () => {
       <Route path='/newmentor' element={<NewmentorForm/>}/>
       <Route path="/eventform" element={<EventForm/>} />
       <Route path ='/profile' element={<Profile/>}/>
+      <Route path="/students" element={<Students/>} /> {/* Add route for student dashboard */}
     </Routes>
   );
 };

@@ -12,23 +12,30 @@ const LoginPage = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [userType, setUserType] = useState('student'); // Default to student
     const navigate = useNavigate();
+
     const changeHandler = (e) => {
         const { name, value } = e.target;
         if (name === 'email') setEmail(value);
         if (name === 'password') setPassword(value);
+        if (name === 'userType') setUserType(value);
     };
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
-        axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/users/login`,{email,password},{withCredentials:true})
-        .then(result=>{
-           // console.log("result",result);
-            // const token = result.data.token;
-            // localStorage.setItem('authToken', token);
-            dispatch({type:"USER",payload:true});
-            navigate("/");
-        })
+        try {
+            const result = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/users/login`, { email, password, userType }, { withCredentials: true });
+            dispatch({ type: "USER", payload: true });
+            if (userType === 'student') {
+                navigate("/"); // Redirect to student dashboard
+            } else {
+                navigate("/"); // Default redirect for other user types
+            }
+        } catch (err) {
+            console.error("Login error:", err);
+            alert(err.response?.data?.message || "An error occurred during login.");
+        }
     };
     
     return (
@@ -37,6 +44,19 @@ const LoginPage = () => {
             <div className="bg-black bg-opacity-75 p-8 rounded-lg shadow-lg w-11/12 max-w-md">
                 <h2 className="text-2xl font-bold text-white mb-6 text-center">Sign In</h2>
                 <form onSubmit={submitHandler} className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300">User Type</label>
+                        <select
+                            name="userType"
+                            value={userType}
+                            onChange={changeHandler}
+                            className="mt-1 block w-full px-4 py-2 bg-gray-800 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="student">Student</option>
+                            <option value="alumni">Alumni</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-300">E-mail</label>
                         <input

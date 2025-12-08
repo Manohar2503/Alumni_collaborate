@@ -73,26 +73,65 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 });
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const { email, password, userType } = req.body;
+
+    if (!email || !password || !userType) {
+        res.status(400);
+        throw new Error("Please enter all fields: email, password, and user type.");
+    }
+
+    let user;
+    switch (userType) {
+        case 'student':
+            user = await User.findOne({ email });
+            break;
+        case 'alumni':
+            // Assuming alumni also use the User model for now, or a similar model
+            user = await User.findOne({ email });
+            // Potentially add a role check here if the User model has a 'role' field
+            // if (user && user.role !== 'alumni') {
+            //     res.status(403);
+            //     throw new Error("Access denied for this user type.");
+            // }
+            break;
+        case 'admin':
+            // Assuming admin also uses the User model for now, or a similar model
+            user = await User.findOne({ email });
+            // Potentially add a role check here if the User model has a 'role' field
+            // if (user && user.role !== 'admin') {
+            //     res.status(403);
+            //     throw new Error("Access denied for this user type.");
+            // }
+            break;
+        default:
+            res.status(400);
+            throw new Error("Invalid user type provided.");
+    }
+
+    if (!user) {
+        res.status(400);
+        throw new Error("User not found.");
+    }
+
     const isPassword = await bcrypt.compare(password, user.password);
+
     if (user && isPassword) {
         const token = generateToken(user._id);
-       // console.log(token);
-       res.cookie("token", token, {
-        httpOnly: true,         
-        secure: process.env.NODE_ENV === "production", 
-        sameSite: "lax",  
-        maxAge: 7 * 24 * 60 * 60 * 1000, 
-    });
-    
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
 
         res.status(201).json({
-            message: "User logged in successfully",token:token
+            message: `${userType} logged in successfully`,
+            token: token,
+            userType: userType // Include userType in the response
         });
     } else {
         res.status(400);
-        throw new Error("Invalid user data");
+        throw new Error("Invalid credentials.");
     }
 });
 

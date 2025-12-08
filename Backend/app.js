@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const connectionDB = require("./config/database");
 const cors = require('cors');
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001; // Changed default port to 5001
 const app = express();
 
 app.use(cors({
@@ -37,4 +37,3 @@ app.use(errorHandler);
         console.error("Failed to connect to the database. Server not started.", err.message);
     }
 })();
-

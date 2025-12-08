@@ -16,6 +16,7 @@ function DonationCard({ donate }) {
           to={{
             pathname: '/startupdetails',
           }}
+          
           state={{ donate }}
           className="text-blue-500 hover:text-blue-700"
         >
