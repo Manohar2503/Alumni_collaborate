@@ -1,7 +1,7 @@
 import React from "react";
 import pic3 from "../assets/pic3.jpeg";
 import Slider from "../Components/Slider";
-import About from "../Components/About";
+// import About from "../Components/About";
 import HomeEvent from "../Components/HomeEvent";
 import EventsHome from "../Components/EventsHome";
 import AlumniGallary from "../Components/AlumniGallary";
@@ -43,9 +43,9 @@ const Body = () => {
         <div className="my-8">
           <Slider />
         </div>
-        <About />
+        {/* <About /> */}
         <HomeEvent />
-      {/* <EventsHome /> */ }
+      <EventsHome />
         <DonarImages />
         <AbroadPage />
         <AlumniGallary />

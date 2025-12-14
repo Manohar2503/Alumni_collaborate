@@ -160,7 +160,7 @@ const Header = () => {
         {/* Menu for mobile view */}
         <div className={`md:hidden ${isMenuOpen ? "block" : "hidden"}`}>
           <ul className="flex flex-col text-lg text-white px-6 py-4 space-y-4 bg-black">
-            <Link to="/" onClick={handleLinkClick}><li>Home</li></Link>
+            {/* <Link to="/" onClick={handleLinkClick}><li>Home</li></Link>
             <Link to='/aboutpage' onClick={handleLinkClick}><li>About</li></Link>
             <Link to='/donations' onClick={handleLinkClick}><li>Donations</li></Link>
             <Link to='/mentor' onClick={handleLinkClick}><li>Mentors</li></Link>
@@ -171,7 +171,7 @@ const Header = () => {
             <li onClick={handleLinkClick}>IdeaRoom</li>
             <Link to="/contact">
               <li onClick={handleLinkClick}>Contact</li>
-            </Link>
+            </Link> */}
             <Link to="/login" onClick={handleLinkClick}>
               <button className="bg-black py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px] mt-4">
                 Login
@@ -182,7 +182,7 @@ const Header = () => {
 
         {/* Menu for desktop view */}
         <div className="hidden list-none md:flex justify-between mx-6 my-2 p-4 text-lg">
-          <Link to="/" onClick={handleLinkClick}>
+          {/* <Link to="/" onClick={handleLinkClick}>
             <li className="relative no-underline cursor-pointer group">
               Home
               <span className="absolute left-0 bottom-0 w-0 h-[3px] bg-blue-500 transition-all duration-300 group-hover:w-full "></span>
@@ -248,7 +248,7 @@ const Header = () => {
               Contact
               <span className="absolute left-0 bottom-0 w-0 h-[3px] bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
             </li>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </>
