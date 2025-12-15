@@ -28,9 +28,9 @@ const LoginPage = () => {
             const result = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/users/login`, { email, password, userType }, { withCredentials: true });
             dispatch({ type: "USER", payload: true });
             if (userType === 'student') {
-                navigate("/"); // Redirect to student dashboard
+                navigate("/alumni-page"); // Redirect to student dashboard
             } else {
-                navigate("/"); // Default redirect for other user types
+                navigate("/alumni-page"); // Default redirect for other user types
             }
         } catch (err) {
             console.error("Login error:", err);

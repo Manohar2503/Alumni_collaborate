@@ -4,8 +4,7 @@ import { Footer } from './Pages'
 function App() {
   return (
       <div>
-         <Layout/>   
-         <Footer/>
+         <Layout/>
       </div>
   )
 }
