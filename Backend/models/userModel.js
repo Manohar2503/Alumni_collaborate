@@ -29,8 +29,6 @@ const validator = require('validator');
         type:String,
         required:[true,'enter the brach']
     },
-
-
     email : {
         type: String,
         required : [true,'enter your mail'],

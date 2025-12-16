@@ -5,6 +5,7 @@ const { errorHandler } = require('./MiddleWares/goalMiddleware');
 const cookieParser = require('cookie-parser');
 const connectionDB = require("./config/database");
 const cors = require('cors');
+const path = require('path');
 
 const port = process.env.PORT || 5001; // Changed default port to 5001
 const app = express();
@@ -18,8 +19,12 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.use("/api/users", require('./Routes/userRoutes'));
 app.use("/api/request",require('./Routes/requestRoutes')); // Request routes
+app.use("/api/posts", require('./Routes/postRoutes')); // Post routes
 
 app.use(errorHandler);
 
