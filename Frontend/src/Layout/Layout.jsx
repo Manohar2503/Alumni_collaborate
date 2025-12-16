@@ -10,8 +10,10 @@ const Layout = () => {
   const [state, dispatch] = useReducer(reducer, undefined, getInitialState);
   const location = useLocation();
   
-  // Hide header and footer on alumni-page
+  // Hide header on alumni-page (legacy) and allow hiding footer on specific pages
   const hideHeaderFooter = location.pathname === '/alumni-page';
+  const footerHiddenPaths = ['/alumni-page', '/jobs', '/messaging', '/notifications', '/profile'];
+  const hideFooter = footerHiddenPaths.includes(location.pathname);
 
   // Persist userPosts to localStorage so they survive logout/navigation
   useEffect(() => {
@@ -29,7 +31,7 @@ const Layout = () => {
         <main>
           <Routers />
         </main>
-        {!hideHeaderFooter && <Footer />}
+        {!hideHeaderFooter && !hideFooter && <Footer />}
       </UserContext.Provider>
     </>
   );
