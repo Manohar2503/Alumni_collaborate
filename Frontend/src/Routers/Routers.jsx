@@ -19,25 +19,6 @@ const Routers = () => {
       <Route path="/body" element={<Body/>} />
       <Route path="/footer" element={<Footer/>} />
       <Route path="/login" element={<LoginPage/>} />
-
-      {/* <Route path="/learning" element={<Leanrning/>}/>
-      <Route path="/events" element= {<Event/>}/>
-      <Route path="/form" element={<AddForm/>}/>  
-      <Route path="/event-details" element={<EventDetails/>} />
-      <Route path='/newsMain' element={<NewsMain/>}/>
-      <Route path='/newsdetails' element={<NewsDetails/>}/>
-      <Route path='/donations' element={<DonationPage/>}/>
-      <Route path='/stratup' element={<StartupForm/>}/>
-      <Route path='/mentor' element={<MentorPage/>}/>
-      <Route path='/jobs' element={<JobsPage/>}/>
-      <Route path='/aboutpage' element={<AboutPage/>}/>
-      <Route path="/contact" element={<ContactPage/>}/>
-      // <Route path="/signup" element={<SignupPage/>}/>
-      <Route path='/startupdetails' element={<StartupDetail/>}/>
-      <Route path='/mentorform' element={<MentorForm/>}/>
-      <Route path='/newmentor' element={<NewmentorForm/>}/> */}
-      {/* <Route path="/eventform" element={<EventForm/>} /> */}
-
       <Route path="/alumni-page" element={<AlumniMainPage/>}/>
       <Route path="/signup" element={<SignupPage/>}/>
       <Route path ='/profile' element={<Profile/>}/>

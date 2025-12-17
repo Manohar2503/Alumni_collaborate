@@ -1,129 +1,44 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
-import logo from "../assets/logo.png";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import userImg from "../assets/avatar-icon.png";
-import { UserContext } from "../Layout/Layout";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
 
 const Header = () => {
-  const { state, dispatch } = useContext(UserContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); 
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const headerRef = useRef(null);
-  const navigate = useNavigate();
 
-  const RenderMenu = () => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null);
-
-  
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-          setIsDropdownOpen(false);
-        }
-      };
-
-      document.addEventListener("mousedown", handleClickOutside);
-      return () => {
-        document.removeEventListener("mousedown", handleClickOutside);
-      };
-    }, []);
-
- 
-    
-    const handleLogout = async () => {
-      try {
-        await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/users/logout`, {
-        withCredentials: true, // Important to include cookies
-      });
-      dispatch({ type: "USER", payload: false });
-      navigate("/login");
-      alert("Logged out successfully!");
-      } 
-      catch (err) {
-        console.error("Error:", err);
-        alert(
-          err.response && err.response.data.message
-            ? err.response.data.message
-            : "An error occurred while logging out. Please try again."
-   )};
-  };
-    if (state) {
-      return (
-        <div className="hidden md:flex items-center gap-4 relative" ref={dropdownRef}>
-          <div>
-            <figure 
-              className="w-[35px] h-[35px] rounded-full cursor-pointer"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              <img src={userImg} className="w-full rounded-full" alt="User" />
-            </figure>
-            
-            {isDropdownOpen && (
-              <div className="absolute right-0 top-12 mt-2 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200">
-                <div className="py-1">
-                  <Link 
-                    to="/profile" 
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Profile
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div className="hidden md:flex items-center gap-4">
-          <Link to="/login">
-            <button className="bg-black py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px] hover:bg-green-600 hover:text-black transition-colors duration-300">
-              Login
-            </button>
-          </Link>
-        </div>
-      );
-    }
-  };
-
-  const handleStickyHeader = () => {
-    window.addEventListener("scroll", () => {
-      if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+  // Sticky header
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        document.body.scrollTop > 100 ||
+        document.documentElement.scrollTop > 100
+      ) {
         headerRef.current.classList.add("sticky__header");
       } else {
         headerRef.current.classList.remove("sticky__header");
       }
-    });
-  };
+    };
 
-  useEffect(() => {
-    handleStickyHeader();
-    return () => window.removeEventListener("scroll", handleStickyHeader);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleLinkClick = () => {
-    setIsMenuOpen(false);
-  };
-
   return (
-    <>
-      <div className="shadow-md w-full main_container bg-[#F0F8FF]" ref={headerRef}>
-        <div className="flex justify-between items-center px-7 md:px-9">
-          <div className="flex p-0 m-0 items-center sm:text-lg md:text-2xl">
-            <img src={logo} alt="Logo" className="h-[3rem] w-[3rem]" />
-            <p>AlumniNexus</p>
-          </div>
+    <div
+      ref={headerRef}
+      className="shadow-md w-full bg-[#F0F8FF]"
+    >
+      {/* Top Header */}
+      <div className="flex justify-between items-center px-7 md:px-9 h-[70px]">
+        
+        {/* Logo */}
+        <div className="flex items-center gap-2 text-xl font-semibold">
+          <img src={logo} alt="Logo" className="h-[3rem] w-[3rem]" />
+          <span>AlumniNexus</span>
+        </div>
 
-          <div className="w-[100px] flex md:mr-40">
+        {/* College Name */}
+        <div className="w-[100px] flex md:mr-40">
             <h1 className="text-2xl md:text-7xl font-bold justify-center text-center text-[#c2410c] drop-shadow-md hover:drop-shadow-x transition-all duration-300 ease-in-out transform hover:scale-110 font-serif">
               VVIT
             </h1>
@@ -135,46 +50,47 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="md:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              <svg
-                className="w-8 h-8 text-black"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
+        {/* Desktop Login */}
+        <div className="hidden md:flex">
+          <Link to="/login">
+            <button className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-green-600 hover:text-black transition">
+              Login
             </button>
-          </div>
-
-          <RenderMenu />
+          </Link>
         </div>
 
-        {/* Menu for mobile view */}
-        <div className={`md:hidden ${isMenuOpen ? "block" : "hidden"}`}>
-          <ul className="flex flex-col text-lg text-white px-6 py-4 space-y-4 bg-black">
-            
-            <Link to="/login" onClick={handleLinkClick}>
-              <button className="bg-black py-2 px-6 text-white font-[600] h-[44px] flex items-center justify-center rounded-[50px] mt-4">
-                Login
-              </button>
-            </Link>
-          </ul>
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <svg
+              className="w-8 h-8"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
         </div>
-
-        
       </div>
-    </>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-black px-6 py-4">
+          <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+            <button className="w-full bg-white text-black py-2 rounded-full font-semibold">
+              Login
+            </button>
+          </Link>
+        </div>
+      )}
+    </div>
   );
 };
 
 export default Header;
-
-//hiiii

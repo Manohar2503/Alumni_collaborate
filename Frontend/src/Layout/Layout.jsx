@@ -1,6 +1,7 @@
 import React, { useContext, useReducer, createContext, useEffect } from 'react';
 import { Header, Footer } from '../Pages';
 import Routers from '../Routers/Routers';
+import Navbar from '../Components/Navbar'; // Import Navbar component
 import { getInitialState, reducer } from '../reducer/UseReducer';
 import { useLocation } from 'react-router-dom';
 
@@ -10,8 +11,9 @@ const Layout = () => {
   const [state, dispatch] = useReducer(reducer, undefined, getInitialState);
   const location = useLocation();
   
-  // Hide header on alumni-page (legacy) and allow hiding footer on specific pages
-  const hideHeaderFooter = location.pathname === '/alumni-page';
+  // Determine if the header should be hidden or replaced with a navbar
+  const hideHeader = location.pathname === '/alumni-page';
+  const showNavbar = location.pathname === '/profile';
   const footerHiddenPaths = ['/alumni-page', '/jobs', '/messaging', '/notifications', '/profile'];
   const hideFooter = footerHiddenPaths.includes(location.pathname);
 
@@ -27,11 +29,12 @@ const Layout = () => {
   return (
     <>
       <UserContext.Provider value={{ state, dispatch }}>
-        {!hideHeaderFooter && <Header />}
+        {showNavbar && <Navbar />} {/* Render Navbar if showNavbar is true */}
+        {!hideHeader && !showNavbar && <Header />} {/* Render Header if hideHeader is false and showNavbar is false */}
         <main>
           <Routers />
         </main>
-        {!hideHeaderFooter && !hideFooter && <Footer />}
+        {!hideHeader && !hideFooter && <Footer />} {/* Corrected: Using !hideHeader instead of !hideHeaderFooter */}
       </UserContext.Provider>
     </>
   );
