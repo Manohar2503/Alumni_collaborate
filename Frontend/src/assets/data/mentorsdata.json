@@ -1,0 +1,248 @@
+{
+  "previousMentorSessions": [
+    {
+      "id": 1,
+      "title": "Building a Career in Full Stack Development",
+      "description": "A complete roadmap session covering frontend and backend technologies, project expectations, deployment basics, and guidance to become job-ready as a full stack developer.",
+      "mentor": { "name": "Rahul Verma", "role": "Senior Full Stack Engineer", "company": "Infosys" },
+      "date": "2024-01-15",
+      "duration": "2 Hours",
+      "topics": ["HTML", "CSS", "JavaScript", "React", "Node.js"],
+      "recordingLink": "https://www.youtube.com/watch?v=fullstack001"
+    },
+    {
+      "id": 2,
+      "title": "Cracking Technical Interviews with Confidence",
+      "description": "Focused on interview preparation strategies including DSA practice, problem-solving mindset, communication tips, and handling interview pressure.",
+      "mentor": { "name": "Anita Sharma", "role": "Technical Interviewer", "company": "TCS" },
+      "date": "2024-01-25",
+      "duration": "1.5 Hours",
+      "topics": ["DSA", "Problem Solving", "HR Rounds"],
+      "recordingLink": "https://www.youtube.com/watch?v=interview002"
+    },
+    {
+      "id": 3,
+      "title": "React for Beginners",
+      "description": "An introductory React session explaining core concepts such as JSX, components, props, state, hooks, and best practices through examples.",
+      "mentor": { "name": "Karthik Reddy", "role": "Frontend Developer", "company": "Zoho" },
+      "date": "2024-02-05",
+      "duration": "2 Hours",
+      "topics": ["JSX", "Props", "State", "Hooks"],
+      "recordingLink": "https://www.youtube.com/watch?v=react003"
+    },
+    {
+      "id": 4,
+      "title": "Backend Development with Node.js",
+      "description": "Explained backend fundamentals using Node.js and Express, including REST APIs, middleware concepts, and frontend-backend integration.",
+      "mentor": { "name": "Vikram Singh", "role": "Backend Engineer", "company": "Paytm" },
+      "date": "2024-02-15",
+      "duration": "2 Hours",
+      "topics": ["Node.js", "Express", "REST APIs"],
+      "recordingLink": "https://www.youtube.com/watch?v=node004"
+    },
+    {
+      "id": 5,
+      "title": "MongoDB & Database Design",
+      "description": "Covered database fundamentals, schema design, CRUD operations, indexing, and best practices for scalable MongoDB applications.",
+      "mentor": { "name": "Sneha Patel", "role": "Database Engineer", "company": "Accenture" },
+      "date": "2024-02-28",
+      "duration": "1.5 Hours",
+      "topics": ["MongoDB", "Schema Design", "Indexes"],
+      "recordingLink": "https://www.youtube.com/watch?v=mongodb005"
+    },
+    {
+      "id": 6,
+      "title": "Resume-Worthy Projects",
+      "description": "Guidance on choosing impactful project ideas, structuring clean code, writing documentation, and showcasing projects effectively on GitHub.",
+      "mentor": { "name": "Amit Joshi", "role": "Hiring Manager", "company": "Wipro" },
+      "date": "2024-03-05",
+      "duration": "1 Hour",
+      "topics": ["Projects", "GitHub", "Documentation"],
+      "recordingLink": "https://www.youtube.com/watch?v=projects006"
+    },
+    {
+      "id": 7,
+      "title": "Mastering Git & GitHub",
+      "description": "A hands-on session covering Git basics, branching strategies, pull requests, conflict resolution, and real-world team workflows.",
+      "mentor": { "name": "Neha Kulkarni", "role": "DevOps Engineer", "company": "IBM" },
+      "date": "2024-03-15",
+      "duration": "2 Hours",
+      "topics": ["Git", "Branches", "Pull Requests"],
+      "recordingLink": "https://www.youtube.com/watch?v=git007"
+    },
+    {
+      "id": 8,
+      "title": "DSA: Beginner to Intermediate",
+      "description": "Explained essential data structures and algorithms with problem-solving approaches, optimization tips, and coding practice guidance.",
+      "mentor": { "name": "Rohit Agarwal", "role": "Software Engineer", "company": "Amazon" },
+      "date": "2024-03-25",
+      "duration": "2 Hours",
+      "topics": ["Arrays", "Linked Lists", "Stacks"],
+      "recordingLink": "https://www.youtube.com/watch?v=dsa008"
+    },
+    {
+      "id": 9,
+      "title": "Career Guidance for Final Year Students",
+      "description": "Mentor-led discussion on career planning, internships, certifications, skill selection, and placement preparation strategies.",
+      "mentor": { "name": "Pooja Iyer", "role": "Career Coach", "company": "Independent" },
+      "date": "2024-04-02",
+      "duration": "1 Hour",
+      "topics": ["Placements", "Internships", "Skill Planning"],
+      "recordingLink": "https://www.youtube.com/watch?v=career009"
+    },
+    {
+      "id": 10,
+      "title": "Soft Skills & Communication",
+      "description": "Focused on improving communication skills, professional behavior, confidence, teamwork, and presentation skills for engineers.",
+      "mentor": { "name": "Manish Kapoor", "role": "Corporate Trainer", "company": "L&T" },
+      "date": "2024-04-10",
+      "duration": "1.5 Hours",
+      "topics": ["Communication", "Confidence", "Teamwork"],
+      "recordingLink": "https://www.youtube.com/watch?v=softskills010"
+    }
+  ],
+
+  "upcomingMentorSessions": [
+    {
+      "id": 1,
+      "title": "Advanced DSA Bootcamp",
+      "description": "An intensive live bootcamp covering advanced data structures, algorithms, dynamic programming, and competitive coding strategies.",
+      "mentor": {
+        "name": "Sandeep Kumar",
+        "photo": "https://images.unsplash.com/photo-1517433456452-f9633a875f6f?w=800&auto=format&fit=crop",
+        "linkedin": "https://linkedin.com/in/sandeepkumar"
+      },
+      "dateTime": "2025-01-10T18:00:00+05:30",
+      "mode": "Live",
+      "topics": ["Advanced DSA", "Dynamic Programming", "Competitive Coding"],
+      "registerLink": "https://example.com/register/advanced-dsa"
+    },
+    {
+      "id": 2,
+      "title": "Scalable Full Stack Applications",
+      "description": "Learn how to design scalable architectures, optimize APIs, manage databases efficiently, and deploy production-ready applications.",
+      "mentor": {
+        "name": "Meera Nair",
+        "photo": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop",
+        "linkedin": "https://linkedin.com/in/meeranair"
+      },
+      "dateTime": "2025-01-12T19:00:00+05:30",
+      "mode": "Webinar",
+      "topics": ["System Design", "Scalable APIs", "Deployment"],
+      "registerLink": "https://example.com/register/scalable-fullstack"
+    },
+    {
+      "id": 3,
+      "title": "Live React Project",
+      "description": "A hands-on session where participants build a complete React project focusing on component design, state management, and UI practices.",
+      "mentor": {
+        "name": "Ravi Teja",
+        "photo": "https://images.unsplash.com/photo-1633114128174-2f8aa49759b0?w=800&auto=format&fit=crop",
+        "linkedin": "https://linkedin.com/in/raviteja"
+      },
+      "dateTime": "2025-01-15T18:30:00+05:30",
+      "mode": "Live",
+      "topics": ["React", "Hooks", "Component Design"],
+      "registerLink": "https://example.com/register/react-live"
+    },
+    {
+      "id": 4,
+      "title": "Backend APIs with Node.js",
+      "description": "Covers secure REST API development, authentication, middleware usage, and database connectivity using Node.js and Express.",
+      "mentor": {
+        "name": "Arjun Malhotra",
+        "photo": "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&auto=format&fit=crop",
+        "linkedin": "https://linkedin.com/in/arjunmalhotra"
+      },
+      "dateTime": "2025-01-18T17:00:00+05:30",
+      "mode": "Webinar",
+      "topics": ["Node.js", "REST APIs", "Authentication"],
+      "registerLink": "https://example.com/register/backend-api"
+    },
+    {
+      "id": 5,
+      "title": "MongoDB Atlas & Cloud Databases",
+      "description": "Explains MongoDB Atlas setup, cloud database management, security practices, and collaboration in team-based projects.",
+      "mentor": {
+        "name": "Kiran Rao",
+        "photo": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&auto=format&fit=crop"
+,
+        "linkedin": "https://linkedin.com/in/kiranrao"
+      },
+      "dateTime": "2025-01-20T18:00:00+05:30",
+      "mode": "Live",
+      "topics": ["MongoDB Atlas", "Cloud Databases", "Security"],
+      "registerLink": "https://example.com/register/mongodb-atlas"
+    },
+    {
+      "id": 6,
+      "title": "Resume Building & ATS Optimization",
+      "description": "A practical workshop on building ATS-friendly resumes, highlighting projects and skills to increase shortlisting chances.",
+      "mentor": {
+        "name": "Swathi Menon",
+        "photo": "https://images.unsplash.com/photo-1586282391129-76a6df230234?w=800&auto=format&fit=crop",
+        "linkedin": "https://linkedin.com/in/swathimenon"
+      },
+      "dateTime": "2025-01-22T19:00:00+05:30",
+      "mode": "Webinar",
+      "topics": ["Resume Writing", "ATS Optimization", "Shortlisting"],
+      "registerLink": "https://example.com/register/resume-ats"
+    },
+    {
+      "id": 7,
+      "title": "LinkedIn Branding for Engineers",
+      "description": "Learn how to optimize your LinkedIn profile, build a personal brand, network effectively, and attract recruiters organically.",
+      "mentor": {
+        "name": "Nikhil Jain",
+        "photo": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop",
+        "linkedin": "https://linkedin.com/in/nikhiljain"
+      },
+      "dateTime": "2025-01-24T18:30:00+05:30",
+      "mode": "Live",
+      "topics": ["LinkedIn Optimization", "Personal Branding", "Networking"],
+      "registerLink": "https://example.com/register/linkedin-branding"
+    },
+    {
+      "id": 8,
+      "title": "Preparing for Product-Based Companies",
+      "description": "Mentor guidance on preparation strategies for product-based companies including coding rounds, system design basics, and interviews.",
+      "mentor": {
+        "name": "Deepak Choudhary",
+        "photo": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&auto=format&fit=crop",
+        "linkedin": "https://linkedin.com/in/deepakchoudhary"
+      },
+      "dateTime": "2025-01-26T17:30:00+05:30",
+      "mode": "Webinar",
+      "topics": ["Product Companies", "Coding Rounds", "System Design"],
+      "registerLink": "https://example.com/register/product-companies"
+    },
+    {
+      "id": 9,
+      "title": "Mock Interviews & Feedback",
+      "description": "Experience real interview scenarios with live mock interviews and receive personalized feedback on technical and communication skills.",
+      "mentor": {
+        "name": "Ayesha Khan",
+        "photo": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=800&auto=format&fit=crop",
+        "linkedin": "https://linkedin.com/in/ayeshakhan"
+      },
+      "dateTime": "2025-01-28T18:00:00+05:30",
+      "mode": "Live",
+      "topics": ["Mock Interviews", "Feedback", "Communication Skills"],
+      "registerLink": "https://example.com/register/mock-interviews"
+    },
+    {
+      "id": 10,
+      "title": "Fresher to Industry-Ready Roadmap",
+      "description": "A step-by-step roadmap session guiding freshers on skills, projects, consistency, mindset, and becoming industry-ready.",
+      "mentor": {
+        "name": "Prakash Iyer",
+        "photo": "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800&auto=format&fit=crop",
+        "linkedin": "https://linkedin.com/in/prakashiyer"
+      },
+      "dateTime": "2025-01-30T19:00:00+05:30",
+      "mode": "Webinar",
+      "topics": ["Career Roadmap", "Skill Planning", "Consistency"],
+      "registerLink": "https://example.com/register/fresher-roadmap"
+    }
+  ]
+}
