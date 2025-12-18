@@ -1,280 +1,163 @@
-import { FiThumbsUp, FiMessageCircle, FiShare2, FiUserPlus, FiChevronLeft, FiChevronRight, FiX, FiCheck } from "react-icons/fi";
-import { useState, useContext } from "react";
-import { UserContext } from "../Layout/Layout";
+import {
+  FiThumbsUp,
+  FiMessageCircle,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
+import { useState } from "react";
+import axios from "axios";
 
 export default function Post({ data }) {
-  const { dispatch } = useContext(UserContext);
-  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
-  const [showComments, setShowComments] = useState(false);
-  const [newComment, setNewComment] = useState("");
+  const [mediaIndex, setMediaIndex] = useState(0);
   const [comments, setComments] = useState(data.comments || []);
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [showFull, setShowFull] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const [likes, setLikes] = useState(data.likes?.length || 0);
+  const [showComments, setShowComments] = useState(false);
 
-  const CONTENT_PREVIEW_LENGTH = 220;
+  const hasMedia = data.media && data.media.length > 0;
 
-  const hasMultipleMedia = data.media && data.media.length > 1;
-
-  const handleNextMedia = () => {
-    setCurrentMediaIndex((prev) => (prev + 1) % data.media.length);
+  const likePost = async () => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/posts/${data._id}/like`,
+        {},
+        { withCredentials: true }
+      );
+      setLikes(res.data.likes);
+    } catch (err) {
+      console.error("Like failed", err);
+    }
   };
 
-  const handlePrevMedia = () => {
-    setCurrentMediaIndex((prev) => (prev - 1 + data.media.length) % data.media.length);
-  };
+  const addComment = async () => {
+    if (!newComment.trim()) return;
 
-  const handleLike = () => {
-    const newLiked = !data.liked;
-    const newLikes = newLiked ? (data.likes || 0) + 1 : (data.likes || 0) - 1;
-    dispatch({
-      type: "LIKE_POST",
-      payload: { postId: data.id, likes: newLikes, liked: newLiked }
-    });
-  };
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/posts/${data._id}/comment`,
+        { text: newComment },
+        { withCredentials: true }
+      );
 
-  const handleFollow = () => {
-    setIsFollowing((s) => !s);
-  };
-
-  const handleAddComment = () => {
-    if (newComment.trim()) {
-      const newCommentObj = {
-        id: comments.length + 1,
-        name: "You",
-        text: newComment,
-      };
-      setComments([...comments, newCommentObj]);
+      setComments((prev) => [
+        ...prev,
+        { user: { name: "You" }, text: newComment },
+      ]);
       setNewComment("");
+    } catch (err) {
+      console.error("Comment failed", err);
     }
   };
 
   return (
-    <div style={{ backgroundColor: "white", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", borderRadius: "12px", padding: "16px", marginBottom: "16px" }}>
-      <div style={{ display: "flex", gap: "12px", marginBottom: "12px" }}>
-        <img
-          src="https://i.pravatar.cc/45"
-          style={{ borderRadius: "50%" }}
-          alt=""
-        />
-        <div>
-          <h3 style={{ fontWeight: "600", margin: 0 }}>{data.name}</h3>
-          <p style={{ fontSize: "14px", color: "#999", margin: 0 }}>{data.headline}</p>
-          <span style={{ fontSize: "12px", color: "#999" }}>{data.time}</span>
-        </div>
-      </div>
-
-      <p style={{ marginTop: "12px", color: "#333", whiteSpace: "pre-wrap" }}>
-        {data.content && data.content.length > CONTENT_PREVIEW_LENGTH ? (
-          <>
-            {showFull ? data.content : data.content.slice(0, CONTENT_PREVIEW_LENGTH)}
-            {!showFull && "... "}
-            <span
-              onClick={() => setShowFull((s) => !s)}
-              style={{ color: "#0A66C2", cursor: "pointer", fontWeight: 600 }}
-            >
-              {showFull ? "show less" : "more"}
-            </span>
-          </>
-        ) : (
-          data.content
-        )}
+    <div
+      style={{
+        background: "white",
+        padding: 16,
+        borderRadius: 12,
+        marginBottom: 16,
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+      }}
+    >
+      <h3 style={{ marginBottom: 4 }}>{data.user?.name}</h3>
+      <p style={{ fontSize: 12, color: "#666" }}>
+        {new Date(data.createdAt).toLocaleString()}
       </p>
 
-      {data.media && data.media.length > 0 && (
-        <div style={{ position: "relative", marginTop: "12px", borderRadius: "12px", overflow: "hidden", backgroundColor: "#000" }}>
-          {data.media[currentMediaIndex].type === "image" ? (
+      <p style={{ marginTop: 8 }}>{data.content}</p>
+
+      {/* MEDIA */}
+      {hasMedia && (
+        <div style={{ position: "relative", marginTop: 10 }}>
+          {data.media[mediaIndex].type === "image" ? (
             <img
-              src={data.media[currentMediaIndex].url}
+              src={`${import.meta.env.VITE_REACT_APP_API_URL}${data.media[mediaIndex].url}`}
+              style={{ width: "100%", borderRadius: 12 }}
               alt=""
-              style={{ borderRadius: "12px", maxHeight: "320px", objectFit: "cover", width: "100%" }}
             />
           ) : (
             <video
-              src={data.media[currentMediaIndex].url}
-              style={{ borderRadius: "12px", maxHeight: "320px", objectFit: "cover", width: "100%" }}
+              src={`${import.meta.env.VITE_REACT_APP_API_URL}${data.media[mediaIndex].url}`}
               controls
+              style={{ width: "100%", borderRadius: 12 }}
             />
           )}
 
-          {hasMultipleMedia && (
+          {data.media.length > 1 && (
             <>
-              <button
-                onClick={handlePrevMedia}
+              <FiChevronLeft
+                onClick={() =>
+                  setMediaIndex(
+                    (mediaIndex - 1 + data.media.length) % data.media.length
+                  )
+                }
                 style={{
                   position: "absolute",
-                  left: "8px",
+                  left: 10,
                   top: "50%",
-                  transform: "translateY(-50%)",
-                  backgroundColor: "rgba(255,255,255,0.7)",
-                  border: "none",
-                  borderRadius: "50%",
-                  width: "36px",
-                  height: "36px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
                   cursor: "pointer",
-                  hover: { backgroundColor: "rgba(255,255,255,0.9)" }
+                  background: "rgba(255,255,255,0.7)",
+                  borderRadius: "50%",
                 }}
-              >
-                <FiChevronLeft size={20} />
-              </button>
-
-              <button
-                onClick={handleNextMedia}
+                size={22}
+              />
+              <FiChevronRight
+                onClick={() =>
+                  setMediaIndex((mediaIndex + 1) % data.media.length)
+                }
                 style={{
                   position: "absolute",
-                  right: "8px",
+                  right: 10,
                   top: "50%",
-                  transform: "translateY(-50%)",
-                  backgroundColor: "rgba(255,255,255,0.7)",
-                  border: "none",
+                  cursor: "pointer",
+                  background: "rgba(255,255,255,0.7)",
                   borderRadius: "50%",
-                  width: "36px",
-                  height: "36px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer"
                 }}
-              >
-                <FiChevronRight size={20} />
-              </button>
-
-              <div style={{
-                position: "absolute",
-                bottom: "12px",
-                left: "50%",
-                transform: "translateX(-50%)",
-                backgroundColor: "rgba(0,0,0,0.6)",
-                color: "white",
-                padding: "6px 12px",
-                borderRadius: "12px",
-                fontSize: "12px"
-              }}>
-                {currentMediaIndex + 1} / {data.media.length}
-              </div>
+                size={22}
+              />
             </>
           )}
         </div>
       )}
 
-      {/* Like and Comments Summary */}
-      <div style={{ marginTop: "12px", padding: "8px 0", fontSize: "13px", color: "#666", borderBottom: "1px solid #eee" }}>
-        <div style={{ marginBottom: "8px" }}>👍 <strong>{data.likes || 0}</strong> likes</div>
-        {comments.length > 0 && (
-          <div>💬 <strong>{comments.length}</strong> comments</div>
-        )}
+      {/* ACTIONS */}
+      <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
+        <button onClick={likePost} style={{ cursor: "pointer" }}>
+          <FiThumbsUp /> {likes}
+        </button>
+
+        <button
+          onClick={() => setShowComments((s) => !s)}
+          style={{ cursor: "pointer" }}
+        >
+          <FiMessageCircle /> {comments.length}
+        </button>
       </div>
 
-      {/* Action Buttons */}
-      <div style={{ display: "flex", justifyContent: "space-around", marginTop: "12px", color: "#666", paddingTop: "0px" }}>
-        <PostButton
-          icon={<FiThumbsUp />}
-          text="Like"
-          onClick={handleLike}
-          isActive={data.liked}
-        />
-        <PostButton
-          icon={<FiMessageCircle />}
-          text="Comment"
-          onClick={() => setShowComments(!showComments)}
-        />
-        <PostButton icon={<FiShare2 />} text="Share" />
-        {/* Follow / Following button */}
-        {isFollowing ? (
-          <div
-            onClick={handleFollow}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              cursor: "pointer",
-              backgroundColor: "#f3f4f6",
-              color: "#333",
-              padding: "6px 12px",
-              borderRadius: "20px",
-              border: "1px solid #e5e7eb",
-              fontWeight: 600
-            }}
-          >
-            <FiCheck />
-            <span>Following</span>
-          </div>
-        ) : (
-          <PostButton icon={<FiUserPlus />} text="Follow" onClick={handleFollow} />
-        )}
-      </div>
-
-      {/* Comments Section */}
+      {/* COMMENTS */}
       {showComments && (
-        <div style={{ marginTop: "16px", paddingTop: "12px", borderTop: "1px solid #eee" }}>
-          <h4 style={{ fontSize: "13px", fontWeight: "600", marginBottom: "12px", color: "#333" }}>Comments ({comments.length})</h4>
+        <div style={{ marginTop: 10 }}>
+          {comments.map((c, i) => (
+            <p key={i} style={{ fontSize: 14 }}>
+              <strong>{c.user?.name}:</strong> {c.text}
+            </p>
+          ))}
 
-          {/* Display existing comments */}
-          <div style={{ maxHeight: "200px", overflowY: "auto", marginBottom: "12px" }}>
-            {comments.map((comment) => (
-              <div key={comment.id} style={{ marginBottom: "12px", paddingBottom: "12px", borderBottom: "1px solid #f0f0f0" }}>
-                <p style={{ fontWeight: "600", fontSize: "13px", margin: 0, color: "#333" }}>{comment.name}</p>
-                <p style={{ fontSize: "13px", margin: "4px 0 0 0", color: "#666" }}>{comment.text}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Add new comment */}
-          <div style={{ display: "flex", gap: "8px" }}>
-            <input
-              type="text"
-              placeholder="Add a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleAddComment()}
-              style={{
-                flex: 1,
-                border: "1px solid #ddd",
-                borderRadius: "20px",
-                padding: "8px 12px",
-                fontSize: "13px",
-                outline: "none"
-              }}
-            />
-            <button
-              onClick={handleAddComment}
-              style={{
-                backgroundColor: "#007AFF",
-                color: "white",
-                border: "none",
-                borderRadius: "20px",
-                padding: "8px 16px",
-                cursor: "pointer",
-                fontSize: "13px",
-                fontWeight: "600"
-              }}
-            >
-              Post
-            </button>
-          </div>
+          <input
+            placeholder="Add a comment..."
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && addComment()}
+            style={{
+              width: "100%",
+              padding: 8,
+              marginTop: 6,
+              borderRadius: 6,
+              border: "1px solid #ccc",
+            }}
+          />
         </div>
       )}
-    </div>
-  );
-}
-
-function PostButton({ icon, text, onClick, isActive }) {
-  return (
-    <div
-      onClick={onClick}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
-        cursor: "pointer",
-        color: isActive ? "#007AFF" : "#666",
-        fontWeight: isActive ? "600" : "400"
-      }}
-    >
-      {icon}
-      <span>{text}</span>
     </div>
   );
 }
