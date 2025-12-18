@@ -1,33 +1,28 @@
 const jwt = require("jsonwebtoken");
-//const Admin = require('../models/adminModel');
 const User = require("../models/userModel");
 
 const authMiddleware = async (req, res, next) => {
-    try {
-        const { token } = req.cookies;
+  try {
+    const token = req.cookies?.token;
 
-        if (!token) {
-            return res.status(401).json({ message: "Token is missing! Unauthorized access." });
-        }
-
-        
-        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        const { _id } = decodedToken;
-
-      
-        const foundUser = await User.findById(_id);
-
-        if (!foundUser) {
-            return res.status(404).json({ message: "User not found!" });
-        } 
-        req.user = foundUser; 
-        next(); 
-    } catch (error) {
-        if (error.name === "JsonWebTokenError") {
-            return res.status(401).json({ message: "Invalid or expired token" });
-        }
-        res.status(500).json({ message: error.message });
+    if (!token) {
+      return res.status(401).json({ message: "Not authorized, token missing" });
     }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded._id || decoded.id;
+
+    const user = await User.findById(userId).select("-password");
+
+    if (!user) {
+      return res.status(401).json({ message: "User no longer exists" });
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid or expired token" });
+  }
 };
 
 module.exports = authMiddleware;

@@ -1,51 +1,40 @@
+// models/userModel.js
 const mongoose = require("mongoose");
-const validator = require('validator');
- const userSchema = mongoose.Schema({
 
-    name : {
-        type: String,
-        required : [true,'enter a name']
-    },
-    collegeMail : {
-        type: String,
-        required : [true,'enter your college mail'],
-        unique: true,
-      
-    },
-    phone :{
-        type: Number,
-        required : [true,'enter your phone number'],
-        unique: true,
-        minlength : [10,'enter a valid phone number'],
-        maxlength : [10,'enter a valid phone number']   
-    },
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
 
-    batch:{
-        type: String,
-        required : [true, "enter the batch"]
-    },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 
-    branch : {
-        type:String,
-        required:[true,'enter the brach']
-    },
-    email : {
-        type: String,
-        required : [true,'enter your mail'],
-        unique : true,
-        validator(value){
-            if(!validator.isEmail(value)){
-                throw new Error('Invalid email format')
-            }   
-        }
-    },
-    password : {
-        type: String,
-        required : [true,'enter a password']
-    }
- },
-{
-    timestamps:true
-})
+  collegeMail: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 
-module.exports = mongoose.model('User',userSchema);
+  password: {
+    type: String,
+    required: true,
+  },
+
+  role: {
+    type: String,
+    enum: ["student", "alumni"],
+    required: true,
+  },
+
+  isProfileCompleted: {
+    type: Boolean,
+    default: false,
+  }
+
+}, { timestamps: true });
+
+module.exports = mongoose.model("User", userSchema);
