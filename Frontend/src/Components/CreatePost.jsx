@@ -8,10 +8,16 @@ export default function CreatePost({ onPostCreated }) {
   const [loading, setLoading] = useState(false);
 
   const handleFileSelect = (e) => {
-    setFiles([...files, ...Array.from(e.target.files)]);
+    const selected = Array.from(e.target.files).map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setFiles((prev) => [...prev, ...selected]);
   };
 
   const removeFile = (index) => {
+    URL.revokeObjectURL(files[index].preview);
     setFiles(files.filter((_, i) => i !== index));
   };
 
@@ -21,7 +27,7 @@ export default function CreatePost({ onPostCreated }) {
     const formData = new FormData();
     formData.append("content", content);
 
-    files.forEach((file) => {
+    files.forEach(({ file }) => {
       if (file.type.startsWith("image")) {
         formData.append("images", file);
       } else {
@@ -37,9 +43,10 @@ export default function CreatePost({ onPostCreated }) {
         { withCredentials: true }
       );
 
+      files.forEach(f => URL.revokeObjectURL(f.preview));
       setContent("");
       setFiles([]);
-      onPostCreated(); // reload feed
+      onPostCreated();
     } catch (err) {
       alert("Post failed");
     } finally {
@@ -58,12 +65,21 @@ export default function CreatePost({ onPostCreated }) {
 
       {files.length > 0 && (
         <div className="grid grid-cols-3 gap-2 mb-3">
-          {files.map((file, i) => (
+          {files.map(({ file, preview }, i) => (
             <div key={i} className="relative">
-              <img
-                src={URL.createObjectURL(file)}
-                className="rounded-lg object-cover h-24 w-full"
-              />
+              {file.type.startsWith("image") ? (
+                <img
+                  src={preview}
+                  className="rounded-lg object-cover h-24 w-full"
+                />
+              ) : (
+                <video
+                  src={preview}
+                  className="rounded-lg object-cover h-24 w-full"
+                  muted
+                />
+              )}
+
               <button
                 onClick={() => removeFile(i)}
                 className="absolute top-1 right-1 bg-black text-white rounded-full p-1"
@@ -75,11 +91,30 @@ export default function CreatePost({ onPostCreated }) {
         </div>
       )}
 
-      <div className="flex justify-between">
-        <label className="cursor-pointer flex gap-2 items-center">
-          <FaRegImage />
-          <input type="file" multiple hidden onChange={handleFileSelect} />
-        </label>
+      <div className="flex justify-between items-center">
+        <div className="flex gap-4">
+          <label className="cursor-pointer flex gap-2 items-center">
+            <FaRegImage />
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              hidden
+              onChange={handleFileSelect}
+            />
+          </label>
+
+          <label className="cursor-pointer flex gap-2 items-center">
+            <FaVideo />
+            <input
+              type="file"
+              multiple
+              accept="video/*"
+              hidden
+              onChange={handleFileSelect}
+            />
+          </label>
+        </div>
 
         <button
           onClick={submitPost}

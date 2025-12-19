@@ -23,27 +23,38 @@ const createPost = async (req, res) => {
     const { content } = req.body;
     let media = [];
 
-    // Upload images
+    // Images
     if (req.files?.images) {
       for (const file of req.files.images) {
-        const result = await uploadToCloudinary(file, "alumni/posts/images");
-        media.push({ type: "image", url: result.secure_url });
+        const result = await uploadToCloudinary(
+          file,
+          "alumni/images",
+          "image"
+        );
+
+        media.push({
+          type: "image",
+          url: result.secure_url,
+        });
       }
     }
 
-    // Upload videos
+    // Videos
     if (req.files?.videos) {
       for (const file of req.files.videos) {
         const result = await uploadToCloudinary(
           file,
-          "alumni/posts/videos",
-          "video"
+          "alumni/videos",
+          "video" // 🔥 REQUIRED
         );
-        media.push({ type: "video", url: result.secure_url });
+
+        media.push({
+          type: "video",
+          url: result.secure_url,
+        });
       }
     }
 
-    // Validation
     if (!content && media.length === 0) {
       return res.status(400).json({ message: "Post cannot be empty" });
     }
@@ -54,17 +65,18 @@ const createPost = async (req, res) => {
       media,
     });
 
-    await post.populate("user", "name");
+    const populatedPost = await post.populate("user", "name");
 
     res.status(201).json({
       message: "Post created successfully",
-      data: post,
+      data: populatedPost,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Post upload failed" });
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 
 
