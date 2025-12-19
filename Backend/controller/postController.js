@@ -1,54 +1,71 @@
 const Post = require("../models/postModel");
+const cloudinary = require("../config/cloudinary");
+const streamifier = require("streamifier");
+
+
+const uploadToCloudinary = (file, folder, resourceType = "image") => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder, resource_type: resourceType },
+      (error, result) => {
+        if (result) resolve(result);
+        else reject(error);
+      }
+    );
+
+    streamifier.createReadStream(file.buffer).pipe(stream);
+  });
+};
+
 
 const createPost = async (req, res) => {
   try {
     const { content } = req.body;
-
-    // Build media array from uploaded files
     let media = [];
 
+    // Upload images
     if (req.files?.images) {
-      req.files.images.forEach((file) => {
-        media.push({
-          type: "image",
-          url: `/uploads/images/${file.filename}`,
-        });
-      });
+      for (const file of req.files.images) {
+        const result = await uploadToCloudinary(file, "alumni/posts/images");
+        media.push({ type: "image", url: result.secure_url });
+      }
     }
 
+    // Upload videos
     if (req.files?.videos) {
-      req.files.videos.forEach((file) => {
-        media.push({
-          type: "video",
-          url: `/uploads/videos/${file.filename}`,
-        });
-      });
+      for (const file of req.files.videos) {
+        const result = await uploadToCloudinary(
+          file,
+          "alumni/posts/videos",
+          "video"
+        );
+        media.push({ type: "video", url: result.secure_url });
+      }
     }
 
-    // Validation (IMPORTANT)
+    // Validation
     if (!content && media.length === 0) {
       return res.status(400).json({ message: "Post cannot be empty" });
     }
 
-    // Create post
     const post = await Post.create({
       user: req.user._id,
       content,
       media,
     });
 
-    const populatedPost = await post.populate("user", "name");
+    await post.populate("user", "name");
 
     res.status(201).json({
       message: "Post created successfully",
-      data: populatedPost,
+      data: post,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Post upload failed" });
   }
 };
 
-module.exports = { createPost };
 
 
 // GET ALL POSTS (FEED)

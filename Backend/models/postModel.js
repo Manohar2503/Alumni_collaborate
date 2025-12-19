@@ -14,15 +14,13 @@ const postSchema = new mongoose.Schema(
       trim: true,
     },
 
-    media: [
-      {
-        type: {
-          type: String,
-          enum: ["image", "video"],
-        },
-        url: String,
-      },
-    ],
+   media: [
+  {
+    type: { type: String, enum: ["image", "video"] },
+    url: String,
+  },
+],
+
 
     likes: [
       {

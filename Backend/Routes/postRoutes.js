@@ -1,7 +1,7 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const authMiddleware = require('../MiddleWares/authMiddleware');
-const upload = require('../config/multer');
+const upload = require("../config/multer");
+const authMiddleware = require("../MiddleWares/authMiddleware");
 
 const {
   createPost,
@@ -9,26 +9,22 @@ const {
   getPostsByUser,
   deletePost,
   addComment,
-  likePost
-} = require('../controller/postController');
-
-// Public routes
-router.get('/all', getAllPosts);
-router.get('/user/:userId', getPostsByUser);
-
-// Protected routes
+  likePost,
+} = require("../controller/postController");
 router.post(
-  '/create',
+  "/",
   authMiddleware,
   upload.fields([
-    { name: 'images', maxCount: 10 },
-    { name: 'videos', maxCount: 5 }
+    { name: "images", maxCount: 10 },
+    { name: "videos", maxCount: 2 },
   ]),
   createPost
 );
 
-router.delete('/:postId', authMiddleware, deletePost);
-router.post('/:postId/comment', authMiddleware, addComment);
-router.post('/:postId/like', likePost);
+router.get("/", authMiddleware, getAllPosts);
+router.get("/user/:userId", authMiddleware, getPostsByUser);
+router.delete("/:postId", authMiddleware, deletePost);
+router.post("/:postId/comment", authMiddleware, addComment);
+router.post("/:postId/like", authMiddleware, likePost);
 
 module.exports = router;
