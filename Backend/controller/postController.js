@@ -89,7 +89,7 @@ const getAllPosts = async (req, res) => {
 
   const formatted = posts.map((p) => ({
     id: p._id,
-    name: p.user.name,
+    name: p.user ? p.user.name : "Unknown User",
     headline: "", // add later from profile
     time: p.createdAt,
     content: p.content,
@@ -100,7 +100,7 @@ const getAllPosts = async (req, res) => {
     ),
     comments: p.comments.map((c, i) => ({
       id: i,
-      name: c.user.name,
+      name: c.user ? c.user.name : "Unknown User",
       text: c.text,
     })),
   }));
