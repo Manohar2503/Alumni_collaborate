@@ -1,7 +1,7 @@
-import React, { useContext, useReducer, createContext, useEffect } from 'react';
+import React, { useReducer, createContext, useEffect } from 'react';
 import { Header, Footer } from '../Pages';
 import Routers from '../Routers/Routers';
-import Navbar from '../Components/Navbar'; // Import Navbar component
+import Navbar from '../Components/Navbar';
 import { getInitialState, reducer } from '../reducer/UseReducer';
 import { useLocation } from 'react-router-dom';
 
@@ -10,33 +10,32 @@ export const UserContext = createContext();
 const Layout = () => {
   const [state, dispatch] = useReducer(reducer, undefined, getInitialState);
   const location = useLocation();
-  
-  // Determine if the header should be hidden or replaced with a navbar
-  const hideHeader = location.pathname === '/alumni-page';
-  const showNavbar = location.pathname === '/profile';
+
+  // ✅ LOGIN BASED CHECK (only line needed)
+  const isLoggedIn = Boolean(state.user || localStorage.getItem('token'));
+
+  // Footer logic (unchanged)
   const footerHiddenPaths = ['/alumni-page', '/jobs', '/messaging', '/notifications', '/profile'];
   const hideFooter = footerHiddenPaths.includes(location.pathname);
 
-  // Persist userPosts to localStorage so they survive logout/navigation
   useEffect(() => {
     try {
       localStorage.setItem('userPosts', JSON.stringify(state.userPosts || []));
-    } catch (e) {
-      // ignore storage errors
-    }
+    } catch (e) {}
   }, [state.userPosts]);
 
   return (
-    <>
-      <UserContext.Provider value={{ state, dispatch }}>
-        {showNavbar && <Navbar />} {/* Render Navbar if showNavbar is true */}
-        {!hideHeader && !showNavbar && <Header />} {/* Render Header if hideHeader is false and showNavbar is false */}
-        <main>
-          <Routers />
-        </main>
-        {!hideHeader && !hideFooter && <Footer />} {/* Corrected: Using !hideHeader instead of !hideHeaderFooter */}
-      </UserContext.Provider>
-    </>
+    <UserContext.Provider value={{ state, dispatch }}>
+      
+      {/* ✅ Clean & correct */}
+      {!isLoggedIn ? <Header /> : <Navbar />}
+
+      <main>
+        <Routers />
+      </main>
+
+      {!hideFooter && <Footer />}
+    </UserContext.Provider>
   );
 };
 

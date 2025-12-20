@@ -22,21 +22,35 @@ const LoginPage = () => {
         if (name === 'userType') setUserType(value);
     };
 
-    const submitHandler = async (e) => {
-        e.preventDefault();
-        try {
-            const result = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/users/login`, { email, password, userType }, { withCredentials: true });
-            dispatch({ type: "USER", payload: true });
-            if (userType === 'student') {
-                navigate("/alumni-page"); // Redirect to student dashboard
-            } else {
-                navigate("/alumni-page"); // Default redirect for other user types
-            }
-        } catch (err) {
-            console.error("Login error:", err);
-            alert(err.response?.data?.message || "An error occurred during login.");
-        }
-    };
+   const submitHandler = async (e) => {
+  e.preventDefault();
+
+  try {
+    const result = await axios.post(
+      `${import.meta.env.VITE_REACT_APP_API_URL}/users/login`,
+      { email, password, userType },
+      { withCredentials: true }
+    );
+
+    const userData = result.data.user || result.data;
+
+    // ✅ Persist login
+    localStorage.setItem('user', JSON.stringify(userData));
+
+    // ✅ Update global state
+    dispatch({
+      type: "USER",
+      payload: userData
+    });
+
+    navigate("/alumni-page");
+
+  } catch (err) {
+    console.error("Login error:", err);
+    alert(err.response?.data?.message || "An error occurred during login.");
+  }
+};
+
     
     return (
         <div className="h-screen bg-cover bg-center bg-fixed flex items-center justify-center"
