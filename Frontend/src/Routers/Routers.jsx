@@ -11,6 +11,8 @@ import SignupPage from "../Pages/SignupPage";
 
 import Profile from "../Components/MainPages/Profile";
 import Students from "../Components/Students"; // Import Students component
+import ForgotPassword from "../Pages/ForgotPassword.jsx";
+import ResetPassword from "../Pages/ResetPassword.jsx";
 
 const Routers = () => {
   return (
@@ -22,6 +24,8 @@ const Routers = () => {
       <Route path="/alumni-page" element={<AlumniMainPage/>}/>
       <Route path="/signup" element={<SignupPage/>}/>
       <Route path ='/profile' element={<Profile/>}/>
+      <Route path='/forgot-password' element={<ForgotPassword/>} />
+      <Route path='/reset-password/:token' element={<ResetPassword/>} />
       <Route path="/students" element={<Students/>} /> {/* Add route for student dashboard */}
     </Routes>
   );
