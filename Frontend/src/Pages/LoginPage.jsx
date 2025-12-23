@@ -109,12 +109,22 @@ const LoginPage = () => {
           </button>
         </form>
 
-        <div className="mt-4 text-center space-y-2">
-          <h4 className="text-sm text-gray-400">Forgot Password?</h4>
-          <Link to="/signup" className="text-sm text-blue-400 hover:underline">
-            Sign Up
-          </Link>
-        </div>
+       <div className="mt-4 text-center space-y-2">
+  <Link
+    to="/forgot-password"
+    className="text-sm text-blue-400 hover:underline"
+  >
+    Forgot Password?
+  </Link>
+
+  <p className="text-sm text-gray-400">
+    Don’t have an account?{" "}
+    <Link to="/signup" className="text-blue-400 hover:underline">
+      Sign Up
+    </Link>
+  </p>
+</div>
+
       </div>
     </div>
   );
