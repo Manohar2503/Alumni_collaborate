@@ -107,7 +107,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new Error("Email is required");
   }
 
-  // 🔥 FIX: Check BOTH email and collegeMail
   const user = await User.findOne({
     $or: [
       { email: email },
