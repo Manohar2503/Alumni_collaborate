@@ -12,7 +12,7 @@ const Layout = () => {
   const location = useLocation();
 
   // ✅ LOGIN BASED CHECK (only line needed)
-  const isLoggedIn = Boolean(state.user || localStorage.getItem('token'));
+const isLoggedIn = Boolean(state.user?.token || localStorage.getItem('token'));
 
   // Footer logic (unchanged)
   const footerHiddenPaths = ['/alumni-page', '/jobs', '/messaging', '/notifications', '/profile'];

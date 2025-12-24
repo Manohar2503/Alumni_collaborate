@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const BecomeAMentor = () => {
   const [formData, setFormData] = useState({
     name: '',
+    smallIntro: '',
+    image: '',
+    linkedin: '',
+    company: '',
     experience: '',
+    technologies: '',
     sessionType: '',
     motivation: ''
   });
@@ -11,7 +17,10 @@ const BecomeAMentor = () => {
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const validate = () => {
@@ -19,13 +28,21 @@ const BecomeAMentor = () => {
 
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
-    } else if (!/^[A-Za-z\s]+$/.test(formData.name)) {
-      newErrors.name = 'Name should contain only letters';
     }
 
-    if (!formData.experience) {
-      newErrors.experience = 'Experience is required';
-    } else if (formData.experience <= 0) {
+    if (!formData.smallIntro.trim()) {
+      newErrors.smallIntro = 'Short introduction is required';
+    }
+
+    if (!formData.linkedin.trim()) {
+      newErrors.linkedin = 'LinkedIn profile is required';
+    }
+
+    if (!formData.company.trim()) {
+      newErrors.company = 'Company name is required';
+    }
+
+    if (!formData.experience || formData.experience <= 0) {
       newErrors.experience = 'Experience must be greater than 0';
     }
 
@@ -33,9 +50,7 @@ const BecomeAMentor = () => {
       newErrors.sessionType = 'Please select a session type';
     }
 
-    if (!formData.motivation.trim()) {
-      newErrors.motivation = 'Motivation is required';
-    } else if (formData.motivation.length < 20) {
+    if (!formData.motivation || formData.motivation.length < 20) {
       newErrors.motivation = 'Minimum 20 characters required';
     }
 
@@ -43,10 +58,40 @@ const BecomeAMentor = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      alert('Mentor application submitted successfully!');
+    if (!validate()) return;
+
+    try {
+      const payload = {
+        ...formData,
+        technologies: formData.technologies
+          ? formData.technologies.split(',').map(t => t.trim())
+          : []
+      };
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/mentors/mentor-applications`,
+        payload
+      );
+
+      alert(res.data.message || 'Mentor application submitted successfully');
+
+      setFormData({
+        name: '',
+        smallIntro: '',
+        image: '',
+        linkedin: '',
+        company: '',
+        experience: '',
+        technologies: '',
+        sessionType: '',
+        motivation: ''
+      });
+
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || 'Something went wrong');
     }
   };
 
@@ -57,66 +102,93 @@ const BecomeAMentor = () => {
         className="w-full max-w-lg bg-white p-6 rounded-lg shadow-md"
       >
         <h1 className="text-2xl font-bold text-center mb-4">
-          Want to Become a Mentor?
+          Become a Mentor
         </h1>
 
-        <div className="mb-3">
-          <input
-            type="text"
-            name="name"
-            placeholder="Enter your full name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500 transition"
-          />
-          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
-        </div>
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          value={formData.name}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
 
-        <div className="mb-3">
-          <input
-            type="number"
-            name="experience"
-            placeholder="Years of experience"
-            value={formData.experience}
-            onChange={handleChange}
-            className="w-full p-2 rounded-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500 transition"
-          />
-          {errors.experience && <p className="text-red-500 text-xs mt-1">{errors.experience}</p>}
-        </div>
+        <input
+          type="text"
+          name="smallIntro"
+          placeholder="Short Introduction"
+          value={formData.smallIntro}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        {errors.smallIntro && <p className="text-red-500 text-xs">{errors.smallIntro}</p>}
 
-        <div className="mb-3">
-          <select
-            name="sessionType"
-            value={formData.sessionType}
-            onChange={handleChange}
-            className="w-full p-2 rounded-md border border-gray-300 bg-white focus:outline-none focus:ring-1 focus:ring-green-500 transition"
-          >
-            <option value="">Preferred session type</option>
-            <option value="Live">Live</option>
-            <option value="Recorded">Recorded</option>
-          </select>
-          {errors.sessionType && (
-            <p className="text-red-500 text-xs mt-1">{errors.sessionType}</p>
-          )}
-        </div>
+        <input
+          type="text"
+          name="company"
+          placeholder="Company"
+          value={formData.company}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        {errors.company && <p className="text-red-500 text-xs">{errors.company}</p>}
 
-        <div className="mb-4">
-          <textarea
-            name="motivation"
-            rows="3"
-            placeholder="Why do you want to mentor?"
-            value={formData.motivation}
-            onChange={handleChange}
-            className="w-full p-2 rounded-md border border-gray-300 resize-none focus:outline-none focus:ring-1 focus:ring-green-500 transition"
-          />
-          {errors.motivation && (
-            <p className="text-red-500 text-xs mt-1">{errors.motivation}</p>
-          )}
-        </div>
+        <input
+          type="text"
+          name="linkedin"
+          placeholder="LinkedIn Profile URL"
+          value={formData.linkedin}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        {errors.linkedin && <p className="text-red-500 text-xs">{errors.linkedin}</p>}
+
+        <input
+          type="number"
+          name="experience"
+          placeholder="Years of Experience"
+          value={formData.experience}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+        />
+        {errors.experience && <p className="text-red-500 text-xs">{errors.experience}</p>}
+
+        <input
+          type="text"
+          name="technologies"
+          placeholder="Technologies (comma separated)"
+          value={formData.technologies}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+        />
+
+        <select
+          name="sessionType"
+          value={formData.sessionType}
+          onChange={handleChange}
+          className="w-full p-2 mb-2 border rounded"
+        >
+          <option value="">Preferred session type</option>
+          <option value="Live">Live</option>
+          <option value="Recorded">Recorded</option>
+        </select>
+        {errors.sessionType && <p className="text-red-500 text-xs">{errors.sessionType}</p>}
+
+        <textarea
+          name="motivation"
+          rows="3"
+          placeholder="Why do you want to mentor?"
+          value={formData.motivation}
+          onChange={handleChange}
+          className="w-full p-2 mb-3 border rounded"
+        />
+        {errors.motivation && <p className="text-red-500 text-xs">{errors.motivation}</p>}
 
         <button
           type="submit"
-          className="w-full py-2 rounded-md bg-green-600 text-white font-semibold hover:bg-green-700 transition"
+          className="w-full py-2 bg-green-600 text-white rounded hover:bg-green-700"
         >
           Submit Application
         </button>

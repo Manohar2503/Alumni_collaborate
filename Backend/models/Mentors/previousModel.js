@@ -55,7 +55,7 @@ const previousSessionSchema = new mongoose.Schema(
 
     recordingLink: {
       type: String,
-      required: [true, 'Video link is required']
+      //required: [true, 'Video link is required']
     }
   },
   {

@@ -1,20 +1,32 @@
-import React, { useState } from 'react';
-import mentorsData from "../../assets/data/mentorsdata.json"
-
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 const PreviousSessions = () => {
   // Sample data
-  const data =mentorsData.previousMentorSessions;
+  const [data, setData]=useState([]);
+  const [loading, setLoading]=useState(true);
 
+  useEffect(()=>{
+    try{
+      const res=axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/mentors/sessions/previous`);
+      setData(res);
+    }catch(err){
+      console.log(err);
+      alert(err.response?.data?.message || 'Something went wrong');
+    }finally{
+      setLoading(false);
+    }
+  }, [])
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTopic, setSelectedTopic] = useState('All Topics');
   const [selectedCompany, setSelectedCompany] = useState('All Companies');
 
+  const safeData=Array.isArray(data) ? data : [];
   // Extract unique topics and companies
-  const allTopics = ['All Topics', ...new Set(data.flatMap(session => session.topics))];
-  const allCompanies = ['All Companies', ...new Set(data.map(session => session.mentor.company))];
+  const allTopics = ['All Topics', ...new Set(safeData.flatMap(session => Array.isArray(session.topics) ? session.topics : []))];
+  const allCompanies = ['All Companies', ...new Set(safeData.map(session => session.company).filter(Boolean))];
 
   // Filter data
-  const filteredData = data.filter(session => {
+  const filteredData = safeData.filter(session => {
     const matchesSearch = session.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          session.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesTopic = selectedTopic === 'All Topics' || session.topics.includes(selectedTopic);
@@ -27,7 +39,13 @@ const PreviousSessions = () => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
-
+  if(loading){
+    return (
+      <div className='min-h-screen flex items-center justify-center'>
+         <p className='text-lg font-semibold'>loading previous sessions...</p>
+      </div>
+    )
+  }
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-7xl mx-auto">

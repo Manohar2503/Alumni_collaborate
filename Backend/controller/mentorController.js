@@ -19,11 +19,17 @@ const mentorApplication = async (req, res) => {
         } = req.body;
         console.log('got details from postman in json format');
         // Basic validation
-        if (!name || !smallIntro || !linkedin || !company || !experience) {
-            return res.status(400).json({
-                message: 'Required fields are missing'
-            });
-        }
+        if (!name || !experience || !sessionType || !motivation) {
+  return res.status(400).json({
+    message: 'Required fields are missing'
+  });
+}
+
+        // if (!name || !smallIntro || !linkedin || !company || !experience) {
+        //     return res.status(400).json({
+        //         message: 'Required fields are missing'
+        //     });
+        // }
 
         // Save mentor application
         const application = new BecomeMentor({
@@ -153,36 +159,44 @@ const postUpcomingSession = async (req, res) => {
 
 // Automatically move completed sessions to previous
 const moveCompletedSessions = async () => {
-    try {
-        const now = new Date();
+  try {
+    const now = new Date();
 
-        const completedSessions = await UpcomingSession.find({
-            date: { $lt: now }
-        });
+    const completedSessions = await UpcomingSession.find({
+      dateTime: { $lt: now }
+    });
 
-        for (const session of completedSessions) {
-            await PreviousSession.create({
-                title: session.title,
-                description: session.description,
-                date: session.date,
-                mentorId: session.mentorId,
-                mentorName: session.mentorName,
-                role: session.role,
-                company: session.company,
-                duration: session.duration,
-                topics: session.topics,
-                recordingLink: session.recordingLink
-            });
-
-            await UpcomingSession.findByIdAndDelete(session._id);
-        }
-
-        console.log('Completed sessions moved to previous sessions');
-
-    } catch (err) {
-        console.error('Error moving sessions:', err.message);
+    if (completedSessions.length === 0) {
+      console.log('No completed sessions to move.');
+      return;
     }
+
+    for (const session of completedSessions) {
+      console.log('Moving session:', session.title);
+
+      await PreviousSession.create({
+        title: session.title,
+        description: session.description,
+        date: session.dateTime, // map dateTime → date
+        duration: session.duration || 60, // default 60 minutes
+        topics: session.topics,
+        recordingLink: session.recordingLink || '', // default empty string
+        mentor: session.mentor.map(m => ({
+          name: m.name,
+          role: m.role || 'Mentor', // default role
+          company: m.company || 'N/A', // default company
+        }))
+      });
+
+      await UpcomingSession.findByIdAndDelete(session._id);
+      console.log('Moved successfully:', session.title);
+    }
+
+  } catch (err) {
+    console.error('Error moving sessions:', err.message);
+  }
 };
+
 
 // Get all mentors
 const getMentors = async (req, res) => {
@@ -196,16 +210,20 @@ const getMentors = async (req, res) => {
 
 // Get all upcoming sessions
 const getUpcomingSessions = async (req, res) => {
+    console.log('GET /sessions/upcomung HIT');
     try {
         const sessions = await UpcomingSession.find();
+        console.log('Sessions from DB:', sessions);
         res.status(200).json(sessions);
     } catch (err) {
+        console.error('DB error:', err);
         res.status(500).json({ message: err.message });
     }
 };
 
 // Get all previous sessions
 const getPreviousSessions = async (req, res) => {
+    console.log('GET /sessions/upcomung HIT');
     try {
         const sessions = await PreviousSession.find();
         res.status(200).json(sessions);

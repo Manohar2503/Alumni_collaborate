@@ -1,6 +1,31 @@
 import React from 'react'
-import exploreMentors from "../../assets/data/explorementors.json"
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 const ExploreMentors = () => {
+    const [exploreMentors, setExploreMentors]=useState([]);
+    const [loading, setLoading]=useState(true);
+    useEffect(()=>{
+        const fetchMentors=async()=>{
+            try{
+                const res=await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/mentors/allmentors`);
+                setExploreMentors(res.data);
+            }catch (err) {
+            console.error(err);
+            alert(err.response?.data?.message || 'Something went wrong');
+            }finally{
+                setLoading(false);
+            }
+        }
+        fetchMentors();
+    }, []);
+
+    if(loading){
+        return(
+            <div className='min-h-screen flex items-center justify-center'>
+                <p className='text-lg font-semibold'>loading mentors....</p>
+            </div>
+        )
+    }
   return (
     <div className='min-h-screen transition-smooth duration-300'>
       <h1 className='text-4xl font-bold text-center py-6'>Meet our talented mentors</h1>
