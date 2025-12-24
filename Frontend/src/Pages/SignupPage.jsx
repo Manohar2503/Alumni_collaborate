@@ -1,147 +1,124 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import pic3 from "../assets/pic3.jpeg";
 
 const SignupPage = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [collegeMail, setCollegeMail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
-  const [batch, setBatch] = useState("");
-  const [branch, setBranch] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); 
+  const [form, setForm] = useState({
+    name: "",
+    collegeMail: "",
+    email: "",
+    password: "",
+    role: "student",
+  });
 
-  const onSubmitHandler = (e) => {
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const changeHandler = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const submitHandler = async (e) => {
     e.preventDefault();
-    if (!name || !email || !collegeMail || !password || !phone || !batch || !branch) {
-      setMessage("All fields are required!");
-      return;
+    setError("");
+
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/users`,
+        form,
+        { withCredentials: true }
+      );
+
+      alert("Signup successful. Please login.");
+      navigate("/login");
+    } catch (err) {
+      setError(err.response?.data?.message || "Signup failed");
     }
- 
-    setLoading(true);
-    axios
-      .post(`${import.meta.env.VITE_REACT_APP_API_URL}/users`, { name, email, collegeMail, password, phone, batch, branch })
-      .then((result) => {
-        setLoading(false);
-        setMessage("Signup successful!");
-        console.log("Response:", result.data); 
-        alert("Signup successful! Please login to continue.");
-        navigate("/login"); 
-      })
-      .catch((err) => {
-        setLoading(false);
-        if (err.response && err.response.data && err.response.data.message) {
-          setMessage(err.response.data.message); 
-        } else {
-          setMessage("An error occurred. Please try again.");
-        }
-        console.error("Error:", err);
-      });
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center text-indigo-600">Join the Alumni Network</h1>
-        <p className="text-gray-600 text-center mt-2">Stay connected with your college community.</p>
-        {message && <p className="text-center text-red-500">{message}</p>}
-        <form onSubmit={onSubmitHandler} className="mt-6 space-y-4">
-          <div className="flex flex-col">
-            <label htmlFor="name" className="text-gray-700 font-medium">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              aria-label="Full Name"
-              placeholder="Enter your full name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="collegeMail" className="text-gray-700 font-medium">College Email</label>
-            <input
-              type="email"
-              id="collegeMail"
-              aria-label="College Email"
-              placeholder="Enter your college email"
-              value={collegeMail}
-              onChange={(e) => setCollegeMail(e.target.value)}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="email" className="text-gray-700 font-medium">Personal Email</label>
-            <input
-              type="email"
-              id="email"
-              aria-label="Personal Email"
-              placeholder="Enter your personal email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
+    <div className="h-screen flex">
+      {/* LEFT IMAGE */}
+      <div
+        className="hidden md:block w-1/2 bg-cover bg-center"
+        style={{ backgroundImage: `url(${pic3})` }}
+      >
+        <div className="h-full w-full bg-black bg-opacity-70"></div>
+      </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="collegeMail" className="text-gray-700 font-medium">Phone Number:</label>
-            <input
-              type="number"
-              id="collegeMail"
-              aria-label="College Email"
-              placeholder="Enter your college email"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="collegeMail" className="text-gray-700 font-medium">Student Branch</label>
+      {/* RIGHT FORM */}
+      <div className="w-full md:w-1/2 flex items-center justify-center bg-gray-900">
+        <div className="bg-black bg-opacity-75 p-8 rounded-lg shadow-lg w-11/12 max-w-md">
+          <h2 className="text-2xl font-bold text-white mb-6 text-center">
+            Create Account
+          </h2>
+
+          {error && (
+            <p className="text-red-400 text-sm text-center mb-3">{error}</p>
+          )}
+
+          <form onSubmit={submitHandler} className="space-y-4">
             <input
               type="text"
-              id="collegeMail"
-              aria-label="College Email"
-              placeholder="Enter your college email"
-              value={branch}
-              onChange={(e) => setBranch(e.target.value)}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              name="name"
+              placeholder="Full Name"
+              value={form.name}
+              onChange={changeHandler}
+              className="w-full px-4 py-2 bg-gray-800 text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="collegeMail" className="text-gray-700 font-medium">Student Batch</label>
+
             <input
-              type="text"
-              id="collegeMail"
-              aria-label="College Email"
-              placeholder="Enter your college email"
-              value={batch}
-              onChange={(e) => setBatch(e.target.value)}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              type="email"
+              name="collegeMail"
+              placeholder="College Email"
+              value={form.collegeMail}
+              onChange={changeHandler}
+              className="w-full px-4 py-2 bg-gray-800 text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="password" className="text-gray-700 font-medium">Password</label>
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Personal Email"
+              value={form.email}
+              onChange={changeHandler}
+              className="w-full px-4 py-2 bg-gray-800 text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+
             <input
               type="password"
-              id="password"
-              aria-label="Password"
-              placeholder="Create a secure password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              name="password"
+              placeholder="Password"
+              value={form.password}
+              onChange={changeHandler}
+              className="w-full px-4 py-2 bg-gray-800 text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             />
+
+            <select
+              name="role"
+              value={form.role}
+              onChange={changeHandler}
+              className="w-full px-4 py-2 bg-gray-800 text-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            >
+              <option value="student">Student</option>
+              <option value="alumni">Alumni</option>
+            </select>
+
+            <button
+              type="submit"
+              className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700"
+            >
+              Sign Up
+            </button>
+          </form>
+
+          <div className="mt-4 text-center">
+            <Link to="/login" className="text-sm text-blue-400 hover:underline">
+              Already have an account? Sign In
+            </Link>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-            disabled={loading}
-          >
-            {loading ? "Signing up..." : "Sign Up"}
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );

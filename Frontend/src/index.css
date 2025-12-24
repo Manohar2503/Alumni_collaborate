@@ -23,6 +23,18 @@ body {
    
   
 }
+@keyframes slowZoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.animate-slowZoom {
+  animation: slowZoom 15s ease-in-out infinite alternate;
+}
 
 @layer utilities {
     
@@ -38,7 +50,6 @@ body {
   
       
   }
-
 
 
 

@@ -1,29 +1,30 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
+const upload = require("../config/multer");
+const authMiddleware = require("../MiddleWares/authMiddleware");
+
 const {
-    createPost,
-    getAllPosts,
-    getPostById,
-    getPostsByUser,
-    updatePost,
-    deletePost,
-    addComment,
-    likePost
-} = require('../controller/postController');
-const authMiddleware = require('../MiddleWares/authMiddleware');
-const upload = require('../config/multer');
+  createPost,
+  getAllPosts,
+  getPostsByUser,
+  deletePost,
+  addComment,
+  likePost,
+} = require("../controller/postController");
+router.post(
+  "/",
+  authMiddleware,
+  upload.fields([
+    { name: "images", maxCount: 10 },
+    { name: "videos", maxCount: 2 },
+  ]),
+  createPost
+);
 
-// Public routes
-router.get('/all', getAllPosts); // Get all posts
-router.get('/:postId', getPostById); // Get single post by ID
-router.get('/user/:userId', getPostsByUser); // Get posts by specific user
-
-// Protected routes (requires authentication)
-// Upload multiple images and videos: upload.fields([{ name: 'images', maxCount: 10 }, { name: 'videos', maxCount: 5 }])
-router.post('/create', authMiddleware, upload.fields([{ name: 'images', maxCount: 10 }, { name: 'videos', maxCount: 5 }]), createPost); // Create new post with file uploads
-router.put('/:postId', authMiddleware, upload.fields([{ name: 'images', maxCount: 10 }, { name: 'videos', maxCount: 5 }]), updatePost); // Update post with file uploads
-router.delete('/:postId', authMiddleware, deletePost); // Delete post
-router.post('/:postId/comment', authMiddleware, addComment); // Add comment to post
-router.post('/:postId/like', likePost); // Like a post
+router.get("/", authMiddleware, getAllPosts);
+router.get("/user/:userId", authMiddleware, getPostsByUser);
+router.delete("/:postId", authMiddleware, deletePost);
+router.post("/:postId/comment", authMiddleware, addComment);
+router.post("/:postId/like", authMiddleware, likePost);
 
 module.exports = router;

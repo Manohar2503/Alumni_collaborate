@@ -1,161 +1,146 @@
-import { FaRegImage, FaRegSmile, FaVideo, FaTimes } from "react-icons/fa";
-import { useState, useContext } from "react";
-import { UserContext } from "../Layout/Layout";
-import { userProfileData } from "../data/userProfile";
+import { FaRegImage, FaVideo, FaTimes } from "react-icons/fa";
+import { useState } from "react";
+import axios from "axios";
 
-export default function CreatePost() {
-  const { state, dispatch } = useContext(UserContext);
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [postContent, setPostContent] = useState("");
+const API = import.meta.env.VITE_REACT_APP_API_URL;
 
-  const handleFileSelect = (e, fileType) => {
-    const files = Array.from(e.target.files);
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSelectedFiles([
-          ...selectedFiles,
-          { type: fileType, url: event.target.result, name: file.name }
-        ]);
-      };
-      reader.readAsDataURL(file);
+export default function CreatePost({ onPostCreated }) {
+  const [files, setFiles] = useState([]);
+  const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  /* FILE SELECT */
+  const handleFileSelect = (e) => {
+    const selected = Array.from(e.target.files).map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setFiles((prev) => [...prev, ...selected]);
+  };
+
+  /* REMOVE FILE */
+  const removeFile = (index) => {
+    URL.revokeObjectURL(files[index].preview);
+    setFiles(files.filter((_, i) => i !== index));
+  };
+
+  /* SUBMIT POST */
+  const submitPost = async () => {
+    if (!content.trim() && files.length === 0) return;
+
+    const formData = new FormData();
+    formData.append("content", content);
+
+    files.forEach(({ file }) => {
+      if (file.type.startsWith("image")) {
+        formData.append("images", file);
+      } else if (file.type.startsWith("video")) {
+        formData.append("videos", file);
+      }
     });
-  };
 
-  const handleRemoveFile = (index) => {
-    setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
-  };
+    try {
+      setLoading(true);
 
-  const handlePostSubmit = () => {
-    if (postContent.trim() || selectedFiles.length > 0) {
-      const newPost = {
-        id: Date.now(),
-        name: userProfileData.name,
-        headline: userProfileData.headline,
-        time: "now",
-        content: postContent,
-        media: selectedFiles.map(file => ({
-          type: file.type === "image" ? "image" : "video",
-          url: file.url
-        })),
-        likes: 0,
-        liked: false,
-        comments: []
-      };
-      dispatch({ type: "ADD_POST", payload: newPost });
-      setPostContent("");
-      setSelectedFiles([]);
+      await axios.post(`${API}/posts`, formData, {
+        withCredentials: true,
+      });
+
+      files.forEach((f) => URL.revokeObjectURL(f.preview));
+      setFiles([]);
+      setContent("");
+      onPostCreated?.();
+    } catch (err) {
+      alert("Post failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ backgroundColor: "white", padding: "16px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", borderRadius: "12px", marginBottom: "16px" }}>
-      <div style={{ display: "flex", gap: "16px", marginBottom: "12px" }}>
-        <img
-          src="https://i.pravatar.cc/50"
-          alt=""
-          style={{ borderRadius: "50%", width: "48px", height: "48px" }}
-        />
-        <input
-          type="text"
-          placeholder="Start a post"
-          value={postContent}
-          onChange={(e) => setPostContent(e.target.value)}
-          style={{ width: "100%", border: "1px solid #ccc", borderRadius: "24px", padding: "8px 16px", fontSize: "14px" }}
+    <div className="bg-white border border-gray-200 rounded-xl mb-4">
+      {/* TEXT AREA */}
+      <div className="p-1 pb-1 border-b border-gray-100">
+        <textarea
+          placeholder="Start a post…"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          rows={4}
+          className="w-full resize-none text-[14px] leading-relaxed text-gray-800 placeholder-gray-500 focus:outline-none"
         />
       </div>
 
-      {/* Preview selected files */}
-      {selectedFiles.length > 0 && (
-        <div style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f9f9f9", borderRadius: "8px" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(80px, 1fr))", gap: "8px" }}>
-            {selectedFiles.map((file, index) => (
-              <div key={index} style={{ position: "relative", borderRadius: "8px", overflow: "hidden", backgroundColor: "#e0e0e0", aspectRatio: "1" }}>
-                {file.type === "image" ? (
-                  <img src={file.url} alt="preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                ) : (
-                  <video src={file.url} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                )}
-                <button
-                  onClick={() => handleRemoveFile(index)}
-                  style={{
-                    position: "absolute",
-                    top: "4px",
-                    right: "4px",
-                    backgroundColor: "rgba(0,0,0,0.6)",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "24px",
-                    height: "24px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    color: "white"
-                  }}
-                >
-                  <FaTimes size={12} />
-                </button>
-              </div>
-            ))}
-          </div>
-          <p style={{ fontSize: "12px", color: "#666", marginTop: "8px" }}>{selectedFiles.length} file(s) selected</p>
+      {/* MEDIA PREVIEW */}
+      {files.length > 0 && (
+        <div className="px-4 pb-3 grid grid-cols-3 gap-2">
+          {files.map(({ file, preview }, i) => (
+            <div key={i} className="relative rounded-lg overflow-hidden">
+              {file.type.startsWith("image") ? (
+                <img
+                  src={preview}
+                  className="h-24 w-full object-cover"
+                  alt=""
+                />
+              ) : (
+                <video
+                  src={preview}
+                  className="h-24 w-full object-cover"
+                  muted
+                />
+              )}
+
+              <button
+                onClick={() => removeFile(i)}
+                className="absolute top-1 right-1 bg-black/70 text-white rounded-full p-1"
+              >
+                <FaTimes size={10} />
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "12px" }}>
-        <div style={{ display: "flex", gap: "8px", color: "#999" }}>
-          <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+      {/* ACTION BAR */}
+      <div className="flex items-center justify-between px-4 py-2 border-t border-gray-100">
+        <div className="flex gap-4 text-gray-600">
+          <label className="flex items-center gap-2 cursor-pointer hover:text-blue-600">
             <FaRegImage />
-            <span>Photos</span>
+            <span className="text-sm">Photo</span>
             <input
               type="file"
               multiple
               accept="image/*"
-              onChange={(e) => handleFileSelect(e, "image")}
-              style={{ display: "none" }}
+              hidden
+              onChange={handleFileSelect}
             />
           </label>
-          <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+
+          <label className="flex items-center gap-2 cursor-pointer hover:text-blue-600">
             <FaVideo />
-            <span>Video</span>
+            <span className="text-sm">Video</span>
             <input
               type="file"
               multiple
               accept="video/*"
-              onChange={(e) => handleFileSelect(e, "video")}
-              style={{ display: "none" }}
+              hidden
+              onChange={handleFileSelect}
             />
           </label>
-          <Action icon={<FaRegSmile />} text="Feeling" />
         </div>
+
         <button
-          onClick={handlePostSubmit}
-          disabled={!postContent.trim() && selectedFiles.length === 0}
-          style={{
-            backgroundColor: "#007AFF",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            padding: "8px 24px",
-            fontSize: "14px",
-            fontWeight: "600",
-            cursor: "pointer",
-            opacity: !postContent.trim() && selectedFiles.length === 0 ? 0.5 : 1
-          }}
+          onClick={submitPost}
+          disabled={loading}
+          className={`px-4 py-1.5 text-sm rounded-full font-medium transition ${
+            loading
+              ? "bg-blue-300 text-white cursor-not-allowed"
+              : "bg-blue-600 text-white hover:bg-blue-700"
+          }`}
         >
-          Post
+          {loading ? "Posting…" : "Post"}
         </button>
       </div>
-    </div>
-  );
-}
-
-function Action({ icon, text }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
-      {icon}
-      <span>{text}</span>
     </div>
   );
 }
