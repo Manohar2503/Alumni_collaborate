@@ -83,7 +83,7 @@ const createPost = async (req, res) => {
 // GET ALL POSTS (FEED)
 const getAllPosts = async (req, res) => {
   const posts = await Post.find()
-    .populate("user", "name")
+    .populate("user", "name role")
     .populate("comments.user", "name")
     .sort({ createdAt: -1 });
 
@@ -91,6 +91,7 @@ const getAllPosts = async (req, res) => {
     id: p._id,
     name: p.user ? p.user.name : "Unknown User",
     headline: "", // add later from profile
+    role: p.user.role,
     time: p.createdAt,
     content: p.content,
     media: p.media,
