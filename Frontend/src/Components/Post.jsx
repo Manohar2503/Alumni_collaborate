@@ -13,21 +13,11 @@ const CONTENT_LIMIT = 220;
 /* ================= IDENTITY BADGE ================= */
 function IdentityBadge({ role }) {
   if (role === "alumni") {
-    return (
-      <span className="ml-2 text-red-600 font-bold" title="Alumni">
-        ★
-      </span>
-    );
+    return <span className="ml-2 text-red-600 font-bold">★</span>;
   }
-
   if (role === "student") {
-    return (
-      <span className="ml-2 text-blue-600 font-bold" title="Student">
-        ★
-      </span>
-    );
+    return <span className="ml-2 text-blue-600 font-bold">★</span>;
   }
-
   return null;
 }
 /* ================================================= */
@@ -35,10 +25,58 @@ function IdentityBadge({ role }) {
 export default function Post({ data }) {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [likes, setLikes] = useState(data.likes || 0);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(data.liked || false);
+
+  // 🔒 SAFE comments initialization
+  const [comments, setComments] = useState(
+    Array.isArray(data.comments) ? data.comments : []
+  );
+
+  const [newComment, setNewComment] = useState("");
+  const [showComments, setShowComments] = useState(false);
   const [showFullContent, setShowFullContent] = useState(false);
 
   const hasMedia = data.media?.length > 0;
+
+  /* ================= LIKE (OLD WORKING LOGIC) ================= */
+  const handleLike = async () => {
+    try {
+      await axios.post(
+        `${API}/posts/${data.id}/like`,
+        {},
+        { withCredentials: true }
+      );
+
+      // ✅ optimistic UI (same as old working code)
+      setLikes((prev) => (liked ? prev - 1 : prev + 1));
+      setLiked((prev) => !prev);
+    } catch (err) {
+      console.error("Like failed", err);
+    }
+  };
+
+  /* ================= COMMENT (OLD WORKING LOGIC) ================= */
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return;
+
+    try {
+      await axios.post(
+        `${API}/posts/${data.id}/comment`,
+        { text: newComment },
+        { withCredentials: true }
+      );
+
+      // ✅ optimistic UI (same as old working code)
+      setComments((prev) => [
+        ...prev,
+        { name: "You", text: newComment },
+      ]);
+
+      setNewComment("");
+    } catch (err) {
+      console.error("Comment failed", err);
+    }
+  };
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 mb-4">
@@ -67,26 +105,28 @@ export default function Post({ data }) {
       </div>
 
       {/* CONTENT */}
-      <div className="px-4 pb-3">
-        <p className="text-sm text-gray-800">
-          {data.content.length > CONTENT_LIMIT ? (
-            <>
-              {showFullContent
-                ? data.content
-                : data.content.slice(0, CONTENT_LIMIT)}
-              {!showFullContent && "... "}
-              <span
-                onClick={() => setShowFullContent(true)}
-                className="text-blue-600 cursor-pointer"
-              >
-                See more
-              </span>
-            </>
-          ) : (
-            data.content
-          )}
-        </p>
-      </div>
+      {data.content && (
+        <div className="px-4 pb-3">
+          <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">
+            {data.content.length > CONTENT_LIMIT ? (
+              <>
+                {showFullContent
+                  ? data.content
+                  : data.content.slice(0, CONTENT_LIMIT)}
+                {!showFullContent && "... "}
+                <span
+                  onClick={() => setShowFullContent(!showFullContent)}
+                  className="text-blue-600 font-medium cursor-pointer"
+                >
+                  {showFullContent ? "Show less" : "See more"}
+                </span>
+              </>
+            ) : (
+              data.content
+            )}
+          </p>
+        </div>
+      )}
 
       {/* MEDIA */}
       {hasMedia && (
@@ -114,7 +154,7 @@ export default function Post({ data }) {
                       data.media.length
                   )
                 }
-                className="absolute left-2 top-1/2 bg-white/80 p-2 rounded-full"
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full"
               >
                 <FiChevronLeft />
               </button>
@@ -123,7 +163,7 @@ export default function Post({ data }) {
                 onClick={() =>
                   setMediaIndex((mediaIndex + 1) % data.media.length)
                 }
-                className="absolute right-2 top-1/2 bg-white/80 p-2 rounded-full"
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full"
               >
                 <FiChevronRight />
               </button>
@@ -132,24 +172,60 @@ export default function Post({ data }) {
         </div>
       )}
 
+      {/* COUNTS */}
+      <div className="px-4 py-2 text-xs text-gray-600 border-b">
+        {likes > 0 && <span className="mr-4">👍 {likes}</span>}
+        {comments.length > 0 && <span>💬 {comments.length}</span>}
+      </div>
+
       {/* ACTIONS */}
       <div className="flex justify-around py-2 text-sm text-gray-600">
         <button
-          onClick={() => {
-            setLikes(likes + 1);
-            setLiked(true);
-          }}
-          className={`flex items-center gap-2 ${
+          onClick={handleLike}
+          className={`flex items-center gap-2 px-4 py-1 rounded-md hover:bg-gray-100 ${
             liked ? "text-blue-600 font-medium" : ""
           }`}
         >
           <FiThumbsUp /> Like
         </button>
 
-        <button className="flex items-center gap-2">
+        <button
+          onClick={() => setShowComments(!showComments)}
+          className="flex items-center gap-2 px-4 py-1 rounded-md hover:bg-gray-100"
+        >
           <FiMessageCircle /> Comment
         </button>
       </div>
+
+      {/* COMMENTS */}
+      {showComments && (
+        <div className="px-4 pb-4">
+          {comments.map((c, i) => (
+            <div key={i} className="mb-2">
+              <p className="text-xs font-semibold text-gray-800">
+                {c.name || "User"}
+              </p>
+              <p className="text-sm text-gray-700">{c.text}</p>
+            </div>
+          ))}
+
+          <div className="flex gap-2 mt-2">
+            <input
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleAddComment()}
+              placeholder="Add a comment…"
+              className="flex-1 border rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+            />
+            <button
+              onClick={handleAddComment}
+              className="text-blue-600 font-medium px-3"
+            >
+              Post
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
