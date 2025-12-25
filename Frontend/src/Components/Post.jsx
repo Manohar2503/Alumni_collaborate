@@ -22,12 +22,33 @@ function IdentityBadge({ role }) {
 }
 /* ================================================= */
 
+/* ========== 🔗 LINKIFY FUNCTION (NEW) ========== */
+const linkifyText = (text) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+  return text.split(urlRegex).map((part, index) =>
+    part.match(urlRegex) ? (
+      <a
+        key={index}
+        href={part}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:underline break-words"
+      >
+        {part}
+      </a>
+    ) : (
+      part
+    )
+  );
+};
+/* =============================================== */
+
 export default function Post({ data }) {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [likes, setLikes] = useState(data.likes || 0);
   const [liked, setLiked] = useState(data.liked || false);
 
-  // 🔒 SAFE comments initialization
   const [comments, setComments] = useState(
     Array.isArray(data.comments) ? data.comments : []
   );
@@ -38,7 +59,7 @@ export default function Post({ data }) {
 
   const hasMedia = data.media?.length > 0;
 
-  /* ================= LIKE (OLD WORKING LOGIC) ================= */
+  /* ================= LIKE ================= */
   const handleLike = async () => {
     try {
       await axios.post(
@@ -47,7 +68,6 @@ export default function Post({ data }) {
         { withCredentials: true }
       );
 
-      // ✅ optimistic UI (same as old working code)
       setLikes((prev) => (liked ? prev - 1 : prev + 1));
       setLiked((prev) => !prev);
     } catch (err) {
@@ -55,7 +75,7 @@ export default function Post({ data }) {
     }
   };
 
-  /* ================= COMMENT (OLD WORKING LOGIC) ================= */
+  /* ================= COMMENT ================= */
   const handleAddComment = async () => {
     if (!newComment.trim()) return;
 
@@ -66,7 +86,6 @@ export default function Post({ data }) {
         { withCredentials: true }
       );
 
-      // ✅ optimistic UI (same as old working code)
       setComments((prev) => [
         ...prev,
         { name: "You", text: newComment },
@@ -77,6 +96,14 @@ export default function Post({ data }) {
       console.error("Comment failed", err);
     }
   };
+
+  /* ======= CONTENT HANDLING (NEW LOGIC) ======= */
+  const fullContent = data.content || "";
+  const displayedContent =
+    fullContent.length > CONTENT_LIMIT && !showFullContent
+      ? fullContent.slice(0, CONTENT_LIMIT)
+      : fullContent;
+  /* ========================================== */
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 mb-4">
@@ -108,11 +135,9 @@ export default function Post({ data }) {
       {data.content && (
         <div className="px-4 pb-3">
           <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">
-            {data.content.length > CONTENT_LIMIT ? (
+            {linkifyText(displayedContent)}
+            {fullContent.length > CONTENT_LIMIT && (
               <>
-                {showFullContent
-                  ? data.content
-                  : data.content.slice(0, CONTENT_LIMIT)}
                 {!showFullContent && "... "}
                 <span
                   onClick={() => setShowFullContent(!showFullContent)}
@@ -121,8 +146,6 @@ export default function Post({ data }) {
                   {showFullContent ? "Show less" : "See more"}
                 </span>
               </>
-            ) : (
-              data.content
             )}
           </p>
         </div>
