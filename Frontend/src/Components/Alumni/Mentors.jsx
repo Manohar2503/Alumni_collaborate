@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PreviousSessions from './PreviousSessions';
 import UpcomingSessions from './UpcomingSessions';
 
+
 const Mentors = () => {
   const [user, setUser] = useState("alumni");
   const [activeTab, setActiveTab] = useState("overview");
@@ -229,7 +230,7 @@ const Mentors = () => {
 
      
 
-      <style jsx>{`
+      <style>{`
         @keyframes fadeIn {
           from {
             opacity: 0;

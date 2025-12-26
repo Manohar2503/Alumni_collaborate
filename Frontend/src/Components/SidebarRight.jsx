@@ -19,7 +19,7 @@ export default function SidebarRight() {
 
         <ul style={{ fontSize: "14px", color: "#666", listStyle: "none", padding: 0, margin: 0 }}>
           <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}>🎓 Join Alumni Group</li>
-          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}>💼 Career Resources</li>
+          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}  onClick={()=>navigate('/careerresources')}>💼 Career Resources</li>
           <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }} onClick={()=>navigate('/mentors')}>📚 Mentorship Program</li>
           <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}>🎉 Upcoming Events</li>
         </ul>

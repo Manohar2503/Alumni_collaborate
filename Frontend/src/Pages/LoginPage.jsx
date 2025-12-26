@@ -1,31 +1,34 @@
-import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import pic3 from '../assets/pic3.jpeg';
 import axios from "axios";
-import pic3 from "../assets/pic3.jpeg";
-import { UserContext } from "../Layout/Layout";
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../Layout/Layout';
+
+
 
 const LoginPage = () => {
-  const { dispatch } = useContext(UserContext);
+    const { state, dispatch } = useContext(UserContext);
 
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-    role: "student",
-  });
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState('student'); // Default to student
+    const navigate = useNavigate();
 
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-
-  const changeHandler = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+    const changeHandler = (e) => {
+        const { name, value } = e.target;
+        if (name === 'email') setEmail(value);
+        if (name === 'password') setPassword(value);
+        if (name === 'role') setRole(value);
+    };
 
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
-            const result = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/users/login`, { email, password, userType }, { withCredentials: true });
+            const result = await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/users/login`, { email, password, role }, { withCredentials: true });
             dispatch({ type: "USER", payload: true });
-            if (userType === 'student') {
+            if (role === 'student') {
+                console.log('user loggedin')
                 navigate("/alumni-page"); // Redirect to student dashboard
             } else {
                 navigate("/alumni-page"); // Default redirect for other user types
@@ -46,7 +49,7 @@ const LoginPage = () => {
                         <label className="block text-sm font-medium text-gray-300">User Type</label>
                         <select
                             name="userType"
-                            value={userType}
+                            value={role}
                             onChange={changeHandler}
                             className="mt-1 block w-full px-4 py-2 bg-gray-800 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
@@ -84,7 +87,7 @@ const LoginPage = () => {
                     </button>
                 </form>
                 <div className="mt-4 text-center space-y-2">
-                    <h4 className="text-sm text-gray-400">Forgot Password?</h4>
+                    <Link to="/forgot-password" className="text-sm text-blue-400 hover:underline">Forgot Password</Link>                    
                     <Link to="/signup" className="text-sm text-blue-400 hover:underline">Sign Up</Link>
                 </div>
             </div>

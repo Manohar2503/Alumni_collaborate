@@ -1,40 +1,76 @@
-import React, { useReducer, createContext, useEffect } from 'react';
-import { Header, Footer } from '../Pages';
-import Routers from '../Routers/Routers';
-import Navbar from '../Components/Navbar';
-import { getInitialState, reducer } from '../reducer/UseReducer';
-import { useLocation } from 'react-router-dom';
+import React, { useReducer, createContext, useEffect, useState } from "react";
+import axios from "axios";
+import { Header, Footer } from "../Pages";
+import Navbar from "../Components/Navbar";
+import Routers from "../Routers/Routers";
+import { reducer, getInitialState } from "../reducer/UseReducer";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useLayoutEffect } from "react";
 
 export const UserContext = createContext();
 
 const Layout = () => {
-  const [state, dispatch] = useReducer(reducer, undefined, getInitialState);
+
+  
+  const [state, dispatch] = useReducer(reducer, getInitialState());
+  const [loading, setLoading] = useState(true);
+  
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // ✅ LOGIN BASED CHECK (only line needed)
-const isLoggedIn = Boolean(state.user?.token || localStorage.getItem('token'));
-
-  // Footer logic (unchanged)
-  const footerHiddenPaths = ['/alumni-page', '/jobs', '/messaging', '/notifications', '/profile'];
+  useLayoutEffect(() => {
+  window.scrollTo(0, 0);
+}, [location.pathname]);
+  const footerHiddenPaths = ["/alumni-page", "/jobs", "/messaging", "/notifications", "/profile"];
   const hideFooter = footerHiddenPaths.includes(location.pathname);
+  const publicRoutes = ["/", "/login", "/signup", "/forgot-password"];
 
-  useEffect(() => {
+  // 🔥 Check auth on app start
+useEffect(() => {
+  // scroll fix
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  // ❌ Don't check auth on public pages
+  if (publicRoutes.includes(location.pathname)) {
+    setLoading(false);
+    return;
+  }
+
+  const checkAuth = async () => {
     try {
-      localStorage.setItem('userPosts', JSON.stringify(state.userPosts || []));
-    } catch (e) {}
-  }, [state.userPosts]);
+      const res = await axios.get(
+        "http://localhost:5001/api/users/me",
+        { withCredentials: true }
+      );
+
+      dispatch({ type: "USER", payload: res.data });
+    } catch (err) {
+      dispatch({ type: "USER", payload: null });
+      navigate("/", { replace: true });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  checkAuth();
+}, [location.pathname]);
+
+
+  if (loading) return null; // or loader
 
   return (
     <UserContext.Provider value={{ state, dispatch }}>
-      
-      {/* ✅ Clean & correct */}
-      {!isLoggedIn ? <Header /> : <Navbar />}
+      {/* Navbar ONLY for logged-in users */}
+      {state.user && <Navbar />}
+
+      {/* Header ONLY for logged-out users */}
+      {!state.user && <Header />}
 
       <main>
         <Routers />
       </main>
 
-      {!hideFooter && <Footer />}
+      {!state.user && !hideFooter && <Footer />}
     </UserContext.Provider>
   );
 };

@@ -18,6 +18,7 @@ import ResetPassword from "../Pages/ResetPassword.jsx";
 import Mentors from "../Components/Alumni/Mentors.jsx";
 import ExploreMentors from "../Components/Alumni/ExploreMentors.jsx";
 import BecomeAMentor from "../Components/Alumni/BecomeAMentor.jsx";
+import CareerResources from "../Components/Alumni/CareerResources.jsx";
 
 const Routers = () => {
   return (
@@ -40,6 +41,8 @@ const Routers = () => {
       <Route path="/mentors" element={<Mentors />} />
       <Route path="/explorementors" element={<ExploreMentors />} />
       <Route path="/becomeamentor" element={<BecomeAMentor />} />
+      
+      <Route path="/careerresources" element={<CareerResources />} />
     </Routes>
   );
 };

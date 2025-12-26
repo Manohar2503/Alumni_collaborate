@@ -92,7 +92,17 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 });
 
-
+const getCurrentUser=async(req, res)=>{
+  try{
+    const user=await User.findById(req.userId).select('-password');
+    if(!user){
+      return res.status(404).json({message: "User not found"});
+    }
+    res.status(200).json({user});
+  }catch(err){
+    res.status(500).json({message: "server error"});
+  }
+}
 
 const logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie("token");
@@ -127,7 +137,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
   await user.save();
 
-  const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -183,13 +193,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 
-const generateToken =(id) => {
-    
-   return jwt.sign({_id:id}, process.env.JWT_SECRET, {
-        expiresIn: '1d', 
-    });
-    
-};
+
 
 
 module.exports = {
@@ -197,7 +201,8 @@ module.exports = {
     loginUser,
     logoutUser,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    getCurrentUser
     // getProfileInfo,
     // updateProfile
 };
