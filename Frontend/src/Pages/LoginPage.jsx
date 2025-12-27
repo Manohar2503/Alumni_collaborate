@@ -48,15 +48,16 @@ const LoginPage = () => {
                     <div>
                         <label className="block text-sm font-medium text-gray-300">User Type</label>
                         <select
-                            name="userType"
-                            value={role}
-                            onChange={changeHandler}
-                            className="mt-1 block w-full px-4 py-2 bg-gray-800 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        >
-                            <option value="student">Student</option>
-                            <option value="alumni">Alumni</option>
-                            <option value="admin">Admin</option>
-                        </select>
+  name="role"
+  value={role}
+  onChange={changeHandler}
+  className="mt-1 block w-full px-4 py-2 bg-gray-800 text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+>
+  <option value="student">Student</option>
+  <option value="alumni">Alumni</option>
+  <option value="admin">Admin</option>
+</select>
+
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-gray-300">E-mail</label>
