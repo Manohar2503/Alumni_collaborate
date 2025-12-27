@@ -99,6 +99,8 @@ const logoutUser = asyncHandler(async (req, res) => {
     res.json({ message: 'User logged out' });
 });
 
+
+
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -126,7 +128,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
   await user.save();
 
-  const resetLink = `http://localhost:5173/reset-password/${resetToken}`;
+  const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
   const transporter = nodemailer.createTransport({
     service: "gmail",
