@@ -1,0 +1,47 @@
+/* BACKGROUND EFFECT */
+.stranger-bg {
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.4);
+  animation: zoomBg 10s infinite alternate;
+}
+
+@keyframes zoomBg {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+/* GLOWING TITLE */
+.stranger-title {
+  color: #ff1a1a;
+  letter-spacing: 4px;
+  text-shadow:
+    0 0 10px #ff0000,
+    0 0 20px #ff0000,
+    0 0 40px #ff0000;
+  animation: flicker 3s infinite;
+}
+
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+/* FLOATING CARD */
+.float-card {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
