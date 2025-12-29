@@ -5,12 +5,21 @@ import Navbar from "../Components/Navbar";
 import Routers from "../Routers/Routers";
 import { reducer, getInitialState } from "../reducer/UseReducer";
 import { useLocation, useNavigate } from "react-router-dom";
+import { userProfileData } from "../data/userProfile";
 
 export const UserContext = createContext();
 
 const Layout = () => {
   const [state, dispatch] = useReducer(reducer, getInitialState());
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState(() => {
+    try {
+      const saved = localStorage.getItem('userProfileData');
+      return saved ? JSON.parse(saved) : userProfileData;
+    } catch (e) {
+      return userProfileData;
+    }
+  });
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,10 +61,17 @@ const Layout = () => {
     checkAuth();
   }, [location.pathname]);
 
+  // Persist profile to localStorage when it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('userProfileData', JSON.stringify(profile));
+    } catch (e) {}
+  }, [profile]);
+
   if (loading) return null; // or loader
 
   return (
-    <UserContext.Provider value={{ state, dispatch }}>
+    <UserContext.Provider value={{ state, dispatch, profile, setProfile }}>
       {/* Navbar ONLY for logged-in users */}
       {state.user && <Navbar />}
 
