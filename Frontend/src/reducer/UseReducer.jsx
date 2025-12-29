@@ -1,7 +1,12 @@
 export const getInitialState = () => {
     try {
-        const stored = localStorage.getItem('userPosts');
-        return { user: null, userPosts: stored ? JSON.parse(stored) : [] };
+        const storedPosts = localStorage.getItem('userPosts');
+        const storedUser = localStorage.getItem('user');
+
+        return {
+            user: storedUser ? JSON.parse(storedUser) : null,
+            userPosts: storedPosts ? JSON.parse(storedPosts) : []
+        };
     } catch (e) {
         return { user: null, userPosts: [] };
     }

@@ -1,9 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import EventsData from "../assets/data/EventsData";
 import { useEffect, useState } from "react";
 
 export default function SidebarRight() {
   const [randomEvents, setRandomEvents] = useState([]);
-
+  const navigate=useNavigate();
   useEffect(() => {
     // shuffle events and pick 4
     const shuffled = [...EventsData].sort(() => 0.5 - Math.random()).slice(0, 4);
@@ -18,8 +19,8 @@ export default function SidebarRight() {
 
         <ul style={{ fontSize: "14px", color: "#666", listStyle: "none", padding: 0, margin: 0 }}>
           <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}>🎓 Join Alumni Group</li>
-          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}>💼 Career Resources</li>
-          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}>📚 Mentorship Program</li>
+          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}  onClick={()=>navigate('/careerresources')}>💼 Career Resources</li>
+          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }} onClick={()=>navigate('/mentors')}>📚 Mentorship Program</li>
           <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}>🎉 Upcoming Events</li>
         </ul>
       </div>

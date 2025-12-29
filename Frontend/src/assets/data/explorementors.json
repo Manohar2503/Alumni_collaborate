@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "name": "Rahul Verma",
+    "smallIntro": "Senior Full Stack Engineer mentoring students in modern web development and scalable systems.",
+    "image": "https://images.unsplash.com/photo-1595152772835-219674b2a8a6",
+    "linkedin": "https://www.linkedin.com/in/rahul-verma-demo",
+    "company": "Infosys",
+    "experience": "8+ years",
+    "technologies": ["React", "Node.js", "MongoDB", "Express", "AWS"]
+  },
+  {
+    "id": 2,
+    "name": "Ananya Sharma",
+    "smallIntro": "Frontend developer passionate about building clean, accessible, and responsive user interfaces.",
+    "image": "https://images.unsplash.com/photo-1607746882042-944635dfe10e",
+    "linkedin": "https://www.linkedin.com/in/ananya-sharma-demo",
+    "company": "TCS",
+    "experience": "6+ years",
+    "technologies": ["HTML", "CSS", "JavaScript", "React", "Tailwind CSS"]
+  },
+  {
+    "id": 3,
+    "name": "Suresh Kumar",
+    "smallIntro": "Backend engineer specializing in APIs, databases, and high-performance server-side applications.",
+    "image": "https://images.unsplash.com/photo-1595152772835-219674b2a8a6",
+    "linkedin": "https://www.linkedin.com/in/suresh-kumar-demo",
+    "company": "Wipro",
+    "experience": "7+ years",
+    "technologies": ["Node.js", "Java", "Spring Boot", "MySQL", "MongoDB"]
+  },
+  {
+    "id": 4,
+    "name": "Neha Reddy",
+    "smallIntro": "Cloud and DevOps engineer helping teams automate deployments and improve system reliability.",
+    "image": "https://images.unsplash.com/photo-1607746882042-944635dfe10e",
+    "linkedin": "https://www.linkedin.com/in/neha-reddy-demo",
+    "company": "Accenture",
+    "experience": "5+ years",
+    "technologies": ["AWS", "Docker", "Kubernetes", "CI/CD", "Linux"]
+  },
+  {
+    "id": 5,
+    "name": "Arjun Mehta",
+    "smallIntro": "Data engineer with expertise in analytics, big data pipelines, and business intelligence.",
+    "image": "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1",
+    "linkedin": "https://www.linkedin.com/in/arjun-mehta-demo",
+    "company": "IBM",
+    "experience": "9+ years",
+    "technologies": ["Python", "SQL", "Apache Spark", "Machine Learning", "Power BI"]
+  },
+  {
+    "id": 6,
+    "name": "Priya Nair",
+    "smallIntro": "Software engineer and mentor focused on system design, DSA, and interview preparation.",
+    "image": "https://images.unsplash.com/photo-1607746882042-944635dfe10e",
+    "linkedin": "https://www.linkedin.com/in/priya-nair-demo",
+    "company": "Amazon",
+    "experience": "10+ years",
+    "technologies": ["Java", "Data Structures", "Algorithms", "System Design", "Microservices"]
+  },
+  {
+    "id": 7,
+    "name": "Vikram Singh",
+    "smallIntro": "Android developer building high-performance mobile applications used by millions.",
+    "image": "https://images.unsplash.com/photo-1599566150163-29194dcaad36",
+    "linkedin": "https://www.linkedin.com/in/vikram-singh-demo",
+    "company": "Samsung",
+    "experience": "6+ years",
+    "technologies": ["Android", "Kotlin", "Java", "Firebase", "REST APIs"]
+  },
+  {
+    "id": 8,
+    "name": "Kavya Iyer",
+    "smallIntro": "UI/UX-focused frontend developer creating intuitive and user-friendly products.",
+    "image": "https://images.unsplash.com/photo-1589571894960-20bbe2828d0a",
+    "linkedin": "https://www.linkedin.com/in/kavya-iyer-demo",
+    "company": "Zoho",
+    "experience": "5+ years",
+    "technologies": ["Figma", "React", "CSS", "Accessibility", "Design Systems"]
+  },
+  {
+    "id": 9,
+    "name": "Rohit Malhotra",
+    "smallIntro": "DevOps and SRE engineer focused on scalability, monitoring, and cloud security.",
+    "image": "https://images.unsplash.com/photo-1595152772835-219674b2a8a6",
+    "linkedin": "https://www.linkedin.com/in/rohit-malhotra-demo",
+    "company": "Google",
+    "experience": "11+ years",
+    "technologies": ["GCP", "Kubernetes", "Terraform", "Monitoring", "SRE"]
+  },
+  {
+    "id": 10,
+    "name": "Sneha Patel",
+    "smallIntro": "Full stack developer working with startups to rapidly build and scale products.",
+    "image": "https://images.unsplash.com/photo-1589571894960-20bbe2828d0a",
+    "linkedin": "https://www.linkedin.com/in/sneha-patel-demo",
+    "company": "FinTech Startup",
+    "experience": "4+ years",
+    "technologies": ["React", "Next.js", "Node.js", "PostgreSQL", "Stripe"]
+  }
+]

@@ -83,14 +83,15 @@ const createPost = async (req, res) => {
 // GET ALL POSTS (FEED)
 const getAllPosts = async (req, res) => {
   const posts = await Post.find()
-    .populate("user", "name")
+    .populate("user", "name role")
     .populate("comments.user", "name")
     .sort({ createdAt: -1 });
 
   const formatted = posts.map((p) => ({
     id: p._id,
-    name: p.user.name,
+    name: p.user ? p.user.name : "Unknown User",
     headline: "", // add later from profile
+    role: p.user.role,
     time: p.createdAt,
     content: p.content,
     media: p.media,
@@ -98,10 +99,12 @@ const getAllPosts = async (req, res) => {
     liked: p.likes.some(
       (id) => id.toString() === req.user._id.toString()
     ),
-    comments: p.comments.map((c, i) => ({
-      id: i,
-      name: c.user.name,
+    comments: p.comments.map((c) => ({
+      _id: c._id,
+      userId: c.user._id,
+      name: c.user ? c.user.name : "Unknown User",
       text: c.text,
+      createdAt: c.createdAt,
     })),
   }));
 
@@ -149,6 +152,59 @@ const addComment = async (req, res) => {
   await post.save();
   res.json({ message: "Comment added" });
 };
+//editing the comment
+// EDIT COMMENT (OWNER ONLY)
+const editComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+  const { text } = req.body;
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const comment = post.comments.id(commentId);
+  if (!comment) {
+    return res.status(404).json({ message: "Comment not found" });
+  }
+
+  // 🔐 ownership check
+  if (comment.user.toString() !== req.user._id.toString()) {
+    return res.status(403).json({ message: "Not authorized" });
+  }
+
+  comment.text = text;
+  await post.save();
+
+  res.json({ message: "Comment updated" });
+};
+
+// DELETE COMMENT (OWNER ONLY)
+// DELETE COMMENT (OWNER ONLY)
+const deleteComment = async (req, res) => {
+  const { postId, commentId } = req.params;
+
+  const post = await Post.findById(postId);
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+
+  const comment = post.comments.id(commentId);
+  if (!comment) {
+    return res.status(404).json({ message: "Comment not found" });
+  }
+
+  // 🔐 ownership check
+  if (comment.user.toString() !== req.user._id.toString()) {
+    return res.status(403).json({ message: "Not authorized" });
+  }
+
+  comment.deleteOne();
+  await post.save();
+
+  res.json({ message: "Comment deleted" });
+};
+
 
 // LIKE / UNLIKE
 const likePost = async (req, res) => {
@@ -176,5 +232,7 @@ module.exports = {
   getPostsByUser,
   deletePost,
   addComment,
+  editComment,    // ✅
+  deleteComment,
   likePost,
 };
