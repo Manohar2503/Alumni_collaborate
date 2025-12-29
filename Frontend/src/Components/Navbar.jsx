@@ -1,13 +1,27 @@
 import { FiHome, FiBell, FiMessageCircle, FiBriefcase, FiSearch } from "react-icons/fi";
 import { FaGraduationCap, FaUserCircle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleNavigation = (path) => {
     navigate(path);
   };
+
+  const navItems = [
+    { icon: <FiHome />, text: "Home", path: "/alumni-page" },
+    { icon: <FiBriefcase />, text: "Jobs", path: "/jobs" },
+    { icon: <FiMessageCircle />, text: "Messaging", path: "/messaging" },
+    { icon: <FiBell />, text: "Notifications", path: "/notifications" },
+    { icon: <FaUserCircle />, text: "Profile", path: "/profile" }
+  ];
+
+  // Filter out icons for current page, but always keep Home icon
+  const visibleNavItems = navItems.filter(item => 
+    item.path === "/alumni-page" || item.path !== location.pathname
+  );
 
   return (
     <div style={{ width: "100%", backgroundColor: "white", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", position: "sticky", top: 0, zIndex: 50 }}>
@@ -27,11 +41,9 @@ export default function Navbar() {
         </div>
 
         <div style={{ display: "flex", gap: "32px" }}>
-          <NavIcon icon={<FiHome />} text="Home" onClick={() => handleNavigation("/alumni-page")} />
-          <NavIcon icon={<FiBriefcase />} text="Jobs" onClick={() => handleNavigation("/jobs")} />
-          <NavIcon icon={<FiMessageCircle />} text="Messaging" onClick={() => handleNavigation("/messaging")} />
-          <NavIcon icon={<FiBell />} text="Notifications" onClick={() => handleNavigation("/notifications")} />
-          <NavIcon icon={<FaUserCircle />} text="Profile" onClick={() => handleNavigation("/profile")} />
+          {visibleNavItems.map((item) => (
+            <NavIcon key={item.path} icon={item.icon} text={item.text} onClick={() => handleNavigation(item.path)} />
+          ))}
         </div>
       </div>
     </div>

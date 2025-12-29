@@ -4,13 +4,15 @@ import {
   FiChevronLeft,
   FiChevronRight,
 } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { UserContext } from "../Layout/Layout";
 import axios from "axios";
 
 const API = import.meta.env.VITE_REACT_APP_API_URL;
 const CONTENT_LIMIT = 220; // characters to show initially
 
 export default function Post({ data }) {
+  const { profile } = useContext(UserContext);
   const [mediaIndex, setMediaIndex] = useState(0);
   const [likes, setLikes] = useState(data.likes || 0);
   const [liked, setLiked] = useState(data.liked || false);
@@ -62,7 +64,7 @@ export default function Post({ data }) {
       {/* USER HEADER */}
       <div className="flex gap-3 mb-3">
         <img
-          src="https://i.pravatar.cc/45"
+          src={(profile && profile.profileImage) || "https://i.pravatar.cc/45"}
           className="rounded-full w-11 h-11"
           alt=""
         />
