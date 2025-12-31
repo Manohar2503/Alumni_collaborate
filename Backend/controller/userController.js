@@ -109,6 +109,8 @@ const logoutUser = asyncHandler(async (req, res) => {
     res.json({ message: 'User logged out' });
 });
 
+
+
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
@@ -117,7 +119,6 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new Error("Email is required");
   }
 
-  // 🔥 FIX: Check BOTH email and collegeMail
   const user = await User.findOne({
     $or: [
       { email: email },
