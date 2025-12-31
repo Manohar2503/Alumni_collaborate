@@ -1,0 +1,506 @@
+{
+  "learningTracks": [
+    {
+      "trackId": "languages",
+      "title": "Programming Languages",
+      "description": "Build strong programming foundations with structured language learning.",
+      "image": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
+      "categories": [
+        {
+          "categoryId": "java",
+          "title": "Java",
+          "level": "Beginner to Advanced",
+          "image": "https://images.unsplash.com/photo-1518770660439-4636190af475",
+          "courses": [
+            {
+              "courseId": "java-core",
+              "courseTitle": "Core Java",
+              "duration": "6 Weeks",
+              "progress": {
+                "completed": false,
+                "completedModules": 0
+              },
+              "modules": [
+                {
+                  "moduleId": "java-basics",
+                  "title": "Java Basics",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "youtube",
+                      "title": "Java Full Course - Telusko",
+                      "link": "https://www.youtube.com/watch?v=BGTx91t8q50"
+                    },
+                    {
+                      "type": "article",
+                      "title": "Java Basics - GeeksforGeeks",
+                      "link": "https://www.geeksforgeeks.org/java/"
+                    },
+                    {
+                      "type": "documentation",
+                      "title": "Java Tutorial - W3Schools",
+                      "link": "https://www.w3schools.com/java/"
+                    }
+                  ]
+                },
+                {
+                  "moduleId": "oops",
+                  "title": "OOP Concepts",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "youtube",
+                      "title": "OOP in Java",
+                      "link": "https://www.youtube.com/watch?v=BSVKUk58K6U"
+                    },
+                    {
+                      "type": "article",
+                      "title": "OOPs Concepts - GeeksforGeeks",
+                      "link": "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/"
+                    }
+                  ]
+                },
+                {
+                  "moduleId": "exception-handling",
+                  "title": "Exception Handling & Multithreading",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "youtube",
+                      "title": "Exception Handling in Java",
+                      "link": "https://www.youtube.com/watch?v=1XAfapkBQjk"
+                    },
+                    {
+                      "type": "article",
+                      "title": "Multithreading in Java",
+                      "link": "https://www.geeksforgeeks.org/multithreading-in-java/"
+                    }
+                  ]
+                },
+                {
+  "moduleId": "collections",
+  "title": "Collections Framework",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "Java Collections Full Tutorial",
+      "link": "https://www.youtube.com/watch?v=ViJiw2n3nGg"
+    },
+    {
+      "type": "article",
+      "title": "Java Collections - GeeksforGeeks",
+      "link": "https://www.geeksforgeeks.org/collections-in-java-2/"
+    }
+  ]
+},
+{
+  "moduleId": "streams-lambda",
+  "title": "Streams API & Lambda Expressions",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "Java Streams & Lambda",
+      "link": "https://www.youtube.com/watch?v=1OpAgZvYXLQ"
+    }
+  ]
+},
+{
+  "moduleId": "file-io",
+  "title": "File Handling & I/O Streams",
+  "completed": false,
+  "resources": [
+    {
+      "type": "article",
+      "title": "File Handling in Java",
+      "link": "https://www.geeksforgeeks.org/file-handling-in-java/"
+    }
+  ]
+},
+{
+  "moduleId": "jvm",
+  "title": "JVM Architecture & Memory Management",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "JVM Internals Explained",
+      "link": "https://www.youtube.com/watch?v=ZBJ0u9MaKtM"
+    }
+  ]
+},
+{
+  "moduleId": "java-project",
+  "title": "Mini Project: Java Console Application",
+  "completed": false,
+  "resources": [
+    {
+      "type": "article",
+      "title": "Java Mini Project Ideas",
+      "link": "https://www.geeksforgeeks.org/java-projects/"
+    }
+  ]
+}
+
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "trackId": "frontend",
+      "title": "Frontend Development",
+      "description": "Learn how to build beautiful and responsive user interfaces.",
+      "image": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
+      "categories": [
+        {
+          "categoryId": "react",
+          "title": "React.js",
+          "level": "Intermediate",
+          "image": "https://images.unsplash.com/photo-1633356122544-f134324a6cee",
+          "courses": [
+            {
+              "courseId": "react-complete",
+              "courseTitle": "Complete React Development",
+              "duration": "5 Weeks",
+              "progress": {
+                "completed": false,
+                "completedModules": 0
+              },
+              "modules": [
+                {
+                  "moduleId": "react-basics",
+                  "title": "React Fundamentals",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "youtube",
+                      "title": "React JS Crash Course",
+                      "link": "https://www.youtube.com/watch?v=bMknfKXIFA8"
+                    },
+                    {
+                      "type": "documentation",
+                      "title": "React Official Docs",
+                      "link": "https://react.dev/learn"
+                    }
+                  ]
+                },
+                {
+                  "moduleId": "hooks",
+                  "title": "React Hooks",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "youtube",
+                      "title": "React Hooks Explained",
+                      "link": "https://www.youtube.com/watch?v=TNhaISOUy6Q"
+                    }
+                  ]
+                },
+                {
+                  "moduleId": "routing",
+                  "title": "Routing & State Management",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "article",
+                      "title": "React Router Guide",
+                      "link": "https://www.geeksforgeeks.org/reactjs-router/"
+                    }
+                  ]
+                },
+                {
+  "moduleId": "component-design",
+  "title": "Component Design & Folder Structure",
+  "completed": false,
+  "resources": [
+    {
+      "type": "article",
+      "title": "React Project Structure Best Practices",
+      "link": "https://www.geeksforgeeks.org/reactjs-folder-structure/"
+    }
+  ]
+},
+{
+  "moduleId": "context-api",
+  "title": "Context API & Global State",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "React Context API Explained",
+      "link": "https://www.youtube.com/watch?v=35lXWvCuM8o"
+    }
+  ]
+},
+{
+  "moduleId": "api-integration",
+  "title": "API Integration & Axios",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "API Calls in React",
+      "link": "https://www.youtube.com/watch?v=RHVxE4d8lTQ"
+    }
+  ]
+},
+{
+  "moduleId": "performance",
+  "title": "Performance Optimization",
+  "completed": false,
+  "resources": [
+    {
+      "type": "article",
+      "title": "Optimizing React Apps",
+      "link": "https://react.dev/learn/optimizing-performance"
+    }
+  ]
+},
+{
+  "moduleId": "react-project",
+  "title": "Project: Build a Full React Application",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "React Project Walkthrough",
+      "link": "https://www.youtube.com/watch?v=I2UBjN5ER4s"
+    }
+  ]
+}
+
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "trackId": "backend",
+      "title": "Backend Development",
+      "description": "Build scalable and secure backend systems.",
+      "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c",
+      "categories": [
+        {
+          "categoryId": "node",
+          "title": "Node.js & Express",
+          "level": "Intermediate",
+          "image": "https://images.unsplash.com/photo-1627398242454-45a1465c2479",
+          "courses": [
+            {
+              "courseId": "node-express",
+              "courseTitle": "Node.js with Express",
+              "duration": "4 Weeks",
+              "progress": {
+                "completed": false,
+                "completedModules": 0
+              },
+              "modules": [
+                {
+                  "moduleId": "node-basics",
+                  "title": "Node.js Basics",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "youtube",
+                      "title": "Node.js Full Course",
+                      "link": "https://www.youtube.com/watch?v=Oe421EPjeBE"
+                    }
+                  ]
+                },
+                {
+                  "moduleId": "express",
+                  "title": "Express Framework",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "article",
+                      "title": "Express JS Tutorial",
+                      "link": "https://www.geeksforgeeks.org/express-js/"
+                    }
+                  ]
+                },
+                {
+  "moduleId": "rest-api",
+  "title": "REST API Design",
+  "completed": false,
+  "resources": [
+    {
+      "type": "article",
+      "title": "REST API Best Practices",
+      "link": "https://www.geeksforgeeks.org/rest-api-introduction/"
+    }
+  ]
+},
+{
+  "moduleId": "middleware",
+  "title": "Middleware & Error Handling",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "Express Middleware Explained",
+      "link": "https://www.youtube.com/watch?v=lY6icfhap2o"
+    }
+  ]
+},
+{
+  "moduleId": "authentication",
+  "title": "Authentication & Authorization (JWT)",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "JWT Authentication in Node.js",
+      "link": "https://www.youtube.com/watch?v=mbsmsi7l3r4"
+    }
+  ]
+},
+{
+  "moduleId": "database",
+  "title": "Database Integration (MongoDB)",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "MongoDB with Node.js",
+      "link": "https://www.youtube.com/watch?v=ofme2o29ngU"
+    }
+  ]
+},
+{
+  "moduleId": "backend-project",
+  "title": "Project: Build a REST Backend",
+  "completed": false,
+  "resources": [
+    {
+      "type": "article",
+      "title": "Node.js Project Ideas",
+      "link": "https://www.geeksforgeeks.org/node-js-projects/"
+    }
+  ]
+}
+
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "trackId": "aptitude",
+      "title": "Aptitude & Reasoning",
+      "description": "Prepare for placements with aptitude and logical reasoning.",
+      "image": "https://images.unsplash.com/photo-1503676260728-1c00da094a0b",
+      "categories": [
+        {
+          "categoryId": "quant",
+          "title": "Quantitative Aptitude",
+          "level": "Beginner",
+          "image": "https://images.unsplash.com/photo-1581091870627-3a9f8f64c73a",
+          "courses": [
+            {
+              "courseId": "quant-basics",
+              "courseTitle": "Quant Basics",
+              "duration": "3 Weeks",
+              "progress": {
+                "completed": false,
+                "completedModules": 0
+              },
+              "modules": [
+                {
+                  "moduleId": "percentages",
+                  "title": "Percentages & Ratios",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "youtube",
+                      "title": "Percentages Aptitude",
+                      "link": "https://www.youtube.com/watch?v=ZkY9b8PzX6g"
+                    }
+                  ]
+                },
+                {
+                  "moduleId": "time-work",
+                  "title": "Time & Work",
+                  "completed": false,
+                  "resources": [
+                    {
+                      "type": "article",
+                      "title": "Time and Work Problems",
+                      "link": "https://www.geeksforgeeks.org/time-and-work/"
+                    }
+                  ]
+                },
+                {
+  "moduleId": "profit-loss",
+  "title": "Profit & Loss",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "Profit and Loss Aptitude",
+      "link": "https://www.youtube.com/watch?v=7E2KjK6hX8o"
+    }
+  ]
+},
+{
+  "moduleId": "averages",
+  "title": "Averages",
+  "completed": false,
+  "resources": [
+    {
+      "type": "article",
+      "title": "Averages Problems",
+      "link": "https://www.geeksforgeeks.org/averages/"
+    }
+  ]
+},
+{
+  "moduleId": "number-system",
+  "title": "Number System",
+  "completed": false,
+  "resources": [
+    {
+      "type": "youtube",
+      "title": "Number System Aptitude",
+      "link": "https://www.youtube.com/watch?v=FqC8XwCz6C0"
+    }
+  ]
+},
+{
+  "moduleId": "mock-tests",
+  "title": "Mock Tests & Practice",
+  "completed": false,
+  "resources": [
+    {
+      "type": "article",
+      "title": "Aptitude Practice Questions",
+      "link": "https://www.geeksforgeeks.org/aptitude-questions-and-answers/"
+    }
+  ]
+}
+
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "trackId": "Interview Questions"
+    },
+    {
+      "trackId": "SQL"
+    },
+    {
+      "trackId": "System Design"
+    }
+  ]
+}

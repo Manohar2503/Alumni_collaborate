@@ -1,38 +1,39 @@
-import React from 'react';
-import careerResources from "../../assets/data/courses";
+import React, { useState } from "react";
+import totaldata from "../../data/learning.json";
+import Course from "./Course";
 
 const CareerResources = () => {
+  const data = totaldata.learningTracks;
+  const [activeTab, setActiveTab] = useState(data[0].trackId);
+
   return (
-    <div className='min-h-screen mx-auto px-6 py-12'>
-      <h1 className='text-2xl sm:text-3xl font-bold mb-8 text-center'>
-        Choose a course to master from below
+    <div className="min-h-screen">
+      <h1 className="text-xl font-bold text-center p-6">
+        Welcome to our learning resources...!
       </h1>
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8'>
-        {careerResources.careerResources.map((course) => (
-          <div
-            key={course.id}
-            className='bg-white border border-gray-300 rounded-lg shadow-md hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col'
-          >
-            <img
-              src={course.image}
-              alt={course.courseName}
-              className='h-48 w-full object-cover'
-            />
-            <div className='p-4 flex-1 flex flex-col justify-between'>
-              <div>
-                <h4 className='font-semibold text-xl mb-2'>{course.courseName}</h4>
-                <p className='text-sm text-blue-600 mb-2'>{course.timeToLearn}</p>
-                <span className='text-sm bg-gray-200 border border-gray-300 rounded-lg px-2 py-1 text-gray-700'>
-                  {course.category}
-                </span>
-              </div>
-              
-              {/* Start / Continue Button */}
-             
-            </div>
-          </div>
-        ))}
+      {/* Horizontal Scroll Container */}
+      <div className="overflow-x-auto scrollbar-hide">
+        <div className="flex gap-6 w-max p-4">
+          {data.map((path) => (
+            <button
+              key={path.trackId}
+              onClick={() => setActiveTab(path.trackId)}
+              className={`whitespace-nowrap px-4 py-2 text-sm font-medium ${
+                activeTab === path.trackId
+                  ? "border-b-2 border-blue-600 text-blue-600"
+                  : "text-gray-400 hover:text-blue-600"
+              }`}
+            >
+              {path.trackId}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Course Content */}
+      <div className="p-4">
+        <Course tab={activeTab} />
       </div>
     </div>
   );
