@@ -1,4 +1,5 @@
 const Post = require("../models/postModel");
+const Profile = require("../models/profileModel");
 const cloudinary = require("../config/cloudinary");
 const streamifier = require("streamifier");
 
@@ -23,35 +24,19 @@ const createPost = async (req, res) => {
     const { content } = req.body;
     let media = [];
 
-    // Images
+    // Upload images
     if (req.files?.images) {
       for (const file of req.files.images) {
-        const result = await uploadToCloudinary(
-          file,
-          "alumni/images",
-          "image"
-        );
-
-        media.push({
-          type: "image",
-          url: result.secure_url,
-        });
+        const result = await uploadToCloudinary(file, "alumni/images", "image");
+        media.push({ type: "image", url: result.secure_url });
       }
     }
 
-    // Videos
+    // Upload videos
     if (req.files?.videos) {
       for (const file of req.files.videos) {
-        const result = await uploadToCloudinary(
-          file,
-          "alumni/videos",
-          "video" // 🔥 REQUIRED
-        );
-
-        media.push({
-          type: "video",
-          url: result.secure_url,
-        });
+        const result = await uploadToCloudinary(file, "alumni/videos", "video");
+        media.push({ type: "video", url: result.secure_url });
       }
     }
 
@@ -59,17 +44,26 @@ const createPost = async (req, res) => {
       return res.status(400).json({ message: "Post cannot be empty" });
     }
 
+    // 🔥 FETCH PROFILE
+    const profile = await Profile.findOne({ userId: req.user._id });
+
     const post = await Post.create({
       user: req.user._id,
       content,
       media,
-    });
 
-    const populatedPost = await post.populate("user", "name");
+      // 🔥 AUTHOR SNAPSHOT
+      author: {
+        name: profile?.name || req.user.name,
+        profileImage: profile?.profileImage || "",
+        headline: profile?.headline || "",
+        role: req.user.role,
+      },
+    });
 
     res.status(201).json({
       message: "Post created successfully",
-      data: populatedPost,
+      data: post,
     });
   } catch (error) {
     console.error(error);
@@ -80,18 +74,16 @@ const createPost = async (req, res) => {
 
 
 
+
 // GET ALL POSTS (FEED)
 const getAllPosts = async (req, res) => {
   const posts = await Post.find()
-    .populate("user", "name role")
     .populate("comments.user", "name")
     .sort({ createdAt: -1 });
 
   const formatted = posts.map((p) => ({
     id: p._id,
-    name: p.user ? p.user.name : "Unknown User",
-    headline: "", // add later from profile
-    role: p.user.role,
+    author: p.author,
     time: p.createdAt,
     content: p.content,
     media: p.media,
@@ -102,7 +94,7 @@ const getAllPosts = async (req, res) => {
     comments: p.comments.map((c) => ({
       _id: c._id,
       userId: c.user._id,
-      name: c.user ? c.user.name : "Unknown User",
+      name: c.user?.name || "User",
       text: c.text,
       createdAt: c.createdAt,
     })),
@@ -110,6 +102,7 @@ const getAllPosts = async (req, res) => {
 
   res.json(formatted);
 };
+
 
 // GET POSTS BY USER
 const getPostsByUser = async (req, res) => {

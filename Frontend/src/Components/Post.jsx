@@ -112,20 +112,22 @@ export default function Post({ data }) {
       {/* HEADER */}
       <div className="flex gap-3 p-4 pb-2">
 <img
-  src={(profile && profile.profileImage) || "https://i.pravatar.cc/45"}
+  src={data.author?.profileImage || "https://i.pravatar.cc/45"}
   className="rounded-full w-11 h-11"
-  alt=""
 />
 
         <div className="flex-1">
           <p className="text-sm font-semibold text-gray-900 flex items-center">
-            {data.name}
-            <IdentityBadge role={data.role} />
-          </p>
+  {data.author?.name}
+  <IdentityBadge role={data.author?.role} />
+</p>
 
-          <p className="text-xs text-gray-500">
+      <p className="text-xs text-gray-500">
+  {data.author?.headline}
+</p>
+          {/* <p className="text-xs text-gray-500">
             {data.role === "student" ? "Student" : "Alumni"} • Alumni Nexus
-          </p>
+          </p> */}
 
           <p className="text-xs text-gray-400">
             {new Date(data.time).toLocaleString()}
