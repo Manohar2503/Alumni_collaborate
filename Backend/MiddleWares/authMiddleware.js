@@ -10,9 +10,8 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decoded._id || decoded.id;
 
-    const user = await User.findById(userId).select("-password");
+    const user = await User.findById(decoded._id || decoded.id).select("-password");
 
     if (!user) {
       return res.status(401).json({ message: "User no longer exists" });
@@ -20,7 +19,7 @@ const authMiddleware = async (req, res, next) => {
 
     req.user = user;
     next();
-  } catch (error) {
+  } catch (err) {
     return res.status(401).json({ message: "Invalid or expired token" });
   }
 };

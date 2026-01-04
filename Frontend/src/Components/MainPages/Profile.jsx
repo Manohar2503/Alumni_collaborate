@@ -7,6 +7,7 @@ import ExperienceSection from "../MainPages/ExperienceSection";
 import SkillsSection from "../MainPages/SkillsSection";
 import AchievementsSection from "../MainPages/AchievementsSection";
 import ProfileSidebar from "../MainPages/ProfileSidebar";
+import { getMyProfile, updateProfile } from "../../api/profileApi";
 
 export default function Profile() {
   const { state, dispatch, profile, setProfile } = useContext(UserContext);
@@ -78,46 +79,66 @@ export default function Profile() {
 
   // Experience CRUD
   const addExperience = (exp) => {
-    setProfile((p) => ({ ...p, experience: [{ id: Date.now(), ...exp }, ...(p.experience || [])] }));
+    const newExp = { id: Date.now(), ...exp };
+    updateAndSync({ experience: [newExp, ...(profile.experience || [])] });
   };
 
   const updateExperience = (id, updates) => {
-    setProfile((p) => ({ ...p, experience: p.experience.map(e => e.id === id ? { ...e, ...updates } : e) }));
+    const updatedExperience = profile.experience.map(e => e.id === id ? { ...e, ...updates } : e);
+    updateAndSync({ experience: updatedExperience });
   };
 
   const deleteExperience = (id) => {
-    setProfile((p) => ({ ...p, experience: p.experience.filter(e => e.id !== id) }));
+    const updatedExperience = profile.experience.filter(e => e.id !== id);
+    updateAndSync({ experience: updatedExperience });
   };
 
   // Skills CRUD
   const addSkill = (type, skill) => {
     if (!skill) return;
-    setProfile((p) => ({ ...p, skills: { ...p.skills, [type]: [...(p.skills[type] || []), skill] } }));
+    const updatedSkills = { ...profile.skills, [type]: [...(profile.skills[type] || []), skill] };
+    updateAndSync({ skills: updatedSkills });
   };
 
   const updateSkill = (type, index, newValue) => {
-    setProfile((p) => ({ ...p, skills: { ...p.skills, [type]: p.skills[type].map((s, i) => i === index ? newValue : s) } }));
+    const updatedSkills = { ...profile.skills, [type]: profile.skills[type].map((s, i) => i === index ? newValue : s) };
+    updateAndSync({ skills: updatedSkills });
   };
 
   const deleteSkill = (type, index) => {
-    setProfile((p) => ({ ...p, skills: { ...p.skills, [type]: p.skills[type].filter((_, i) => i !== index) } }));
+    const updatedSkills = { ...profile.skills, [type]: profile.skills[type].filter((_, i) => i !== index) };
+    updateAndSync({ skills: updatedSkills });
   };
 
   // Achievements CRUD
   const addAchievement = (text) => {
     if (!text) return;
-    setProfile(p => ({ ...p, achievements: [{ id: Date.now(), text, media: achMediaPreviews.map((preview, idx) => ({ type: achMediaFiles[idx].type.startsWith('image') ? 'image' : 'video', url: preview })) }, ...(p.achievements || [])] }));
+    const newAchievement = { id: Date.now(), text, media: achMediaPreviews.map((preview, idx) => ({ type: achMediaFiles[idx].type.startsWith('image') ? 'image' : 'video', url: preview })) };
     setAchMediaFiles([]);
     setAchMediaPreviews([]);
     setShowAddAch(false);
+    updateAndSync({ achievements: [newAchievement, ...(profile.achievements || [])] });
   };
 
   const updateAchievement = (id, text) => {
-    setProfile(p => ({ ...p, achievements: p.achievements.map(a => a.id === id ? { ...a, text } : a) }));
+    const updatedAchievements = profile.achievements.map(a => a.id === id ? { ...a, text } : a);
+    updateAndSync({ achievements: updatedAchievements });
   };
 
   const deleteAchievement = (id) => {
-    setProfile(p => ({ ...p, achievements: (p.achievements || []).filter(a => a.id !== id) }));
+    const updatedAchievements = profile.achievements.filter(a => a.id !== id);
+    updateAndSync({ achievements: updatedAchievements });
+  };
+
+  // Helper function to update and sync with backend
+  const updateAndSync = async (updates) => {
+    try {
+      const newProfile = { ...profile, ...updates };
+      setProfile(newProfile);
+      await updateProfile(updates);
+    } catch (error) {
+      console.error('Error syncing profile:', error);
+    }
   };
 
   // Media Handlers
@@ -179,14 +200,18 @@ export default function Profile() {
     }
   };
 
-  // LocalStorage Sync
+  // Fetch profile on mount
   useEffect(() => {
-    try {
-      localStorage.setItem('userProfileData', JSON.stringify(profile));
-    } catch (e) {
-      console.error('Failed to save profile to localStorage', e);
-    }
-  }, [profile]);
+    const fetchProfile = async () => {
+      try {
+        const data = await getMyProfile();
+        setProfile(data);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   return (
     <div style={{ backgroundColor: "white", minHeight: "100vh", paddingTop: "20px", paddingBottom: "40px", marginLeft: 300, marginTop: 70, display: "flex", flexDirection: "column" }}>
