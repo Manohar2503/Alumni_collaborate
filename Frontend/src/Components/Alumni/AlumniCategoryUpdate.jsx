@@ -51,12 +51,10 @@ const AlumniCategoryUpdate = () => {
       setIsCategoryOther(true);
       setCategoryId("");
       setCategoryTitle("");
-      setCategoryDescription("");
     } else {
       const cat = categories.find((c) => c.categoryId === value);
       setCategoryId(cat.categoryId);
       setCategoryTitle(cat.title);
-      setCategoryDescription(cat.description || "");
       setIsCategoryOther(false);
     }
   };
@@ -81,7 +79,6 @@ const AlumniCategoryUpdate = () => {
         description: trackDescription || undefined, // optional
         categoryId,
         categoryTitle,
-        categoryDescription: categoryDescription || undefined, // optional
         paidLinks: paidLinks
           ? paidLinks.split(",").map((l) => l.trim())
           : [],
