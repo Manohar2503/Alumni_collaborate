@@ -1,98 +1,178 @@
-import React, {useState} from "react";
-import totaldata from "../../data/learning.json";
+import React, { useState, useEffect } from "react";
 import Accordian from "./Accordian";
+
 const Course = ({ tab }) => {
-  const data = totaldata.learningTracks;
-  const [activeIndex, setActiveIndex]=useState(null);
+  const [data, setData] = useState([]);
+  const [open, setOpen] = useState(null);
+
+  // Fetch learning tracks from backend
+  useEffect(() => {
+    const fetchTracks = async () => {
+      try {
+        const res = await fetch("http://localhost:5001/api/learningtracks/gettracks"); // Your API endpoint
+        const result = await res.json();
+        setData(result);
+      } catch (error) {
+        console.error("Failed to fetch learning tracks:", error);
+      }
+    };
+
+    fetchTracks();
+  }, []);
+
+  const formatLink = (url) => {
+    try {
+      const { hostname, pathname } = new URL(url);
+      const domain = hostname.replace("www.", "");
+      const lastPath = pathname.split("/").filter(Boolean).pop();
+
+      return {
+        domain,
+        label: lastPath
+          ? lastPath.replace(/-/g, " ").slice(0, 30)
+          : "Resource",
+      };
+    } catch {
+      return { domain: "Link", label: "Open Source" };
+    }
+  };
+
   return (
-    <div className="p-4">
-      {data.map((path) =>
-        tab === path.trackId ? (
-          <div key={path.trackId} className="space-y-6">
-            {/* Track Info */}
-            <h2 className="text-2xl font-semibold">{path.title}</h2>
-            <p className="text-gray-600">{path.description}</p>
-
-            <img
-              src={path.image}
-              alt={path.title}
-              className="h-48 w-48 rounded object-cover"
-            />
-
-            {/* Categories */}
-            {path.categories.map((category) => (
-              <div
-                key={category.categoryId}
-                className="border rounded-lg p-6 space-y-4"
-              >
-                <h3 className="text-xl font-medium">{category.title}</h3>
-                <p className="text-sm text-gray-500">
-                  Level: {category.level}
+    <div className="p-4 max-w-7xl mx-auto animate-fadeIn">
+      {data.map(
+        (path) =>
+          tab === path.trackId && (
+            <div key={path.trackId} className="space-y-8">
+              {/* Header */}
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900">
+                  {path.title}
+                </h2>
+                <p className="text-gray-600 mt-2">
+                  {path.description}{" "}
+                  <span className="font-medium">One concept at a time 🚀</span>
                 </p>
+              </div>
 
-                {/* Courses */}
-                {category.courses.map((course) => (
-                  <div
-                    key={course.id}
-                    className="border rounded p-4 space-y-2"
+              {/* Category Pills */}
+              <div className="flex flex-wrap gap-3">
+                {path.categories.map((resource) => (
+                  <button
+                    key={resource.categoryId}
+                    onClick={() => setOpen(resource.categoryId)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+                      ${
+                        open === resource.categoryId
+                          ? "bg-black text-white scale-105 shadow-md"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
                   >
-                    <p className="font-semibold">{course.courseTitle}</p>
-                    <p className="text-sm">Duration: {course.duration}</p>
-
-                    {course.progress.completed ? (
-                      <p className="text-green-600 text-sm">
-                        ✅ Completed ({course.progress.completedModules} modules)
-                      </p>
-                    ) : (
-                      <p className="text-red-500 text-sm">
-                        ⏳ Not completed yet
-                      </p>
-                    )}
-
-                    {/* Modules */}
-                    {course.modules.map((module, index) => (
-                      <div>
-                          <Accordian key={index}
-                          isOpen={activeIndex===index}
-                          onToggle={()=>{
-                            setActiveIndex(activeIndex===index ? null : index)
-                          }}
-                        className="ml-4 border-l pl-4 space-y-2"
-                        title={module.title}>
-                      
-                        <p className="font-medium">{}</p>
-                        <p className="text-sm">
-                          Status:{" "}
-                          {module.completed ? "Completed" : "Not Completed"}
-                        </p>
-
-                        {/* Resources */}
-                        {module.resources.map((resource) => (
-                          <div
-                            key={resource.resourceId}
-                            className="ml-4 text-sm"
-                          >
-                            <p>{resource.type}</p>
-                            <a
-                              href={resource.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 underline"
-                            >
-                              {resource.title}
-                            </a>
-                          </div>
-                        ))}
-                        </Accordian>
-                      </div>
-                    ))}
-                    
-                  </div>
+                    {resource.title}
+                  </button>
                 ))}
               </div>
-            ))}
-          </div>
-        ) : null
+
+              {/* Accordions */}
+              <div className="space-y-5">
+                {path.categories.map((category) => (
+                  <Accordian
+                    key={category.categoryId}
+                    title={category.title}
+                    isOpen={open === category.categoryId}
+                    onToggle={() =>
+                      setOpen(
+                        open === category.categoryId
+                          ? null
+                          : category.categoryId
+                      )
+                    }
+                  >
+                    <div className="space-y-8">
+                      {/* Paid */}
+                      <div>
+                        <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                          <span className="w-2 h-2 bg-green-500 rounded-full" />
+                          Paid Resources
+                        </h4>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {category.links.paid.map((link, i) => {
+                            const { domain, label } = formatLink(link);
+                            return (
+                              <a
+                                key={i}
+                                href={link}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center gap-3 p-4 rounded-xl
+                                bg-white border border-gray-200
+                                hover:shadow-lg hover:-translate-y-1
+                                transition-all duration-300"
+                              >
+                                <img
+                                  src={`https://www.google.com/s2/favicons?domain=${domain}`}
+                                  alt=""
+                                  className="w-6 h-6"
+                                />
+                                <div>
+                                  <p className="text-sm text-blue-600 capitalize">
+                                    {label}
+                                  </p>
+                                  <p className="text-xs text-gray-600">
+                                    {domain}
+                                  </p>
+                                </div>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Unpaid */}
+                      <div>
+                        <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full" />
+                          Free Resources
+                        </h4>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                          {category.links.unpaid.map((link, i) => {
+                            const { domain, label } = formatLink(link);
+                            return (
+                              <a
+                                key={i}
+                                href={link}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="flex items-center gap-3 p-4 rounded-xl
+                                bg-white border border-gray-200
+                                hover:shadow-lg hover:-translate-y-1
+                                transition-all duration-300"
+                              >
+                                <img
+                                  src={`https://www.google.com/s2/favicons?domain=${domain}`}
+                                  alt=""
+                                  className="w-6 h-6"
+                                />
+                                <div>
+                                  <p className="text-sm text-blue-600 capitalize">
+                                    {label}
+                                  </p>
+                                  <p className="text-xs text-gray-600">
+                                    {domain}
+                                  </p>
+                                </div>
+                              </a>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </Accordian>
+                ))}
+              </div>
+            </div>
+          )
       )}
     </div>
   );

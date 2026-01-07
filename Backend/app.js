@@ -26,6 +26,8 @@ app.use("/api/users", require('./Routes/userRoutes'));
 app.use("/api/request",require('./Routes/requestRoutes')); // Request routes
 app.use("/api/posts", require('./Routes/postRoutes')); // Post routes
 app.use('/api/mentors', require('./Routes/mentorRoutes'));
+app.use("/api/learningtracks", require('./Routes/learningRoutes'));
+
 
 app.use(errorHandler);
 
