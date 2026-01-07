@@ -23,6 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use("/api/users", require('./Routes/userRoutes'));
+app.use("/api/profile", require('./Routes/profileRoutes')); // Profile routes
 app.use("/api/request",require('./Routes/requestRoutes')); // Request routes
 app.use("/api/posts", require('./Routes/postRoutes')); // Post routes
 app.use('/api/mentors', require('./Routes/mentorRoutes'));
