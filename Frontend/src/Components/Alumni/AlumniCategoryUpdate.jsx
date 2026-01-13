@@ -22,7 +22,7 @@ const AlumniCategoryUpdate = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/learningtracks/gettracks")
+      .get(`${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/gettracks`)
       .then((res) => setTracks(res.data))
       .catch(() => setError("Failed to load tracks"));
   }, []);
@@ -70,7 +70,7 @@ const AlumniCategoryUpdate = () => {
     }
 
     try {
-      await axios.post("http://localhost:5001/api/learningtracks/upsert", {
+      await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/upsert`, {
         trackId:
           trackId === "other"
             ? trackTitle.toLowerCase().replace(/\s+/g, "-")

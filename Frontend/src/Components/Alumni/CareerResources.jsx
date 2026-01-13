@@ -10,7 +10,8 @@ const CareerResources = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/learningtracks/gettracks")
+      .get(`${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/gettracks`)
+
       .then((res) => {
         setData(res.data);
         if (res.data.length > 0) {

@@ -45,9 +45,9 @@ const Layout = () => {
     const checkAuth = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5001/api/users/me",
-          { withCredentials: true }
-        );
+      `${import.meta.env.VITE_REACT_APP_API_URL}/users/me`,
+      { withCredentials: true }
+    );
 
         dispatch({ type: "USER", payload: res.data });
       } catch (err) {

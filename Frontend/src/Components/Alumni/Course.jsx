@@ -9,7 +9,10 @@ const Course = ({ tab }) => {
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-        const res = await fetch("http://localhost:5001/api/learningtracks/gettracks"); // Your API endpoint
+       const res = await fetch(
+  `${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/gettracks`,
+  { credentials: "include" }
+); // Your API endpoint
         const result = await res.json();
         setData(result);
       } catch (error) {
