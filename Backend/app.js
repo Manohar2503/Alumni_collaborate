@@ -17,6 +17,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(express.urlencoded({ extended: false }));
 
 // Serve uploaded files statically

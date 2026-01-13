@@ -81,8 +81,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
   res.cookie("token", token, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    secure : true,
+   // secure: process.env.NODE_ENV === "production",
   });
 
   res.json({
