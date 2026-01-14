@@ -27,18 +27,13 @@ const Routers = () => {
       <Route path="/" element={<Body />} />
       <Route path="/body" element={<Body />} />
       <Route path="/footer" element={<Footer />} />
-
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
-
       <Route path="/alumni-page" element={<AlumniMainPage />} />
       <Route path="/profile" element={<Profile />} />
-
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
-
       <Route path="/students" element={<Students />} />
-
       <Route path="/mentors" element={<Mentors />} />
       <Route path="/explorementors" element={<ExploreMentors />} />
       <Route path="/becomeamentor" element={<BecomeAMentor />} />
