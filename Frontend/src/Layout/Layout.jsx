@@ -36,7 +36,6 @@ const Layout = () => {
     // scroll fix
     window.scrollTo({ top: 0, behavior: "smooth" });
 
-    // ❌ Don't check auth on public pages
     if (publicRoutes.includes(location.pathname)) {
       setLoading(false);
       return;

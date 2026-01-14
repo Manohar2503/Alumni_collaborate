@@ -1,14 +1,27 @@
-import { FiHome, FiBell, FiMessageCircle, FiBriefcase, FiSearch } from "react-icons/fi";
+import { FiHome, FiBell, FiMessageCircle, FiBriefcase, FiSearch, FiMenu, FiX } from "react-icons/fi";
 import { FaGraduationCap, FaUserCircle } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import SidebarRight from "./SidebarRight";
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const [isMobile, setIsMobile] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
+
   const handleNavigation = (path) => {
     navigate(path);
+    setOpenMenu(false); // close drawer after click
   };
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const navItems = [
     { icon: <FiHome />, text: "Home", path: "/alumni-page" },
@@ -19,47 +32,148 @@ export default function Navbar() {
   ];
 
   // Filter out icons for current page, but always keep Home icon
-  const visibleNavItems = navItems.filter(item => 
+  const visibleNavItems = navItems.filter(item =>
     item.path === "/alumni-page" || item.path !== location.pathname
   );
 
   return (
-    <div style={{ width: "100%", backgroundColor: "white", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", position: "sticky", top: 0, zIndex: 50 }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", gap: "20px" }}>
-        <div style={{ fontSize: "24px", color: "#0A66C2", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }} onClick={() => handleNavigation("/alumni-page")}>
-          <FaGraduationCap />
-          Alumni
-        </div>
+    <>
+      {/* ✅ DESKTOP NAVBAR (UNCHANGED UI) */}
+      {!isMobile && (
+        <div style={{ width: "100%", backgroundColor: "white", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", position: "sticky", top: 0, zIndex: 50 }}>
+          <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px", gap: "20px" }}>
+            <div style={{ fontSize: "24px", color: "#0A66C2", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }} onClick={() => handleNavigation("/alumni-page")}>
+              <FaGraduationCap />
+              Alumni
+            </div>
 
-        <div style={{ display: "flex", alignItems: "center", backgroundColor: "#f0f0f0", borderRadius: "24px", padding: "8px 16px", flex: 1, maxWidth: "300px" }}>
-          <FiSearch style={{ color: "#999", marginRight: "8px" }} />
-          <input
-            type="text"
-            placeholder="Search alumni, posts..."
-            style={{ backgroundColor: "transparent", border: "none", outline: "none", width: "100%", fontSize: "14px" }}
+            <div style={{ display: "flex", alignItems: "center", backgroundColor: "#f0f0f0", borderRadius: "24px", padding: "8px 16px", flex: 1, maxWidth: "300px" }}>
+              <FiSearch style={{ color: "#999", marginRight: "8px" }} />
+              <input
+                type="text"
+                placeholder="Search alumni, posts..."
+                style={{ backgroundColor: "transparent", border: "none", outline: "none", width: "100%", fontSize: "14px" }}
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: "32px" }}>
+              {visibleNavItems.map((item) => (
+                <NavIcon key={item.path} icon={item.icon} text={item.text} onClick={() => handleNavigation(item.path)} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ MOBILE TOP BAR (VVIT Alumni left + ☰ right) */}
+      {isMobile && (
+        <div style={{ width: "100%", backgroundColor: "white", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", position: "sticky", top: 0, zIndex: 50 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px" }}>
+            <div style={{ fontSize: "18px", color: "#0A66C2", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px" }}>
+              <FaGraduationCap />
+              VVIT Alumni
+            </div>
+
+            <button
+              onClick={() => setOpenMenu(true)}
+              style={{ background: "transparent", border: "none", fontSize: "26px", cursor: "pointer", color: "#333" }}
+            >
+              <FiMenu />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ✅ MOBILE RIGHT SIDEBAR DRAWER (ONLY Suggested For You) */}
+      {isMobile && openMenu && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 999 }}>
+          {/* overlay */}
+          <div
+            style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,0.4)" }}
+            onClick={() => setOpenMenu(false)}
           />
-        </div>
 
-        <div style={{ display: "flex", gap: "32px" }}>
-          {visibleNavItems.map((item) => (
-            <NavIcon key={item.path} icon={item.icon} text={item.text} onClick={() => handleNavigation(item.path)} />
+          {/* drawer */}
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: 0,
+              height: "100%",
+              width: "80%",
+              maxWidth: "320px",
+              backgroundColor: "white",
+              boxShadow: "-2px 0 8px rgba(0,0,0,0.2)",
+              padding: "16px",
+              overflowY: "auto",
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+              <h3 style={{ margin: 0, fontSize: "18px" }}>Menu</h3>
+
+              <button
+                onClick={() => setOpenMenu(false)}
+                style={{ background: "transparent", border: "none", fontSize: "26px", cursor: "pointer", color: "#333" }}
+              >
+                <FiX />
+              </button>
+            </div>
+
+            {/* ✅ here show SidebarRight features only */}
+            <SidebarRight isMobile={true} />
+          </div>
+        </div>
+      )}
+
+      {/* ✅ MOBILE BOTTOM NAVBAR */}
+      {isMobile && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            backgroundColor: "white",
+            borderTop: "1px solid #ddd",
+            zIndex: 60,
+            display: "flex",
+            justifyContent: "space-around",
+            padding: "8px 0",
+          }}
+        >
+          {navItems.map((item) => (
+            <div
+              key={item.path}
+              onClick={() => handleNavigation(item.path)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                cursor: "pointer",
+                color: location.pathname === item.path ? "#0A66C2" : "#666",
+                fontSize: "20px",
+              }}
+            >
+              {item.icon}
+              <p style={{ fontSize: "11px", margin: "4px 0 0 0" }}>{item.text}</p>
+            </div>
           ))}
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
 function NavIcon({ icon, text, onClick }) {
   return (
-    <div 
+    <div
       onClick={onClick}
-      style={{ 
-        display: "flex", 
-        flexDirection: "column", 
-        alignItems: "center", 
-        color: "#666", 
-        cursor: "pointer", 
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        color: "#666",
+        cursor: "pointer",
         fontSize: "20px",
         transition: "all 0.3s ease"
       }}

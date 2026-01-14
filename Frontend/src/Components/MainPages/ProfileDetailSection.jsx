@@ -9,6 +9,7 @@ export default function ProfileDetailSection({
   setIsEditingProfile,
   editForm,
   setEditForm,
+   isMobile = false,
 }) {
   // 🔥 FILE STATES (CRITICAL FIX)
   const [profileImageFile, setProfileImageFile] = useState(null);
@@ -60,7 +61,7 @@ export default function ProfileDetailSection({
           backgroundImage: profile.coverImage
             ? `url(${profile.coverImage})`
             : "linear-gradient(135deg, #667eea 0%, #d946ef 100%)",
-          height: 240,
+          height: isMobile ? 160 : 240,
           position: "relative",
           backgroundSize: "cover",
           backgroundPosition: "center",
