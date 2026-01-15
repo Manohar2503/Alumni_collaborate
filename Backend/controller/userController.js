@@ -55,7 +55,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("All fields required");
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password role isProfileCompleted");
 
   if (!user) {
     res.status(400);
