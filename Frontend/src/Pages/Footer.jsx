@@ -1,45 +1,73 @@
-import React from 'react';
-import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/fa'; // Importing icons from react-icons
+import React from "react";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+} from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-import { Link } from 'react-router-dom';
 const Footer = () => {
   return (
-    <div className=''>
-      <footer className="shadow-top mt-[20px] text-white py-8">
-      {/* Social Media Icons Section */}
-      <div className="flex justify-center mb-4">
-        <div className="flex space-x-4">
-          <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-gray-700">
+    <footer className="w-full mt-6 bg-[#fff7ed] border-t border-orange-200 shadow-top">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
+        {/* Social Media Icons */}
+        <div className="flex justify-center gap-3 sm:gap-4 mb-5">
+          <a
+            href="#"
+            className="bg-[#c2410c] text-white p-2 rounded-full hover:bg-orange-700 transition"
+          >
             <FaFacebookF />
           </a>
-          <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-gray-700">
+
+          <a
+            href="#"
+            className="bg-[#c2410c] text-white p-2 rounded-full hover:bg-orange-700 transition"
+          >
             <FaTwitter />
           </a>
-          <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-gray-700">
+
+          <a
+            href="#"
+            className="bg-[#c2410c] text-white p-2 rounded-full hover:bg-orange-700 transition"
+          >
             <FaLinkedinIn />
           </a>
-          <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-gray-700">
+
+          <a
+            href="#"
+            className="bg-[#c2410c] text-white p-2 rounded-full hover:bg-orange-700 transition"
+          >
             <FaInstagram />
           </a>
         </div>
-      </div>
 
-      {/* Navigation Links Section */}
-      <div className="flex justify-center mb-1">
-        <nav className="flex space-x-8 text-sm uppercase">
-          <Link to="/body"><h3  className="hover:underline text-black font-semibold">Home</h3></Link>
-          <span className="text-white">|</span>
-          <Link to="/events"><h3 href="#" className="hover:underline text-black font-semibold">Events</h3></Link>
-          <span className="text-white">|</span>
-         <Link to="alumni"> <h3 href="#" className="hover:underline text-black font-semibold">Alumni</h3></Link>
-          <span className="text-white">|</span>
-         <Link to="student"> <h3 href="#" className="hover:underline text-black font-semibold">Student</h3></Link>
-          
+        {/* Navigation Links */}
+        <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm sm:text-[15px] font-semibold uppercase text-black">
+          <Link to="/body" className="hover:text-[#c2410c] transition">
+            Home
+          </Link>
+
+          <Link to="/events" className="hover:text-[#c2410c] transition">
+            Events
+          </Link>
+
+          <Link to="/alumni" className="hover:text-[#c2410c] transition">
+            Alumni
+          </Link>
+
+          <Link to="/student" className="hover:text-[#c2410c] transition">
+            Student
+          </Link>
         </nav>
+
+        {/* Bottom Text */}
+        <p className="text-center text-[12px] sm:text-[13px] text-gray-600 mt-4">
+          © {new Date().getFullYear()} VVIT AlumniNexus. All rights reserved.
+        </p>
       </div>
     </footer>
-    </div>
   );
-}
+};
 
 export default Footer;
