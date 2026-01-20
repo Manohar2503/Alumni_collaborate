@@ -10,33 +10,54 @@ import {
 } from "react-icons/fi";
 import { FaGraduationCap, FaUserCircle } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import SidebarRight from "./SidebarRight";
+import axios from "axios";
+import { UserContext } from "../Layout/Layout"; // ✅ make sure path is correct
 
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { dispatch } = useContext(UserContext); // ✅ IMPORTANT
 
   const [isMobile, setIsMobile] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
 
   const handleNavigation = (path) => {
     navigate(path);
-    setOpenMenu(false); // ✅ close drawer after click
+    setOpenMenu(false);
   };
 
-  // ✅ Logout Handler (Mobile menu logout)
-  const handleLogout = () => {
+  // ✅ CORRECT LOGOUT HANDLER
+  const handleLogout = async () => {
     const ok = window.confirm("Are you sure you want to logout?");
     if (!ok) return;
 
     try {
-      sessionStorage.clear();
-      localStorage.clear(); // (optional but good)
-    } catch (e) {}
+      // ✅ logout API (cookie clear)
+      await axios.post(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/users/logout`,
+        {},
+        { withCredentials: true }
+      );
+    } catch (e) {
+      console.log("Logout error:", e);
+    } finally {
+      // ✅ clear frontend user (THIS FIXES YOUR ISSUE)
+      dispatch({ type: "USER", payload: null });
 
-    setOpenMenu(false);
-    navigate("/login");
+      // ✅ optional clears
+      try {
+        sessionStorage.clear();
+        localStorage.clear();
+      } catch (e) {}
+
+      setOpenMenu(false);
+
+      // ✅ go HOME so Header shows
+      navigate("/", { replace: true });
+    }
   };
 
   useEffect(() => {
@@ -54,14 +75,13 @@ export default function Navbar() {
     { icon: <FaUserCircle />, text: "Profile", path: "/profile" },
   ];
 
-  // ✅ Filter out icons for current page, but always keep Home icon
   const visibleNavItems = navItems.filter(
     (item) => item.path === "/alumni-page" || item.path !== location.pathname
   );
 
   return (
     <>
-      {/* ✅ DESKTOP NAVBAR (UNCHANGED UI) */}
+      {/* ✅ DESKTOP NAVBAR */}
       {!isMobile && (
         <div
           style={{
@@ -139,7 +159,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* ✅ MOBILE TOP BAR (VVIT Alumni left + ☰ right) */}
+      {/* ✅ MOBILE TOP BAR */}
       {isMobile && (
         <div
           style={{
@@ -192,7 +212,6 @@ export default function Navbar() {
       {/* ✅ MOBILE RIGHT SIDEBAR DRAWER */}
       {isMobile && openMenu && (
         <div style={{ position: "fixed", inset: 0, zIndex: 999 }}>
-          {/* overlay */}
           <div
             style={{
               position: "absolute",
@@ -202,7 +221,6 @@ export default function Navbar() {
             onClick={() => setOpenMenu(false)}
           />
 
-          {/* drawer */}
           <div
             style={{
               position: "absolute",
@@ -219,7 +237,6 @@ export default function Navbar() {
               flexDirection: "column",
             }}
           >
-            {/* Drawer Header */}
             <div
               style={{
                 display: "flex",
@@ -244,12 +261,11 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* ✅ SidebarRight content */}
             <div style={{ flex: 1 }}>
               <SidebarRight isMobile={true} />
             </div>
 
-            {/* ✅ LOGOUT BUTTON INSIDE ☰ MENU */}
+            {/* ✅ LOGOUT BUTTON */}
             <button
               onClick={handleLogout}
               style={{

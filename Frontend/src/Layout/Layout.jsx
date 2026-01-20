@@ -1,6 +1,12 @@
-import React, { useReducer, createContext, useEffect, useState, useLayoutEffect } from "react";
+import React, {
+  useReducer,
+  createContext,
+  useEffect,
+  useState,
+  useLayoutEffect,
+} from "react";
 import axios from "axios";
-import { Header, Footer } from "../Pages";
+import { Footer } from "../Pages";
 import Navbar from "../Components/Navbar";
 import Routers from "../Routers/Routers";
 import { reducer, getInitialState } from "../reducer/UseReducer";
@@ -12,30 +18,42 @@ export const UserContext = createContext();
 const Layout = () => {
   const [state, dispatch] = useReducer(reducer, getInitialState());
   const [loading, setLoading] = useState(true);
+
   const [profile, setProfile] = useState(() => {
     try {
-      const saved = localStorage.getItem('userProfileData');
+      const saved = localStorage.getItem("userProfileData");
       return saved ? JSON.parse(saved) : userProfileData;
     } catch (e) {
       return userProfileData;
     }
   });
-  
+
   const location = useLocation();
   const navigate = useNavigate();
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
-  const footerHiddenPaths = ["/alumni-page", "/jobs", "/messaging", "/notifications", "/profile"];
-  const hideFooter = footerHiddenPaths.includes(location.pathname);
-  const publicRoutes = ["/", "/login", "/signup", "/forgot-password"];
 
-  // 🔥 Check auth on app start
+  const footerHiddenPaths = [
+    "/alumni-page",
+    "/jobs",
+    "/messaging",
+    "/notifications",
+    "/profile",
+  ];
+  const hideFooter = footerHiddenPaths.includes(location.pathname);
+
+  // ✅ Public routes (Navbar should NOT appear here)
+  const publicRoutes = ["/", "/body", "/login", "/signup", "/forgot-password"];
+
+  // ✅ show navbar only if user exists and NOT on public route
+  const shouldShowNavbar = state.user && !publicRoutes.includes(location.pathname);
+
   useEffect(() => {
-    // scroll fix
     window.scrollTo({ top: 0, behavior: "smooth" });
 
+    // ✅ IMPORTANT: on public routes, don't check auth
     if (publicRoutes.includes(location.pathname)) {
       setLoading(false);
       return;
@@ -44,43 +62,40 @@ const Layout = () => {
     const checkAuth = async () => {
       try {
         const res = await axios.get(
-      `${import.meta.env.VITE_REACT_APP_API_URL}/users/me`,
-      { withCredentials: true }
-    );
+          `${import.meta.env.VITE_REACT_APP_API_URL}/users/me`,
+          { withCredentials: true }
+        );
 
         dispatch({ type: "USER", payload: res.data });
       } catch (err) {
         dispatch({ type: "USER", payload: null });
-        navigate("/", { replace: true });
+        navigate("/body", { replace: true });
       } finally {
         setLoading(false);
       }
     };
 
     checkAuth();
-  }, [location.pathname]);
+  }, [location.pathname, navigate]);
 
-  // Persist profile to localStorage when it changes
   useEffect(() => {
     try {
-      localStorage.setItem('userProfileData', JSON.stringify(profile));
+      localStorage.setItem("userProfileData", JSON.stringify(profile));
     } catch (e) {}
   }, [profile]);
 
-  if (loading) return null; // or loader
+  if (loading) return null;
 
   return (
     <UserContext.Provider value={{ state, dispatch, profile, setProfile }}>
-      {/* Navbar ONLY for logged-in users */}
-      {state.user && <Navbar />}
-
-      {/* Header ONLY for logged-out users */}
-      {!state.user && <Header />}
+      {/* ✅ Navbar only for logged-in + private pages */}
+      {shouldShowNavbar && <Navbar />}
 
       <main>
         <Routers />
       </main>
 
+      {/* ✅ Footer only for logged-out users */}
       {!state.user && !hideFooter && <Footer />}
     </UserContext.Provider>
   );
