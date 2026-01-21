@@ -19,6 +19,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong ✅ Alumni backend is awake");
+});
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

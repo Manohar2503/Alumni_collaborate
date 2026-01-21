@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 
 // 🔴 IMPORT BOTH IMAGES
-import monsterImg from "../assets/img1.jpg";   // initial image
+import monsterImg from "../assets/cseb.jpg";   // initial image
 import normalImg from "../assets/pic3.jpeg";        // hover image
 
 import "../styles/SignupHero.css";
