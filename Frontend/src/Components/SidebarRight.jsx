@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import EventsData from "../assets/data/EventsData";
 import { useEffect, useState } from "react";
 
-export default function SidebarRight({ isMobile = false }) {
+export default function SidebarRight({ isMobile = false, onClose }) {
   const [randomEvents, setRandomEvents] = useState([]);
   const navigate = useNavigate();
 
@@ -11,6 +11,14 @@ export default function SidebarRight({ isMobile = false }) {
     const shuffled = [...EventsData].sort(() => 0.5 - Math.random()).slice(0, 4);
     setRandomEvents(shuffled);
   }, []);
+
+  // ✅ helper function: navigate + close mobile drawer
+  const handleNavigate = (path) => {
+    navigate(path);
+
+    // ✅ Close drawer immediately (only in mobile)
+    if (onClose) onClose();
+  };
 
   return (
     <div
@@ -66,7 +74,7 @@ export default function SidebarRight({ isMobile = false }) {
               cursor: "pointer",
               transition: "all 0.3s ease",
             }}
-            onClick={() => navigate("/careerresources")}
+            onClick={() => handleNavigate("/careerresources")}
           >
             💼 Career Resources
           </li>
@@ -80,7 +88,7 @@ export default function SidebarRight({ isMobile = false }) {
               cursor: "pointer",
               transition: "all 0.3s ease",
             }}
-            onClick={() => navigate("/mentors")}
+            onClick={() => handleNavigate("/mentors")}
           >
             📚 Mentorship Program
           </li>
