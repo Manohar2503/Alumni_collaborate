@@ -16,6 +16,11 @@ export const reducer = (state, action) => {
     switch(action.type) {
         case "USER":
             return { ...state, user: action.payload };
+        case "SET_USER_POSTS":
+  return {
+    ...state,
+    userPosts: action.payload,
+  };
         case "ADD_POST":
             return { ...state, userPosts: [action.payload, ...(state.userPosts || [])] };
         case "DELETE_POST":
