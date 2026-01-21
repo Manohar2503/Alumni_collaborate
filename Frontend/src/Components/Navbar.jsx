@@ -262,7 +262,7 @@ export default function Navbar() {
             </div>
 
             <div style={{ flex: 1 }}>
-              <SidebarRight isMobile={true} />
+              <SidebarRight isMobile={true} onClose={() => setOpenMenu(false)} />
             </div>
 
             {/* ✅ LOGOUT BUTTON */}
