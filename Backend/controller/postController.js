@@ -82,7 +82,8 @@ const getAllPosts = async (req, res) => {
     .sort({ createdAt: -1 });
 
   const formatted = posts.map((p) => ({
-    id: p._id,
+    // id: p._id,
+    _id: p._id,
     author: p.author,
     time: p.createdAt,
     content: p.content,
@@ -106,12 +107,30 @@ const getAllPosts = async (req, res) => {
 
 // GET POSTS BY USER
 const getPostsByUser = async (req, res) => {
-  const posts = await Post.find({ user: req.params.userId })
-    .populate("user", "name")
-    .sort({ createdAt: -1 });
+  try {
+    const myPosts = await Post.find({ user: req.user._id })
+      .sort({ createdAt: -1 });
 
-  res.json(posts);
+    // ✅ Format like feed (frontend friendly)
+    const formatted = myPosts.map((p) => ({
+      _id: p._id,
+      author: p.author,
+      time: p.createdAt,
+      content: p.content,
+      media: p.media,
+      likes: p.likes.length,
+      liked: p.likes.some((id) => id.toString() === req.user._id.toString()),
+      comments: p.comments || [],
+    }));
+
+    res.status(200).json(formatted);
+  } catch (err) {
+    console.error("getPostsByUser error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 };
+
+
 
 // DELETE POST (OWNER ONLY)
 const deletePost = async (req, res) => {

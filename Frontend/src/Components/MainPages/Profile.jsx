@@ -10,6 +10,7 @@ import AchievementsSection from "../MainPages/AchievementsSection";
 import ProfileSidebar from "../MainPages/ProfileSidebar";
 
 import { getMyProfile, updateProfile } from "../../api/profileApi";
+import { getMyPosts } from "../../api/postApi";
 
 export default function Profile() {
   const { state, dispatch, profile, setProfile } = useContext(UserContext);
@@ -18,11 +19,29 @@ export default function Profile() {
   // ✅ Detect Mobile
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  // ✅ Mobile Resize Listener
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // ✅ Fetch Profile + My Posts (ONLY ONE useEffect ✅)
+  useEffect(() => {
+    const fetchProfileAndPosts = async () => {
+      try {
+        const data = await getMyProfile();
+        setProfile(data);
+
+        const myPosts = await getMyPosts();
+        dispatch({ type: "SET_USER_POSTS", payload: myPosts });
+      } catch (error) {
+        console.error("Failed to fetch profile/posts:", error);
+      }
+    };
+
+    fetchProfileAndPosts();
+  }, [dispatch, setProfile]);
 
   // ✅ Profile Edit State
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -65,7 +84,7 @@ export default function Profile() {
   // ✅ Desktop Tab State
   const [activeTab, setActiveTab] = useState("details");
 
-  // ✅ Logout Handler (Only used for Desktop sidebar now)
+  // ✅ Logout Handler
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
       try {
@@ -80,8 +99,8 @@ export default function Profile() {
     if (postContent.trim()) {
       const newPost = {
         id: Date.now(),
-        name: profile.name,
-        headline: profile.headline,
+        name: profile?.name,
+        headline: profile?.headline,
         time: "now",
         content: postContent,
         media: mediaPreviews.map((preview, idx) => ({
@@ -112,44 +131,54 @@ export default function Profile() {
   // ✅ Experience CRUD
   const addExperience = (exp) => {
     const newExp = { id: Date.now(), ...exp };
-    updateAndSync({ experience: [newExp, ...(profile.experience || [])] });
+    updateAndSync({ experience: [newExp, ...(profile?.experience || [])] });
   };
 
   const updateExperience = (id, updates) => {
-    const updatedExperience = profile.experience.map((e) =>
+    const updatedExperience = (profile?.experience || []).map((e) =>
       e.id === id ? { ...e, ...updates } : e
     );
     updateAndSync({ experience: updatedExperience });
   };
 
   const deleteExperience = (id) => {
-    const updatedExperience = profile.experience.filter((e) => e.id !== id);
+    const updatedExperience = (profile?.experience || []).filter(
+      (e) => e.id !== id
+    );
     updateAndSync({ experience: updatedExperience });
   };
 
   // ✅ Skills CRUD
   const addSkill = (type, skill) => {
     if (!skill) return;
+
     const updatedSkills = {
-      ...profile.skills,
-      [type]: [...(profile.skills[type] || []), skill],
+      ...(profile?.skills || {}),
+      [type]: [...((profile?.skills && profile.skills[type]) || []), skill],
     };
+
     updateAndSync({ skills: updatedSkills });
   };
 
   const updateSkill = (type, index, newValue) => {
     const updatedSkills = {
-      ...profile.skills,
-      [type]: profile.skills[type].map((s, i) => (i === index ? newValue : s)),
+      ...(profile?.skills || {}),
+      [type]: ((profile?.skills && profile.skills[type]) || []).map((s, i) =>
+        i === index ? newValue : s
+      ),
     };
+
     updateAndSync({ skills: updatedSkills });
   };
 
   const deleteSkill = (type, index) => {
     const updatedSkills = {
-      ...profile.skills,
-      [type]: profile.skills[type].filter((_, i) => i !== index),
+      ...(profile?.skills || {}),
+      [type]: ((profile?.skills && profile.skills[type]) || []).filter(
+        (_, i) => i !== index
+      ),
     };
+
     updateAndSync({ skills: updatedSkills });
   };
 
@@ -171,26 +200,28 @@ export default function Profile() {
     setShowAddAch(false);
 
     updateAndSync({
-      achievements: [newAchievement, ...(profile.achievements || [])],
+      achievements: [newAchievement, ...(profile?.achievements || [])],
     });
   };
 
   const updateAchievement = (id, text) => {
-    const updatedAchievements = profile.achievements.map((a) =>
+    const updatedAchievements = (profile?.achievements || []).map((a) =>
       a.id === id ? { ...a, text } : a
     );
     updateAndSync({ achievements: updatedAchievements });
   };
 
   const deleteAchievement = (id) => {
-    const updatedAchievements = profile.achievements.filter((a) => a.id !== id);
+    const updatedAchievements = (profile?.achievements || []).filter(
+      (a) => a.id !== id
+    );
     updateAndSync({ achievements: updatedAchievements });
   };
 
   // ✅ Helper function to update and sync with backend
   const updateAndSync = async (updates) => {
     try {
-      const newProfile = { ...profile, ...updates };
+      const newProfile = { ...(profile || {}), ...updates };
       setProfile(newProfile);
       await updateProfile(updates);
     } catch (error) {
@@ -249,30 +280,15 @@ export default function Profile() {
     setAchMediaPreviews(achMediaPreviews.filter((_, i) => i !== index));
   };
 
-  // ✅ Fetch profile on mount
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const data = await getMyProfile();
-        setProfile(data);
-      } catch (error) {
-        console.error("Failed to fetch profile:", error);
-      }
-    };
-    fetchProfile();
-  }, []);
-
   return (
     <div
       style={{
         backgroundColor: "#F3F2EF",
         minHeight: "100vh",
-
         marginLeft: isMobile ? 0 : 300,
         marginTop: isMobile ? 0 : 70,
-
         paddingTop: isMobile ? 12 : 20,
-        paddingBottom: isMobile ? 90 : 40, // ✅ bottom navbar space
+        paddingBottom: isMobile ? 90 : 40,
         display: "flex",
         flexDirection: "column",
         width: "100%",
@@ -302,7 +318,7 @@ export default function Profile() {
             gap: 16,
           }}
         >
-          {/* ✅ MOBILE = show all sections (LinkedIn style) */}
+          {/* ✅ MOBILE = show all sections */}
           {isMobile ? (
             <>
               <ProfileDetailSection
@@ -343,14 +359,14 @@ export default function Profile() {
               />
 
               <ExperienceSection
-                experience={profile.experience}
+                experience={profile?.experience}
                 onAdd={addExperience}
                 onUpdate={updateExperience}
                 onDelete={deleteExperience}
               />
 
               <SkillsSection
-                skills={profile.skills}
+                skills={profile?.skills}
                 onAddSkill={(type, skill) => addSkill(type, skill)}
                 onRemoveSkill={(type, index) => deleteSkill(type, index)}
                 onUpdateSkill={(type, index, newVal) =>
@@ -388,7 +404,7 @@ export default function Profile() {
             </>
           ) : (
             <>
-              {/* ✅ Desktop tab system unchanged */}
+              {/* ✅ Desktop Tabs */}
               {activeTab === "details" && (
                 <ProfileDetailSection
                   profile={profile}
@@ -431,7 +447,7 @@ export default function Profile() {
 
               {activeTab === "experience" && (
                 <ExperienceSection
-                  experience={profile.experience}
+                  experience={profile?.experience}
                   onAdd={addExperience}
                   onUpdate={updateExperience}
                   onDelete={deleteExperience}
@@ -440,7 +456,7 @@ export default function Profile() {
 
               {activeTab === "skills" && (
                 <SkillsSection
-                  skills={profile.skills}
+                  skills={profile?.skills}
                   onAddSkill={(type, skill) => addSkill(type, skill)}
                   onRemoveSkill={(type, index) => deleteSkill(type, index)}
                   onUpdateSkill={(type, index, newVal) =>
@@ -448,6 +464,7 @@ export default function Profile() {
                   }
                   isAddingSkill={isAddingSkill}
                   setIsAddingSkill={setIsAddingSkill}
+                  
                   newSkill={newSkill}
                   setNewSkill={setNewSkill}
                   skillType={skillType}
