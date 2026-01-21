@@ -3,17 +3,13 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    name: { type: String, required: true, trim: true },
 
     email: {
       type: String,
       required: true,
       unique: true,
-      index: true,     // ✅ ADD THIS
+      index: true,
       lowercase: true,
       trim: true,
     },
@@ -22,7 +18,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      index: true,     // ✅ ADD THIS
+      index: true,
       lowercase: true,
       trim: true,
     },
@@ -30,7 +26,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      select: false,   // ✅ IMPORTANT (security + faster)
+      select: false,
     },
 
     role: {
@@ -39,19 +35,12 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
-    isProfileCompleted: {
-      type: Boolean,
-      default: false,
-    },
+    isProfileCompleted: { type: Boolean, default: false },
 
     resetPasswordToken: String,
     resetPasswordExpires: Date,
   },
   { timestamps: true }
 );
-
-// ✅ Optional (recommended): force index creation
-userSchema.index({ email: 1 });
-userSchema.index({ collegeMail: 1 });
 
 module.exports = mongoose.model("User", userSchema);
