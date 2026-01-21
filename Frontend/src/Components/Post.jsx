@@ -65,7 +65,7 @@ export default function Post({ data }) {
   const handleLike = async () => {
     try {
       await axios.post(
-        `${API}/posts/${data.id}/like`,
+        `${API}/posts/${data._id}/like`,
         {},
         { withCredentials: true }
       );
@@ -83,7 +83,7 @@ export default function Post({ data }) {
 
     try {
       await axios.post(
-        `${API}/posts/${data.id}/comment`,
+        `${API}/posts/${data._id}/comment`,
         { text: newComment },
         { withCredentials: true }
       );

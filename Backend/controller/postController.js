@@ -220,11 +220,12 @@ const deleteComment = async (req, res) => {
 
 // LIKE / UNLIKE
 const likePost = async (req, res) => {
-  const post = await Post.findById(req.params.postId);
+  const { postId } = req.params;
+  const post = await Post.findById(postId);
 
-  if (!post) {
-    return res.status(404).json({ message: "Post not found" });
-  }
+  if (!postId || postId === "undefined") {
+  return res.status(400).json({ message: "Invalid Post ID" });
+}
 
   const userId = req.user._id;
 
