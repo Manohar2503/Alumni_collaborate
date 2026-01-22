@@ -54,7 +54,7 @@ export default function Home() {
         >
           <CreatePost onPostCreated={fetchPosts} />
           {posts.map((post) => (
-            <Post key={post.id} data={post} />
+            <Post key={post._id} data={post} />
           ))}
         </div>
 
