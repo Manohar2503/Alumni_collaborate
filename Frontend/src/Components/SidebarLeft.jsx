@@ -1,52 +1,57 @@
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../Layout/Layout";
 
 export default function SidebarLeft() {
   const navigate = useNavigate();
+  const { profile } = useContext(UserContext);
 
   const handleProfileClick = () => {
     navigate("/profile");
   };
 
   return (
-    <div
-      onClick={handleProfileClick}
-      style={{
-        width: "25%",
-        backgroundColor: "white",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-        borderRadius: "12px",
-        padding: "16px",
-        height: "fit-content",
-        cursor: "pointer",
-        transition: "all 0.3s ease"
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-        e.currentTarget.style.transform = "translateY(-2px)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-        e.currentTarget.style.transform = "translateY(0)";
-      }}
-    >
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-        <img
-          src="https://i.pravatar.cc/100"
-          style={{ borderRadius: "50%", width: "80px", height: "80px", border: "2px solid #0A66C2" }}
-          alt="Profile"
-        />
-        <h2 style={{ marginTop: "12px", fontWeight: "600", fontSize: "18px", margin: "12px 0 0 0", cursor: "pointer", color: "#0A66C2" }}>
-          Varsha Garapati
-        </h2>
-        <p style={{ fontSize: "14px", color: "#999", textAlign: "center", margin: "8px 0" }}>
-          Attended Vasireddy Venkatadri Institute of Technology
-        </p>
-      </div>
+    <div className="hidden lg:block w-[280px]">
+      <div
+        onClick={handleProfileClick}
+        className="bg-white rounded-xl border border-gray-200 overflow-hidden cursor-pointer transition-all hover:shadow-md"
+      >
+        {/* ✅ Cover (soft neutral) */}
+        <div className="h-16 bg-gray-100 relative">
+          {/* ✅ Profile Image (overlap) */}
+          <div className="absolute left-1/2 -bottom-12 -translate-x-1/2">
+            <img
+              src={profile?.profileImage || "https://i.pravatar.cc/100"}
+              alt="Profile"
+              className="w-24 h-24 rounded-full border-4 border-white object-cover shadow-sm"
+            />
+          </div>
+        </div>
 
-      <div style={{ marginTop: "20px", borderTop: "1px solid #eee", paddingTop: "12px" }}>
-        <p style={{ fontSize: "14px", color: "#666", margin: "0" }}>
-          Followers: <b>53</b>
-        </p>
+        {/* ✅ Content */}
+        <div className="pt-16 px-4 pb-4 text-center">
+          <h2 className="text-[15px] font-bold text-gray-900 leading-tight">
+            {profile?.name || "Your Name"}
+          </h2>
+
+          <p className="text-[12px] text-gray-500 mt-1 line-clamp-2">
+            {profile?.headline || "Full Stack Developer | MERN | DSA"}
+          </p>
+
+          {/* ✅ Divider */}
+          <div className="my-3 border-t border-gray-200" />
+
+          {/* ✅ Minimal button (not bright) */}
+          <button
+            className="w-full text-sm font-semibold py-2 rounded-lg bg-gray-900 text-white hover:bg-black transition"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/profile");
+            }}
+          >
+            View Profile
+          </button>
+        </div>
       </div>
     </div>
   );
