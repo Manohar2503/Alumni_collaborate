@@ -27,6 +27,7 @@ app.use("/api/profile", require('./Routes/profileRoutes')); // Profile routes
 app.use("/api/request",require('./Routes/requestRoutes')); // Request routes
 app.use("/api/posts", require('./Routes/postRoutes')); // Post routes
 app.use('/api/mentors', require('./Routes/mentorRoutes'));
+app.use('/api/oppurtunities', require('./Routes/JobsInternshipsBlogsRoutes'))
 
 app.use(errorHandler);
 

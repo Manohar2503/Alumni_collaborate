@@ -1,0 +1,74 @@
+{
+  "jobs": [
+  {
+    "id": 1,
+    "company": "Google",
+    "role": "MERN Stack Developer",
+    "link": "https://careers.google.com/jobs"
+  },
+  {
+    "id": 2,
+    "company": "Microsoft",
+    "role": "Java Developer",
+    "link": "https://careers.microsoft.com"
+  },
+  {
+    "id": 3,
+    "company": "Amazon",
+    "role": "Software Developer",
+    "link": "https://www.amazon.jobs"
+  }
+],
+
+"internships": [
+  {
+    "id": 1,
+    "company": "Infosys",
+    "role": "Frontend Developer Intern",
+    "link": "https://www.infosys.com/careers/internships.html"
+  },
+  {
+    "id": 2,
+    "company": "TCS",
+    "role": "Java Developer Intern",
+    "link": "https://www.tcs.com/careers"
+  },
+  {
+    "id": 3,
+    "company": "Zoho",
+    "role": "Software Engineering Intern",
+    "link": "https://careers.zohocorp.com"
+  }
+],
+
+  "blogs": [
+  {
+    "id": 1,
+    "title": "How to Become a MERN Stack Developer",
+    "description": "This blog explains the complete roadmap to becoming a MERN Stack Developer. It covers frontend and backend technologies, recommended learning resources, project ideas, and interview preparation tips. Beginners can use this guide to build strong fundamentals and practical experience.",
+    "author": "Admin",
+    "publishedDate": "2026-01-05",
+    "category": "Web Development",
+    "tags": ["MERN", "React", "Web Development"]
+  },
+  {
+    "id": 2,
+    "title": "Java Developer Roadmap for Freshers",
+    "description": "This article provides a step-by-step learning path for fresh graduates who want to become professional Java developers. It includes core Java topics, frameworks, project ideas, and interview preparation strategies to help students crack job interviews.",
+    "author": "Tech Team",
+    "publishedDate": "2026-01-08",
+    "category": "Programming",
+    "tags": ["Java", "Backend", "Spring Boot"]
+  },
+  {
+    "id": 3,
+    "title": "Top Skills Every Software Developer Must Learn",
+    "description": "This blog highlights the most important technical and soft skills required to succeed as a software developer. It discusses problem-solving, communication, coding best practices, and emerging technologies that developers should focus on.",
+    "author": "Career Guide",
+    "publishedDate": "2026-01-11",
+    "category": "Career",
+    "tags": ["Career", "Software Developer", "Skills"]
+  }
+]
+
+}

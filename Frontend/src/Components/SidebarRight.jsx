@@ -21,7 +21,8 @@ export default function SidebarRight() {
           <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}>🎓 Join Alumni Group</li>
           <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}  onClick={()=>navigate('/careerresources')}>💼 Career Resources</li>
           <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }} onClick={()=>navigate('/mentors')}>📚 Mentorship Program</li>
-          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }}>🎉 Upcoming Events</li>
+          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }} onClick={()=>navigate('/alumni-page')}>🎉 Upcoming Events</li>
+          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }} onClick={()=>navigate('/postReview')}>📝 Post a Review</li>
         </ul>
       </div>
 
