@@ -1,68 +1,172 @@
-import { FiEdit2, FiPlus, FiX } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { FiEdit2, FiPlus } from "react-icons/fi";
 
 export default function ExperienceSection({ experience, onAdd, onUpdate, onDelete }) {
-  const [isAdding, setIsAdding] = React.useState(false);
-  const [editingId, setEditingId] = React.useState(null);
-  const [isEditMode, setIsEditMode] = React.useState(false);
-  const [form, setForm] = React.useState({ jobTitle: '', company: '', startDate: '', endDate: '', description: '', current: false });
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const [form, setForm] = useState({
+    jobTitle: "",
+    company: "",
+    startDate: "",
+    endDate: "",
+    description: "",
+    current: false,
+  });
 
   return (
-    <div style={{ backgroundColor: "white", borderRadius: "12px", padding: "32px", marginBottom: "20px", border: "1px solid #e5e5e5" }}>
+    <div
+      style={{
+        backgroundColor: "white",
+        borderRadius: 12,
+        padding: isMobile ? 16 : 32,
+        marginBottom: 20,
+        border: "1px solid #e5e5e5",
+
+        // ✅ FULL WIDTH FIX
+        width: "100%",
+        maxWidth: "100%",
+        boxSizing: "border-box",
+      }}
+    >
       {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "28px" }}>
-        <div>
-          <h2 style={{ fontSize: "24px", fontWeight: "800", margin: 0, color: "#1a1a1a" }}>💼 Experience</h2>
-          <p style={{ fontSize: "13px", color: "#999", marginTop: 8, textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Professional Journey</p>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: isMobile ? "flex-start" : "center",
+          flexDirection: isMobile ? "column" : "row",
+          gap: isMobile ? 12 : 0,
+          marginBottom: 22,
+          width: "100%",
+        }}
+      >
+        <div style={{ width: "100%" }}>
+          <h2 style={{ fontSize: isMobile ? 20 : 24, fontWeight: 800, margin: 0, color: "#1a1a1a" }}>
+            💼 Experience
+          </h2>
+          <p
+            style={{
+              fontSize: 13,
+              color: "#999",
+              marginTop: 8,
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+              fontWeight: 600,
+            }}
+          >
+            Professional Journey
+          </p>
         </div>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <button onClick={() => setIsEditMode(!isEditMode)} style={{ padding: '8px 12px', borderRadius: '50%', background: 'white', border: 'none', width: 44, height: 44, boxShadow: '0 2px 8px rgba(0,0,0,0.12)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}><FiEdit2 color="#0A66C2" size={20} /></button>
+
+        <div
+          style={{
+            display: "flex",
+            gap: 10,
+            alignItems: "center",
+            width: isMobile ? "100%" : "auto",
+            justifyContent: isMobile ? "space-between" : "flex-end",
+          }}
+        >
+          <button
+            onClick={() => setIsEditMode(!isEditMode)}
+            style={{
+              borderRadius: "50%",
+              background: "white",
+              border: "none",
+              width: 44,
+              height: 44,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <FiEdit2 color="#0A66C2" size={20} />
+          </button>
+
           <button
             onClick={() => setIsAdding(!isAdding)}
             style={{
               backgroundColor: isAdding ? "#c0392b" : "#0A66C2",
               border: "none",
               color: "white",
-              borderRadius: "8px",
-              padding: "10px 16px",
+              borderRadius: 10,
+              padding: "10px 14px",
               cursor: "pointer",
-              fontSize: "14px",
-              fontWeight: "700",
+              fontSize: 14,
+              fontWeight: 700,
               display: "flex",
               alignItems: "center",
-              gap: "6px",
-              transition: 'all 0.2s'
+              gap: 6,
+              width: isMobile ? "calc(100% - 54px)" : "auto",
+              justifyContent: "center",
+              boxSizing: "border-box",
             }}
           >
-            {isAdding ? '✕ Cancel' : <><FiPlus size={18} />Add Experience</>}
+            {isAdding ? (
+              "✕ Cancel"
+            ) : (
+              <>
+                <FiPlus size={18} />
+                Add Experience
+              </>
+            )}
           </button>
         </div>
       </div>
 
       {/* Experience List */}
-      <div style={{ marginBottom: "28px" }}>
+      <div style={{ marginBottom: 22, width: "100%" }}>
         {(experience || []).length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px 20px', backgroundColor: '#f9f9f9', borderRadius: '12px' }}>
+          <div
+            style={{
+              textAlign: "center",
+              padding: "34px 16px",
+              backgroundColor: "#f9f9f9",
+              borderRadius: 12,
+              width: "100%",
+              boxSizing: "border-box",
+            }}
+          >
             <div style={{ fontSize: 40, marginBottom: 12 }}>🚀</div>
-            <p style={{ fontSize: 14, color: '#999', margin: 0 }}>No experience added yet. Start building your professional profile!</p>
+            <p style={{ fontSize: 14, color: "#999", margin: 0 }}>
+              No experience added yet. Start building your professional profile!
+            </p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gap: '16px' }}>
+          <div style={{ display: "grid", gap: 14, width: "100%" }}>
             {(experience || []).map((exp) => (
               <div
                 key={exp.id}
                 style={{
                   backgroundColor: "#f9f9f9",
                   border: "2px solid #e0e0e0",
-                  borderRadius: "12px",
-                  padding: "20px",
-                  transition: 'all 0.3s'
+                  borderRadius: 12,
+                  padding: isMobile ? 16 : 20,
+
+                  // ✅ FULL WIDTH FIX
+                  width: "100%",
+                  maxWidth: "100%",
+                  boxSizing: "border-box",
                 }}
               >
                 {editingId === exp.id ? (
-                  <div>
+                  <div style={{ width: "100%" }}>
                     <input
                       value={form.jobTitle}
-                      onChange={(e) => setForm(f => ({ ...f, jobTitle: e.target.value }))}
+                      onChange={(e) => setForm((f) => ({ ...f, jobTitle: e.target.value }))}
                       placeholder="Job Title"
                       style={{
                         width: "100%",
@@ -71,12 +175,13 @@ export default function ExperienceSection({ experience, onAdd, onUpdate, onDelet
                         borderRadius: 8,
                         marginBottom: 12,
                         fontSize: 14,
-                        fontFamily: 'inherit'
+                        boxSizing: "border-box",
                       }}
                     />
+
                     <input
                       value={form.company}
-                      onChange={(e) => setForm(f => ({ ...f, company: e.target.value }))}
+                      onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
                       placeholder="Company"
                       style={{
                         width: "100%",
@@ -85,12 +190,13 @@ export default function ExperienceSection({ experience, onAdd, onUpdate, onDelet
                         borderRadius: 8,
                         marginBottom: 12,
                         fontSize: 14,
-                        fontFamily: 'inherit'
+                        boxSizing: "border-box",
                       }}
                     />
+
                     <textarea
                       value={form.description}
-                      onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))}
+                      onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
                       placeholder="Description"
                       style={{
                         width: "100%",
@@ -100,36 +206,40 @@ export default function ExperienceSection({ experience, onAdd, onUpdate, onDelet
                         minHeight: 80,
                         marginBottom: 12,
                         fontSize: 14,
-                        fontFamily: 'inherit'
+                        boxSizing: "border-box",
                       }}
                     />
-                    <div style={{ display: 'flex', gap: 8 }}>
+
+                    <div style={{ display: "flex", gap: 8, width: "100%" }}>
                       <button
                         onClick={() => {
                           onUpdate(exp.id, form);
                           setEditingId(null);
                         }}
                         style={{
-                          padding: '10px 16px',
-                          background: '#0A66C2',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: 6,
-                          cursor: 'pointer',
-                          fontWeight: 700
+                          flex: 1,
+                          padding: "12px 16px",
+                          background: "#0A66C2",
+                          color: "white",
+                          border: "none",
+                          borderRadius: 10,
+                          cursor: "pointer",
+                          fontWeight: 800,
                         }}
                       >
                         Save
                       </button>
+
                       <button
                         onClick={() => setEditingId(null)}
                         style={{
-                          padding: '10px 16px',
-                          background: '#f0f0f0',
-                          border: 'none',
-                          borderRadius: 6,
-                          cursor: 'pointer',
-                          fontWeight: 700
+                          flex: 1,
+                          padding: "12px 16px",
+                          background: "#f0f0f0",
+                          border: "none",
+                          borderRadius: 10,
+                          cursor: "pointer",
+                          fontWeight: 800,
                         }}
                       >
                         Cancel
@@ -138,26 +248,46 @@ export default function ExperienceSection({ experience, onAdd, onUpdate, onDelet
                   </div>
                 ) : (
                   <>
-                    {/* Job Title and Company */}
-                    <div style={{ display: 'flex', gap: 12, marginBottom: 8 }}>
+                    <div style={{ display: "flex", gap: 12, marginBottom: 8, width: "100%" }}>
                       <span style={{ fontSize: 28 }}>💼</span>
-                      <div style={{ flex: 1 }}>
-                        <h3 style={{ fontSize: "16px", fontWeight: "700", margin: "0 0 4px 0", color: "#1a1a1a" }}>{exp.jobTitle}</h3>
-                        <p style={{ fontSize: "14px", color: "#0A66C2", margin: "0 0 4px 0", fontWeight: 600 }}>{exp.company}</p>
-                        <p style={{ fontSize: "13px", color: "#999", margin: 0 }}>
+
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <h3
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 800,
+                            margin: "0 0 4px 0",
+                            color: "#1a1a1a",
+                          }}
+                        >
+                          {exp.jobTitle}
+                        </h3>
+
+                        <p style={{ fontSize: 14, color: "#0A66C2", margin: "0 0 4px 0", fontWeight: 700 }}>
+                          {exp.company}
+                        </p>
+
+                        <p style={{ fontSize: 13, color: "#999", margin: 0 }}>
                           {exp.startDate} {exp.endDate && `- ${exp.current ? "Present" : exp.endDate}`}
                         </p>
                       </div>
                     </div>
 
-                    {/* Description */}
                     {exp.description && (
-                      <p style={{ fontSize: "14px", color: "#666", margin: "12px 0 0 40px", lineHeight: "1.6" }}>{exp.description}</p>
+                      <p
+                        style={{
+                          fontSize: 14,
+                          color: "#666",
+                          margin: "12px 0 0 0",
+                          lineHeight: 1.6,
+                        }}
+                      >
+                        {exp.description}
+                      </p>
                     )}
 
-                    {/* Edit/Delete Actions */}
                     {isEditMode && (
-                      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                      <div style={{ display: "flex", gap: 8, marginTop: 12, width: "100%" }}>
                         <button
                           onClick={() => {
                             setEditingId(exp.id);
@@ -167,33 +297,36 @@ export default function ExperienceSection({ experience, onAdd, onUpdate, onDelet
                               startDate: exp.startDate,
                               endDate: exp.endDate,
                               description: exp.description,
-                              current: exp.current
+                              current: exp.current,
                             });
                           }}
                           style={{
-                            padding: '8px 12px',
-                            borderRadius: 6,
-                            border: '1px solid #0A66C2',
-                            background: 'transparent',
-                            color: '#0A66C2',
-                            cursor: 'pointer',
+                            flex: 1,
+                            padding: "10px 12px",
+                            borderRadius: 10,
+                            border: "1px solid #0A66C2",
+                            background: "transparent",
+                            color: "#0A66C2",
+                            cursor: "pointer",
                             fontSize: 13,
-                            fontWeight: 600
+                            fontWeight: 800,
                           }}
                         >
                           Edit
                         </button>
+
                         <button
                           onClick={() => onDelete(exp.id)}
                           style={{
-                            padding: '8px 12px',
-                            borderRadius: 6,
-                            border: '1px solid #c0392b',
-                            background: 'transparent',
-                            color: '#c0392b',
-                            cursor: 'pointer',
+                            flex: 1,
+                            padding: "10px 12px",
+                            borderRadius: 10,
+                            border: "1px solid #c0392b",
+                            background: "transparent",
+                            color: "#c0392b",
+                            cursor: "pointer",
                             fontSize: 13,
-                            fontWeight: 600
+                            fontWeight: 800,
                           }}
                         >
                           Delete
@@ -210,89 +343,111 @@ export default function ExperienceSection({ experience, onAdd, onUpdate, onDelet
 
       {/* Add Experience Form */}
       {isAdding && (
-        <div style={{ padding: "24px", backgroundColor: "#f9f9f9", borderRadius: "12px", border: "2px dashed #0A66C2" }}>
-          <h4 style={{ margin: '0 0 16px 0', fontSize: 14, fontWeight: 700, color: '#1a1a1a' }}>➕ Add New Experience</h4>
+        <div
+          style={{
+            padding: isMobile ? 16 : 24,
+            backgroundColor: "#f9f9f9",
+            borderRadius: 12,
+            border: "2px dashed #0A66C2",
+
+            // ✅ FULL WIDTH FIX
+            width: "100%",
+            boxSizing: "border-box",
+          }}
+        >
+          <h4 style={{ margin: "0 0 16px 0", fontSize: 14, fontWeight: 800, color: "#1a1a1a" }}>
+            ➕ Add New Experience
+          </h4>
+
           <input
             value={form.jobTitle}
-            onChange={(e) => setForm(f => ({ ...f, jobTitle: e.target.value }))}
+            onChange={(e) => setForm((f) => ({ ...f, jobTitle: e.target.value }))}
             type="text"
             placeholder="Job Title"
             style={{
               width: "100%",
-              padding: "12px",
+              padding: 12,
               border: "1px solid #ddd",
-              borderRadius: "8px",
-              marginBottom: "12px",
-              fontSize: "14px",
-              fontFamily: 'inherit'
+              borderRadius: 10,
+              marginBottom: 12,
+              fontSize: 14,
+              boxSizing: "border-box",
             }}
           />
+
           <input
             value={form.company}
-            onChange={(e) => setForm(f => ({ ...f, company: e.target.value }))}
+            onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
             type="text"
             placeholder="Company"
             style={{
               width: "100%",
-              padding: "12px",
+              padding: 12,
               border: "1px solid #ddd",
-              borderRadius: "8px",
-              marginBottom: "12px",
-              fontSize: "14px",
-              fontFamily: 'inherit'
+              borderRadius: 10,
+              marginBottom: 12,
+              fontSize: 14,
+              boxSizing: "border-box",
             }}
           />
+
           <textarea
             value={form.description}
-            onChange={(e) => setForm(f => ({ ...f, description: e.target.value }))}
+            onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
             placeholder="Describe your role and achievements..."
             style={{
               width: "100%",
-              padding: "12px",
+              padding: 12,
               border: "1px solid #ddd",
-              borderRadius: "8px",
-              marginBottom: "12px",
-              fontSize: "14px",
+              borderRadius: 10,
+              marginBottom: 12,
+              fontSize: 14,
               minHeight: 100,
-              fontFamily: 'inherit'
+              boxSizing: "border-box",
             }}
           />
-          <div style={{ display: 'flex', gap: 8 }}>
+
+          <div style={{ display: "flex", gap: 8, width: "100%" }}>
             <button
               onClick={() => {
                 onAdd(form);
                 setIsAdding(false);
-                setForm({ jobTitle: '', company: '', startDate: '', endDate: '', description: '', current: false });
+                setForm({
+                  jobTitle: "",
+                  company: "",
+                  startDate: "",
+                  endDate: "",
+                  description: "",
+                  current: false,
+                });
               }}
               style={{
                 flex: 1,
                 backgroundColor: "#0A66C2",
                 color: "white",
                 border: "none",
-                borderRadius: "8px",
+                borderRadius: 10,
                 padding: "12px 16px",
                 cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: "700"
+                fontSize: 14,
+                fontWeight: 800,
               }}
             >
-              Save Experience
+              Save
             </button>
+
             <button
-              onClick={() => {
-                setIsAdding(false);
-                setForm({ jobTitle: '', company: '', startDate: '', endDate: '', description: '', current: false });
-              }}
+              onClick={() => setIsAdding(false)}
               style={{
                 flex: 1,
                 backgroundColor: "#f0f0f0",
                 color: "#333",
                 border: "none",
-                borderRadius: "8px",
+                borderRadius: 10,
                 padding: "12px 16px",
                 cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: 700
+                fontSize: 14,
+                fontWeight: 800,
               }}
             >
               Cancel

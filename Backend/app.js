@@ -17,8 +17,12 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(express.urlencoded({ extended: false }));
 
+app.get("/ping", (req, res) => {
+  res.status(200).send("pong ✅ Alumni backend is awake");
+});
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -27,6 +31,8 @@ app.use("/api/profile", require('./Routes/profileRoutes')); // Profile routes
 app.use("/api/request",require('./Routes/requestRoutes')); // Request routes
 app.use("/api/posts", require('./Routes/postRoutes')); // Post routes
 app.use('/api/mentors', require('./Routes/mentorRoutes'));
+app.use("/api/learningtracks", require('./Routes/learningRoutes'));
+
 app.use('/api/oppurtunities', require('./Routes/JobsInternshipsBlogsRoutes'))
 
 app.use(errorHandler);

@@ -1,111 +1,252 @@
+import {
+  FiThumbsUp,
+  FiMessageCircle,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { useState } from "react";
-import PostPreview from "./PostPreview";
+import axios from "axios";
 
-export default function PostCard({ post, profile, openMenuId, setOpenMenuId, dispatch, onOpenModal }) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState(post.content || '');
+const API = import.meta.env.VITE_REACT_APP_API_URL;
+const CONTENT_LIMIT = 120;
 
-  const handleLike = () => {
-    const newLiked = !post.liked;
-    const newLikes = newLiked ? (post.likes || 0) + 1 : (post.likes || 0) - 1;
-    dispatch({
-      type: "LIKE_POST",
-      payload: { postId: post.id, likes: newLikes, liked: newLiked }
-    });
+function IdentityBadge({ role }) {
+  if (role === "alumni")
+    return <span className="ml-2 text-red-600 font-bold">★</span>;
+  if (role === "student")
+    return <span className="ml-2 text-blue-600 font-bold">★</span>;
+  return null;
+}
+
+const linkifyText = (text) => {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.split(urlRegex).map((part, index) =>
+    part.match(urlRegex) ? (
+      <a
+        key={index}
+        href={part}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-blue-600 hover:underline break-words"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {part}
+      </a>
+    ) : (
+      part
+    )
+  );
+};
+
+export default function ProfilePostCard({ post }) {
+  const [mediaIndex, setMediaIndex] = useState(0);
+
+  // ✅ Likes state
+  const [likes, setLikes] = useState(post.likes || 0);
+  const [liked, setLiked] = useState(post.liked || false);
+
+  // ✅ Comments state
+  const [comments, setComments] = useState(
+    Array.isArray(post.comments) ? post.comments : []
+  );
+  const [showComments, setShowComments] = useState(false);
+  const [newComment, setNewComment] = useState("");
+
+  const fullContent = post.content || "";
+  const displayedContent =
+    fullContent.length > CONTENT_LIMIT
+      ? fullContent.slice(0, CONTENT_LIMIT) + "..."
+      : fullContent;
+
+  const hasMedia = post.media?.length > 0;
+  const author = post.author || {};
+
+  // ✅ LIKE API
+  const handleLike = async (e) => {
+    e.stopPropagation();
+    if (!post?._id) return;
+
+    try {
+      await axios.post(
+        `${API}/posts/${post._id}/like`,
+        {},
+        { withCredentials: true }
+      );
+
+      setLikes((prev) => (liked ? prev - 1 : prev + 1));
+      setLiked((prev) => !prev);
+    } catch (err) {
+      console.error("Like failed:", err);
+    }
+  };
+
+  // ✅ COMMENT API
+  const handleAddComment = async (e) => {
+    e?.stopPropagation();
+    if (!newComment.trim()) return;
+    if (!post?._id) return;
+
+    try {
+      await axios.post(
+        `${API}/posts/${post._id}/comment`,
+        { text: newComment },
+        { withCredentials: true }
+      );
+
+      setComments((prev) => [
+        ...prev,
+        { name: "You", text: newComment },
+      ]);
+
+      setNewComment("");
+    } catch (err) {
+      console.error("Comment failed:", err);
+    }
   };
 
   return (
-    <div
-      style={{
-        border: "2px solid #e0e0e0",
-        borderRadius: "12px",
-        padding: "24px",
-        backgroundColor: "#f9f9f9"
-      }}
-    >
-      <div style={{ display: "flex", gap: "16px", marginBottom: "16px", alignItems: "flex-start" }}>
+    <div className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden">
+      {/* ✅ Header */}
+      <div className="flex gap-3 p-4 pb-2">
         <img
-          src={profile.profileImage}
-          alt={post.name}
-          style={{
-            width: "56px",
-            height: "56px",
-            borderRadius: "50%"
-          }}
+          src={author.profileImage || "https://i.pravatar.cc/45"}
+          alt={author.name || "User"}
+          className="rounded-full w-10 h-10 object-cover"
         />
-        <div style={{ flex: 1 }}>
-          <h4 style={{ fontSize: "16px", fontWeight: "700", margin: "0" }}>
-            {post.name}
-          </h4>
-          <p style={{ fontSize: "13px", color: "#999", margin: "4px 0 0 0" }}>
-            {post.time}
+
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-gray-900 flex items-center">
+            {author.name || "User"}
+            <IdentityBadge role={author.role} />
+          </p>
+
+          {author.headline && (
+            <p className="text-xs text-gray-500 line-clamp-1">
+              {author.headline}
+            </p>
+          )}
+
+          <p className="text-[11px] text-gray-400 mt-0.5">
+            {post.time ? new Date(post.time).toLocaleString() : ""}
           </p>
         </div>
-        <div style={{ position: 'relative' }}>
-          <button onClick={() => setOpenMenuId(openMenuId === post.id ? null : post.id)} style={{ backgroundColor: "transparent", border: "none", cursor: "pointer", fontSize: "20px" }}>
-            ⋯
-          </button>
-          {openMenuId === post.id && (
-            <div style={{ position: 'absolute', right: 0, top: 28, background: 'white', boxShadow: '0 6px 18px rgba(0,0,0,0.08)', borderRadius: 6, zIndex: 30 }}>
-              <button
-                onClick={() => {
-                  setOpenMenuId(null);
-                  setIsEditing(true);
-                }}
-                style={{ display: 'block', padding: '10px 16px', border: 'none', background: 'transparent', cursor: 'pointer', width: 160, textAlign: 'left', fontSize: '14px' }}
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => {
-                  setOpenMenuId(null);
-                  if (window.confirm('Delete this post?')) {
-                    dispatch({ type: 'DELETE_POST', payload: post.id });
-                  }
-                }}
-                style={{ display: 'block', padding: '10px 16px', border: 'none', background: 'transparent', cursor: 'pointer', width: 160, textAlign: 'left', fontSize: '14px' }}
-              >
-                Delete
-              </button>
-            </div>
-          )}
-        </div>
       </div>
 
-      <div onClick={() => onOpenModal && onOpenModal(post)} style={{ cursor: 'pointer', marginBottom: '12px' }}>
-        <PostPreview content={post.content} limit={150} />
-      </div>
-
-      {post.media && post.media.length > 0 && (
-        <div style={{ marginBottom: "16px", cursor: 'pointer' }} onClick={() => onOpenModal && onOpenModal(post)}>
-          <img
-            src={post.media[0].url}
-            alt="post"
-            style={{
-              width: "100%",
-              height: "280px",
-              borderRadius: "8px",
-              objectFit: "cover"
-            }}
-          />
+      {/* ✅ Content */}
+      {post.content && (
+        <div className="px-4 pb-3">
+          <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-wrap">
+            {linkifyText(displayedContent)}
+          </p>
         </div>
       )}
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "12px", borderTop: "1px solid #e0e0e0", fontSize: "14px", color: "#666" }}>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {!isEditing ? (
-            <button onClick={handleLike} style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '14px', color: post.liked ? '#0A66C2' : '#666', fontWeight: post.liked ? '700' : '500' }}>👍 {post.likes || 0}</button>
+      {/* ✅ Media */}
+      {hasMedia && (
+        <div className="relative bg-black">
+          {post.media[mediaIndex]?.type === "image" ? (
+            <img
+              src={post.media[mediaIndex]?.url}
+              className="w-full h-[180px] sm:h-[200px] object-cover"
+              alt="post"
+            />
           ) : (
-            <div style={{ display: 'flex', gap: 8, width: '100%' }}>
-              <textarea value={editContent} onChange={(e) => setEditContent(e.target.value)} style={{ flex: 1, minHeight: 80, padding: 10, fontSize: '14px' }} />
-              <div style={{ display: 'flex', gap: 6, flexDirection: 'column' }}>
-                <button onClick={() => { dispatch({ type: 'UPDATE_POST', payload: { postId: post.id, updates: { content: editContent } } }); setIsEditing(false); }} style={{ padding: '8px 12px', background: '#0A66C2', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Save</button>
-                <button onClick={() => { setIsEditing(false); setEditContent(post.content || '') }} style={{ padding: '8px 12px', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: 13 }}>Cancel</button>
-              </div>
-            </div>
+            <video
+              src={post.media[mediaIndex]?.url}
+              controls
+              className="w-full h-[180px] sm:h-[200px]"
+            />
+          )}
+
+          {/* ✅ Media arrows only if multiple */}
+          {post.media.length > 1 && (
+            <>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMediaIndex((prev) =>
+                    prev === 0 ? post.media.length - 1 : prev - 1
+                  );
+                }}
+                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow"
+              >
+                <FiChevronLeft />
+              </button>
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setMediaIndex((prev) =>
+                    prev === post.media.length - 1 ? 0 : prev + 1
+                  );
+                }}
+                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow"
+              >
+                <FiChevronRight />
+              </button>
+            </>
           )}
         </div>
+      )}
+
+      {/* ✅ Counts */}
+      <div className="px-4 py-2 text-xs text-gray-600 border-t flex justify-between">
+        <span>{likes > 0 ? `👍 ${likes}` : ""}</span>
+        <span>{comments.length > 0 ? `💬 ${comments.length}` : ""}</span>
       </div>
+
+      {/* ✅ Actions */}
+      <div className="flex justify-around py-2 text-sm text-gray-600 border-t">
+        <button
+          onClick={handleLike}
+          className={`flex items-center gap-2 px-3 py-1 rounded-md hover:bg-gray-100 ${
+            liked ? "text-blue-600 font-semibold" : ""
+          }`}
+        >
+          <FiThumbsUp /> Like
+        </button>
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowComments((prev) => !prev);
+          }}
+          className="flex items-center gap-2 px-3 py-1 rounded-md hover:bg-gray-100"
+        >
+          <FiMessageCircle /> Comment
+        </button>
+      </div>
+
+      {/* ✅ Comments Section */}
+      {showComments && (
+        <div className="px-4 pb-4">
+          {comments.map((c, i) => (
+            <div key={i} className="mb-2">
+              <p className="text-xs font-semibold text-gray-800">
+                {c.name || "User"}
+              </p>
+              <p className="text-sm text-gray-700">{c.text}</p>
+            </div>
+          ))}
+
+          <div className="flex gap-2 mt-3">
+            <input
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.key === "Enter" && handleAddComment(e)}
+              placeholder="Add a comment..."
+              className="flex-1 border rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+            />
+            <button
+              onClick={handleAddComment}
+              className="text-blue-600 font-bold px-3"
+            >
+              Post
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

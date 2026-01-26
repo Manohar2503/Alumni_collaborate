@@ -57,7 +57,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("All fields required");
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password role isProfileCompleted");
 
   if (!user) {
     res.status(400);
@@ -83,8 +83,9 @@ const loginUser = asyncHandler(async (req, res) => {
 
   res.cookie("token", token, {
     httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    secure : true,
+   // secure: process.env.NODE_ENV === "production",
   });
 
   res.json({

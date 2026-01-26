@@ -1,9 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const headerRef = useRef(null);
 
   // Sticky header
@@ -24,72 +23,91 @@ const Header = () => {
   }, []);
 
   return (
-    <div
+    <header
       ref={headerRef}
-      className="shadow-md w-full bg-[#F0F8FF]"
+      className="w-full shadow-md bg-[#fff7ed] border-b border-orange-200"
     >
-      {/* Top Header */}
-      <div className="flex justify-between items-center px-7 md:px-9 h-[70px]">
-        
-        {/* Logo */}
-        <div className="flex items-center gap-2 text-xl font-semibold">
-          <img src={logo} alt="Logo" className="h-[3rem] w-[3rem]" />
-          <span>AlumniNexus</span>
-        </div>
+      <div className="flex items-center justify-between h-[64px] sm:h-[70px] px-3 sm:px-6 md:px-10">
+        {/* ✅ Desktop/Tablet AlumniNexus -> Home */}
+        <Link
+          to="/body"
+          className="hidden sm:flex items-center gap-2 sm:gap-3 min-w-0 cursor-pointer"
+        >
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-[38px] w-[38px] sm:h-[46px] sm:w-[46px] rounded-full"
+          />
 
-        {/* College Name */}
-        <div className="w-[100px] flex md:mr-40">
-            <h1 className="text-2xl md:text-7xl font-bold justify-center text-center text-[#c2410c] drop-shadow-md hover:drop-shadow-x transition-all duration-300 ease-in-out transform hover:scale-110 font-serif">
+          <div className="min-w-0">
+            <h1 className="text-[14px] sm:text-[16px] md:text-[18px] font-bold text-black leading-tight truncate">
+              AlumniNexus
+            </h1>
+            <p className="text-[10px] sm:text-[11px] text-gray-600 leading-tight truncate">
+              Alumni Engagement Platform
+            </p>
+          </div>
+        </Link>
+
+        {/* ✅ Mobile VVIT -> Home */}
+        <Link
+          to="/body"
+          className="flex sm:hidden items-start gap-2 min-w-0 cursor-pointer"
+        >
+          <h1 className="text-[50px] font-extrabold text-[#c2410c] font-serif leading-none">
+            VVIT
+          </h1>
+
+          <div className="flex flex-col leading-[12px] mt-[2px]">
+            <p className="text-[10px] font-serif text-gray-800 drop-shadow-sm">
+              vasireddy
+            </p>
+            <p className="text-[10px] font-serif text-gray-800 drop-shadow-sm">
+              venkatadri
+            </p>
+            <p className="text-[10px] font-serif text-gray-800 drop-shadow-sm">
+              institute of
+            </p>
+            <p className="text-[10px] font-serif text-gray-800 drop-shadow-sm">
+              technology
+            </p>
+          </div>
+        </Link>
+
+        {/* ✅ Center VVIT (desktop) -> Home */}
+        <div className="hidden sm:flex items-center justify-center flex-1">
+          <Link to="/body" className="flex items-center gap-2 cursor-pointer">
+            <h1 className="text-[26px] sm:text-[36px] md:text-[66px] font-extrabold text-[#c2410c] drop-shadow-md font-serif leading-none">
               VVIT
             </h1>
-            <div className="hidden md:block md:space-y-[6px] md:mx-1 md:h-[20px] md:pt-1">
-              <h5 className="h-[8px] font-serif drop-shadow-md">vasireddy</h5>
-              <h5 className="h-[8px] font-serif drop-shadow-md">venkatadri</h5>
-              <h5 className="h-[8px] font-serif drop-shadow-md">institute of</h5>
-              <h5 className="h-[8px] font-serif drop-shadow-md">technology</h5>
-            </div>
-          </div>
 
-        {/* Desktop Login */}
-        <div className="hidden md:flex">
-          <Link to="/login">
-            <button className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-green-600 hover:text-black transition">
-              Login
-            </button>
+            <div className="hidden md:block space-y-[2px] leading-none">
+              <p className="text-[12px] font-serif text-gray-800 drop-shadow-sm">
+                vasireddy
+              </p>
+              <p className="text-[12px] font-serif text-gray-800 drop-shadow-sm">
+                venkatadri
+              </p>
+              <p className="text-[12px] font-serif text-gray-800 drop-shadow-sm">
+                institute of
+              </p>
+              <p className="text-[12px] font-serif text-gray-800 drop-shadow-sm">
+                technology
+              </p>
+            </div>
           </Link>
         </div>
 
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
-          <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-            <svg
-              className="w-8 h-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
+        {/* ✅ Login */}
+        <div className="flex items-center">
+          <Link to="/login">
+            <button className="bg-[#c2410c] text-white px-4 sm:px-5 py-2 rounded-full text-[12px] sm:text-[20px] font-semibold shadow-md hover:bg-orange-700 transition">
+              Login
+            </button>
+          </Link>
         </div>
       </div>
-
-      {/* Mobile Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-black px-6 py-4">
-          <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-            <button className="w-full bg-white text-black py-2 rounded-full font-semibold">
-              Login
-            </button>
-          </Link>
-        </div>
-      )}
-    </div>
+    </header>
   );
 };
 

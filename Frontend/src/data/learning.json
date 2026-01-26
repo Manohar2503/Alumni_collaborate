@@ -1,0 +1,211 @@
+{
+  "learningTracks": [
+    {
+      "trackId": "languages",
+      "title": "Programming Languages",
+      "description": "Build strong programming foundations with structured language learning.",
+      "categories": [
+        {
+          "categoryId": "c",
+          "title": "C",
+          "links": {
+            "paid": [
+              "https://www.udemy.com/course/java-tutorial/?couponCode=25BBPMXNVD35",
+              "https://www.coursera.org/specializations/java-programming",
+              "https://www.geeksforgeeks.org/java/",
+              "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/",
+              "https://www.w3schools.com/java/",
+              "https://www.w3schools.com/java/java_oop.asp",
+              "https://www.javatpoint.com/java-tutorial"
+            ],
+            "unpaid": [
+              "https://www.youtube.com/watch?v=8cm1x4bC610",
+              "https://www.geeksforgeeks.org/java/",
+              "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/",
+              "https://www.w3schools.com/java/",
+              "https://www.w3schools.com/java/java_oop.asp",
+              "https://www.javatpoint.com/java-tutorial"
+            ]
+          }
+        },
+        {
+          "categoryId": "java",
+          "title": "Java",
+          "links": {
+            "paid": [
+              "https://www.youtube.com/watch?v=grEKMHGYyns",
+              "https://www.youtube.com/watch?v=8cm1x4bC610",
+              "https://www.geeksforgeeks.org/java/",
+              "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/",
+              "https://www.w3schools.com/java/",
+              "https://www.w3schools.com/java/java_oop.asp",
+              "https://www.javatpoint.com/java-tutorial"
+            ],
+            "unpaid": [
+              "https://www.youtube.com/watch?v=8cm1x4bC610",
+              "https://www.geeksforgeeks.org/java/",
+              "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/",
+              "https://www.w3schools.com/java/",
+              "https://www.w3schools.com/java/java_oop.asp",
+              "https://www.javatpoint.com/java-tutorial"
+            ]
+          }
+        },
+        {
+          "categoryId": "c++",
+          "title": "C++",
+          "links": {
+            "paid": [
+              "https://www.youtube.com/watch?v=grEKMHGYyns",
+              "https://www.youtube.com/watch?v=8cm1x4bC610",
+              "https://www.geeksforgeeks.org/java/",
+              "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/",
+              "https://www.w3schools.com/java/",
+              "https://www.w3schools.com/java/java_oop.asp",
+              "https://www.javatpoint.com/java-tutorial"
+            ],
+            "unpaid": [
+              "https://www.youtube.com/watch?v=8cm1x4bC610",
+              "https://www.geeksforgeeks.org/java/",
+              "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/",
+              "https://www.w3schools.com/java/",
+              "https://www.w3schools.com/java/java_oop.asp",
+              "https://www.javatpoint.com/java-tutorial"
+            ]
+          }
+        },
+        {
+          "categoryId": "python",
+          "title": "Python",
+          "links": {
+            "paid": [
+              "https://www.youtube.com/watch?v=grEKMHGYyns",
+              "https://www.youtube.com/watch?v=8cm1x4bC610",
+              "https://www.geeksforgeeks.org/java/",
+              "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/",
+              "https://www.w3schools.com/java/",
+              "https://www.w3schools.com/java/java_oop.asp",
+              "https://www.javatpoint.com/java-tutorial"
+            ],
+            "unpaid": [
+              "https://www.youtube.com/watch?v=8cm1x4bC610",
+              "https://www.geeksforgeeks.org/java/",
+              "https://www.geeksforgeeks.org/object-oriented-programming-oops-concept-in-java/",
+              "https://www.w3schools.com/java/",
+              "https://www.w3schools.com/java/java_oop.asp",
+              "https://www.javatpoint.com/java-tutorial"
+            ]
+          }
+        }
+      ]
+    },
+
+    {
+      "trackId": "frontend",
+      "title": "Frontend Development",
+      "description": "Learn how to build beautiful and responsive user interfaces.",
+      "categories": [
+        {
+          "categoryId": "react",
+          "title": "React.js",
+          
+         "links": {
+  "paid": [
+    "https://www.youtube.com/watch?v=Oe421EPjeBE",
+    "https://www.youtube.com/watch?v=L72fhGm1tfE",
+    "https://www.geeksforgeeks.org/nodejs/",
+    "https://www.geeksforgeeks.org/express-js/",
+    "https://www.w3schools.com/nodejs/",
+    "https://www.w3schools.com/nodejs/nodejs_express.asp",
+    "https://nodejs.org/en/docs",
+    "https://expressjs.com/"
+  ],
+  "unpaid": [
+    "https://www.youtube.com/watch?v=Oe421EPjeBE",
+    "https://www.youtube.com/watch?v=L72fhGm1tfE",
+    "https://www.geeksforgeeks.org/nodejs/",
+    "https://www.geeksforgeeks.org/express-js/",
+    "https://www.w3schools.com/nodejs/",
+    "https://www.w3schools.com/nodejs/nodejs_express.asp",
+    "https://nodejs.org/en/docs",
+    "https://expressjs.com/"
+  ]
+}
+
+        }
+      ]
+    },
+
+    {
+      "trackId": "backend",
+      "title": "Backend Development",
+      "description": "Build scalable and secure backend systems.",
+      "categories": [
+        {
+          "categoryId": "node",
+          "title": "Node.js & Express",
+          
+          "links": {
+  "paid": [
+    "https://www.youtube.com/watch?v=Oe421EPjeBE",
+    "https://www.youtube.com/watch?v=L72fhGm1tfE",
+    "https://www.geeksforgeeks.org/nodejs/",
+    "https://www.geeksforgeeks.org/express-js/",
+    "https://www.w3schools.com/nodejs/",
+    "https://www.w3schools.com/nodejs/nodejs_express.asp",
+    "https://nodejs.org/en/docs",
+    "https://expressjs.com/"
+  ],
+  "unpaid": [
+    "https://www.youtube.com/watch?v=Oe421EPjeBE",
+    "https://www.youtube.com/watch?v=L72fhGm1tfE",
+    "https://www.geeksforgeeks.org/nodejs/",
+    "https://www.geeksforgeeks.org/express-js/",
+    "https://www.w3schools.com/nodejs/",
+    "https://www.w3schools.com/nodejs/nodejs_express.asp",
+    "https://nodejs.org/en/docs",
+    "https://expressjs.com/"
+  ]
+}
+
+        }
+      ]
+    },
+
+    {
+      "trackId": "aptitude",
+      "title": "Aptitude & Reasoning",
+      "description": "Prepare for placements with aptitude and logical reasoning.",
+      "categories": [
+        {
+          "categoryId": "quant",
+          "title": "Quantitative Aptitude",
+          
+          "links": {
+  "paid": [
+    "https://www.youtube.com/watch?v=Oe421EPjeBE",
+    "https://www.youtube.com/watch?v=L72fhGm1tfE",
+    "https://www.geeksforgeeks.org/nodejs/",
+    "https://www.geeksforgeeks.org/express-js/",
+    "https://www.w3schools.com/nodejs/",
+    "https://www.w3schools.com/nodejs/nodejs_express.asp",
+    "https://nodejs.org/en/docs",
+    "https://expressjs.com/"
+  ],
+  "unpaid": [
+    "https://www.youtube.com/watch?v=Oe421EPjeBE",
+    "https://www.youtube.com/watch?v=L72fhGm1tfE",
+    "https://www.geeksforgeeks.org/nodejs/",
+    "https://www.geeksforgeeks.org/express-js/",
+    "https://www.w3schools.com/nodejs/",
+    "https://www.w3schools.com/nodejs/nodejs_express.asp",
+    "https://nodejs.org/en/docs",
+    "https://expressjs.com/"
+  ]
+}
+
+        }
+      ]
+    }
+  ]
+}

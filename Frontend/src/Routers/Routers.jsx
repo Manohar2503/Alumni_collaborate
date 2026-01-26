@@ -19,6 +19,7 @@ import Mentors from "../Components/Alumni/Mentors.jsx";
 import ExploreMentors from "../Components/Alumni/ExploreMentors.jsx";
 import BecomeAMentor from "../Components/Alumni/BecomeAMentor.jsx";
 import CareerResources from "../Components/Alumni/CareerResources.jsx";
+import AlumniCategoryUpdate from "../Components/Alumni/AlumniCategoryUpdate.jsx";
 import JobsInternships from "../Components/Alumni/JobsInternships.jsx";
 import PostOppurtunity from "../Components/Alumni/PostOppurtunity.jsx";
 import Reviews from "../Components/Alumni/Reviews.jsx";
@@ -29,26 +30,21 @@ const Routers = () => {
       <Route path="/" element={<Body />} />
       <Route path="/body" element={<Body />} />
       <Route path="/footer" element={<Footer />} />
-
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
-
       <Route path="/alumni-page" element={<AlumniMainPage />} />
       <Route path="/profile" element={<Profile />} />
-
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
-
       <Route path="/students" element={<Students />} />
-
       <Route path="/mentors" element={<Mentors />} />
       <Route path="/explorementors" element={<ExploreMentors />} />
       <Route path="/becomeamentor" element={<BecomeAMentor />} />
-      
-      <Route path="/careerresources" element={<CareerResources />} />
-      <Route path="/jobsandinternships" element={<JobsInternships />} />
+            <Route path="/alumnicategoryUpdate" element={<AlumniCategoryUpdate/>}/>
+<Route path="/jobsandinternships" element={<JobsInternships />} />
       <Route path="/postOppurtunity" element={<PostOppurtunity />} />
       <Route path="/postReview" element={<Reviews />} />
+      <Route path="/careerresources" element={<CareerResources />} />
     </Routes>
   );
 };

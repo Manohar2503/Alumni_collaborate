@@ -1,9 +1,10 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5001/api",
-  withCredentials: true, // VERY IMPORTANT
+  baseURL: import.meta.env.VITE_REACT_APP_API_URL,
+  withCredentials: true, // keep true if using cookies/session
 });
+
 
 axiosInstance.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");

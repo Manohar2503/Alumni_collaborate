@@ -24,7 +24,7 @@ router.post(
 );
 
 router.get("/", authMiddleware, getAllPosts);
-router.get("/user/:userId", authMiddleware, getPostsByUser);
+router.get("/my-posts", authMiddleware, getPostsByUser);
 router.delete("/:postId", authMiddleware, deletePost);
 router.post("/:postId/comment", authMiddleware, addComment);
 router.put("/:postId/comment/:commentId", authMiddleware, editComment);
