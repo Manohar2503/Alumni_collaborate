@@ -101,10 +101,11 @@ export default function SidebarRight({ isMobile = false, onClose }) {
               borderRadius: "8px",
               cursor: "pointer",
               transition: "all 0.3s ease",
-            }}
+            }} onClick={()=>navigate('/alumni-page')}
           >
             🎉 Upcoming Events
           </li>
+          <li style={{ marginBottom: "12px", padding: "12px", backgroundColor: "#f5f5f5", borderRadius: "8px", cursor: "pointer", transition: "all 0.3s ease" }} onClick={()=>navigate('/postReview')}>📝 Post a Review</li>
         </ul>
       </div>
 
