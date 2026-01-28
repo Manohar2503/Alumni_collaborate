@@ -12,8 +12,8 @@ const JobsResources = ({ page, filters }) => {
       try {
         const url =
           page === "jobs"
-            ? "http://localhost:5001/api/oppurtunities/getJobs"
-            : "http://localhost:5001/api/oppurtunities/getInternships";
+          ? `${import.meta.env.VITE_REACT_APP_API_URL}/oppurtunities/getJobs`
+            : `${import.meta.env.VITE_REACT_APP_API_URL}/oppurtunities/getInternships`;
 
         const res = await axios.get(url);
         setData(Array.isArray(res.data) ? res.data : []);
