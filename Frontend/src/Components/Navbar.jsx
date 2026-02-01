@@ -69,7 +69,7 @@ export default function Navbar() {
 
   const navItems = [
     { icon: <FiHome />, text: "Home", path: "/alumni-page" },
-    { icon: <FiBriefcase />, text: "Jobs", path: "/jobs" },
+    { icon: <FiBriefcase />, text: "Jobs", path: "/jobsandinternships" },
     { icon: <FiMessageCircle />, text: "Messaging", path: "/messaging" },
     { icon: <FiBell />, text: "Notifications", path: "/notifications" },
     { icon: <FaUserCircle />, text: "Profile", path: "/profile" },

@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/userModel");
+const Profile=require("../models/profileModel")
+const Review=require("../models/ReviewsModel")
 const asyncHandler = require("express-async-handler");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
@@ -107,7 +109,43 @@ const getCurrentUser=async(req, res)=>{
 
 const logoutUser = asyncHandler(async (req, res) => {
     res.clearCookie("token");
+    console.log(res.clearCookie("token")+"cookie cleared")
     res.json({ message: 'User logged out' });
+});
+
+const getReviews = asyncHandler(async (req, res) => {
+  const data = await Review.find()
+    .populate("user", "name profileImage"); 
+
+  res.status(200).json({
+    message: "Got all reviews successfully",
+    data,
+  });
+});
+
+const postReview = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const profile = await Profile.findOne({ userId });
+
+  if (!profile) {
+    return res.status(404).json({ message: "Profile not found" });
+  }
+
+  const { review, stars } = req.body;
+
+  const newReview = new Review({
+    user: profile._id, // ✅ profile id
+    review,
+    stars,
+  });
+
+  await newReview.save();
+
+  res.status(201).json({
+    message: "Successfully posted review",
+    review: newReview,
+  });
 });
 
 
@@ -204,7 +242,9 @@ module.exports = {
     logoutUser,
     forgotPassword,
     resetPassword,
-    getCurrentUser
+    getCurrentUser,
+    getReviews,
+    postReview
     // getProfileInfo,
     // updateProfile
 };

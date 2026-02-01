@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import FaqList from "../Faqs/FaqList";
+import axios from "axios";
 
 import { Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,17 +8,25 @@ import "swiper/css";
 import "swiper/css/pagination";
 
 import avatar from "../assets/avatar-icon.png";
-import { HiStar } from "react-icons/hi";
+import { HiStar, HiOutlineStar } from "react-icons/hi";
 
 const AlumniGallary = () => {
-  const reviews = [
-    { name: "Manohar", text: "This is the best college, placements are good and teachers are super. I enjoyed a lot here." },
-    { name: "Varsha", text: "This is the best college, placements are good and teachers are super. I enjoyed a lot here." },
-    { name: "Sreshta", text: "This is the best college, placements are good and teachers are super. I enjoyed a lot here." },
-    { name: "Sujeeth", text: "This is the best college, placements are good and teachers are super. I enjoyed a lot here." },
-    { name: "DivyaSri", text: "This is the best college, placements are good and teachers are super. I enjoyed a lot here." },
-    { name: "Vani", text: "This is the best college, placements are good and teachers are super. I enjoyed a lot here." },
-  ];
+  const [reviews, setReviews] = useState([]);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const baseUrl = import.meta.env.VITE_REACT_APP_API_URL;
+        const reviewRes = await axios.get(`${baseUrl}/users/getReviews`);
+        setReviews(reviewRes.data.data);
+      } catch (err) {
+        console.error(err);
+        setReviews([]);
+      }
+    };
+
+    fetchReviews();
+  }, []);
 
   return (
     <div className="w-full px-2 sm:px-4 md:px-6 py-6">
@@ -50,39 +59,48 @@ const AlumniGallary = () => {
               1024: { slidesPerView: 3, spaceBetween: 24 },
             }}
           >
-            {reviews.map((rev, idx) => (
-              <SwiperSlide key={idx}>
-                <div className="bg-white shadow-md rounded-2xl p-5 sm:p-6 border border-gray-200">
-                  {/* Top */}
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={avatar}
-                      alt="avatar"
-                      className="w-[45px] h-[45px] sm:w-[52px] sm:h-[52px]"
-                    />
+            {reviews.length > 0 &&
+              reviews.map((item) => (
+                <SwiperSlide key={item._id}>
+                  <div className="bg-white shadow-md rounded-2xl p-5 sm:p-6 border border-gray-200">
+                    {/* Top */}
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={item.user?.profileImage || avatar}
+                        alt="avatar"
+                        className="w-[45px] h-[45px] sm:w-[52px] sm:h-[52px] rounded-full object-cover"
+                      />
 
-                    <div>
-                      <h4 className="text-[16px] sm:text-[18px] font-semibold text-gray-900">
-                        {rev.name}
-                      </h4>
+                      <div>
+                        <h4 className="text-[16px] sm:text-[18px] font-semibold text-gray-900">
+                          {item.user?.name || "Anonymous"}
+                        </h4>
 
-                      <div className="flex items-center gap-[2px] text-yellow-500">
-                        <HiStar className="w-[18px] h-[18px]" />
-                        <HiStar className="w-[18px] h-[18px]" />
-                        <HiStar className="w-[18px] h-[18px]" />
-                        <HiStar className="w-[18px] h-[18px]" />
-                        <HiStar className="w-[18px] h-[18px]" />
+                        <div className="flex items-center gap-[2px]">
+                          {[...Array(5)].map((_, index) =>
+                            index < item.stars ? (
+                              <HiStar
+                                key={index}
+                                className="w-[18px] h-[18px] text-yellow-500"
+                              />
+                            ) : (
+                              <HiOutlineStar
+                                key={index}
+                                className="w-[18px] h-[18px] text-gray-300"
+                              />
+                            )
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Review Text */}
-                  <p className="text-[13px] sm:text-[15px] leading-relaxed mt-4 text-gray-600">
-                    {rev.text}
-                  </p>
-                </div>
-              </SwiperSlide>
-            ))}
+                    {/* Review Text */}
+                    <p className="text-[13px] sm:text-[15px] leading-relaxed mt-4 text-gray-600">
+                      {item.review}
+                    </p>
+                  </div>
+                </SwiperSlide>
+              ))}
           </Swiper>
         </div>
       </div>

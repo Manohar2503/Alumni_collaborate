@@ -20,6 +20,9 @@ import ExploreMentors from "../Components/Alumni/ExploreMentors.jsx";
 import BecomeAMentor from "../Components/Alumni/BecomeAMentor.jsx";
 import CareerResources from "../Components/Alumni/CareerResources.jsx";
 import AlumniCategoryUpdate from "../Components/Alumni/AlumniCategoryUpdate.jsx";
+import JobsInternships from "../Components/Alumni/JobsInternships.jsx";
+import PostOppurtunity from "../Components/Alumni/PostOppurtunity.jsx";
+import Reviews from "../Components/Alumni/Reviews.jsx";
 
 const Routers = () => {
   return (
@@ -37,9 +40,11 @@ const Routers = () => {
       <Route path="/mentors" element={<Mentors />} />
       <Route path="/explorementors" element={<ExploreMentors />} />
       <Route path="/becomeamentor" element={<BecomeAMentor />} />
-      
+            <Route path="/alumnicategoryUpdate" element={<AlumniCategoryUpdate/>}/>
+<Route path="/jobsandinternships" element={<JobsInternships />} />
+      <Route path="/postOppurtunity" element={<PostOppurtunity />} />
+      <Route path="/postReview" element={<Reviews />} />
       <Route path="/careerresources" element={<CareerResources />} />
-      <Route path="/alumnicategoryUpdate" element={<AlumniCategoryUpdate/>}/>
     </Routes>
   );
 };

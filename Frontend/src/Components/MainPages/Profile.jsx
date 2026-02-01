@@ -85,16 +85,21 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState("details");
 
   // ✅ Logout Handler
-  const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      try {
-        sessionStorage.clear();
-      } catch (e) {}
-      navigate("/login");
-    }
-  };
+  const handleLogout = async () => {
+  try {
+    await fetch(`${import.meta.env.VITE_REACT_APP_API_URL}/logout`, {
+      method: "POST",          
+      credentials: "include",  
+    });
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    navigate("/login");
+  } catch (error) {
+    console.log("Logout failed:", error);
+  }
+};
 
-  // ✅ Posts CRUD
+
   const handleNewPost = () => {
     if (postContent.trim()) {
       const newPost = {
