@@ -1,5 +1,6 @@
 const Oppurtunity=require('../models/OppurtunityModel');
 const User=require("../models/userModel")
+
 const getJobs=async(req, res)=>{
     try {
         const jobs=await Oppurtunity.find({type: "job"});
@@ -8,6 +9,7 @@ const getJobs=async(req, res)=>{
         res.status(500).json({message: error.message});
     }
 }
+
 const getInternships=async(req, res)=>{
     try {
         const internships=await Oppurtunity.find({type: "internship"});
@@ -19,12 +21,12 @@ const getInternships=async(req, res)=>{
 
 const postOppurtunity=async(req, res)=>{
     try {
-        const id=req.params.id;
-        const user=await User.findById(id);
-        if(user.role!=="alumni"){
-            console.log("Restricted access")
-            throw new Error({message: "Restricted access"})
-        }
+        // const id=req.params.id;
+        // const user=await User.findById(id);
+        // if(user.role!=="alumni"){
+        //     console.log("Restricted access")
+        //     throw new Error({message: "Restricted access"})
+        // }
         const {company, role, link, type}=req.body;
 
         if(!company || !role || !link || !type){

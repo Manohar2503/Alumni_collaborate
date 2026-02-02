@@ -6,7 +6,7 @@ const{
 }=require('../controller/oppurtunityController');
 
 router.get('/getJobs', getJobs);
-router.post('/postOppurtunity/:id', postOppurtunity);
+router.post('/postOppurtunity', postOppurtunity);
 router.get('/getInternships', getInternships);
 // router.post('/getBlogs', getBlogs);
 // router.post('/postBlog', postBlog);
