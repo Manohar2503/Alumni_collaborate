@@ -59,6 +59,18 @@ const Layout = () => {
       return;
     }
 
+    const skipAuthOnce = sessionStorage.getItem("skipAuthOnce") === "1";
+    if (skipAuthOnce) {
+      sessionStorage.removeItem("skipAuthOnce");
+      setLoading(false);
+      return;
+    }
+
+    if (state.user) {
+      setLoading(false);
+      return;
+    }
+
     const checkAuth = async () => {
       try {
         const res = await axios.get(

@@ -16,6 +16,7 @@ const LoginPage = () => {
   });
 
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const changeHandler = (e) => {
@@ -30,6 +31,7 @@ const LoginPage = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     setError("");
+    setSubmitting(true);
 
     try {
       const res = await axios.post(
@@ -40,11 +42,14 @@ const LoginPage = () => {
 
       // ✅ Correct: store user data in context
       dispatch({ type: "USER", payload: res.data });
+      sessionStorage.setItem("skipAuthOnce", "1");
 
       // ✅ after login go to alumni dashboard
       navigate("/alumni-page", { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -118,9 +123,10 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full py-2 bg-red-700 text-white font-semibold rounded-lg hover:bg-red-800 transition"
+            className="w-full py-2 bg-red-700 text-white font-semibold rounded-lg hover:bg-red-800 transition disabled:opacity-70"
+            disabled={submitting}
           >
-            Sign In
+            {submitting ? "Signing In..." : "Sign In"}
           </button>
         </form>
 
