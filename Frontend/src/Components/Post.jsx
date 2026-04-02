@@ -121,7 +121,7 @@ export default function Post({ data }) {
         {/* HEADER */}
         <div className="flex gap-3 p-4 pb-2">
           <img
-            src={data.author?.profileImage || profile?.profileImage || "https://i.pravatar.cc/45"}
+            src={data.author?.profileImage || "https://i.pravatar.cc/45"}  // || "https://i.pravatar.cc/45
             className="rounded-full w-11 h-11 object-cover"
             alt="profile"
           />
@@ -168,55 +168,55 @@ export default function Post({ data }) {
 
         {/* MEDIA */}
         {/* MEDIA */}
-{hasMedia && (
-  <div
-    className="relative bg-black"
-    onClick={(e) => {
-      e.stopPropagation();     // ✅ stop parent click
-      setOpenModal(true);      // ✅ open modal when clicking image/video
-    }}
-  >
-    {data.media[mediaIndex]?.type === "image" ? (
-      <img
-        src={data.media[mediaIndex].url}
-        className="w-full max-h-[420px] object-contain"
-        alt="post"
-      />
-    ) : (
-      <video
-        src={data.media[mediaIndex].url}
-        controls
-        className="w-full max-h-[420px]"
-      />
-    )}
+        {hasMedia && (
+          <div
+            className="relative bg-black"
+            onClick={(e) => {
+              e.stopPropagation();     // ✅ stop parent click
+              setOpenModal(true);      // ✅ open modal when clicking image/video
+            }}
+          >
+            {data.media[mediaIndex]?.type === "image" ? (
+              <img
+                src={data.media[mediaIndex].url}
+                className="w-full max-h-[420px] object-contain"
+                alt="post"
+              />
+            ) : (
+              <video
+                src={data.media[mediaIndex].url}
+                controls
+                className="w-full max-h-[420px]"
+              />
+            )}
 
-    {data.media.length > 1 && (
-      <>
-        <button
-          onClick={(e) => {
-            e.stopPropagation(); // ✅ don't open modal
-            setMediaIndex(
-              (mediaIndex - 1 + data.media.length) % data.media.length
-            );
-          }}
-          className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full"
-        >
-          <FiChevronLeft />
-        </button>
+            {data.media.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // ✅ don't open modal
+                    setMediaIndex(
+                      (mediaIndex - 1 + data.media.length) % data.media.length
+                    );
+                  }}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full"
+                >
+                  <FiChevronLeft />
+                </button>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation(); // ✅ don't open modal
-            setMediaIndex((mediaIndex + 1) % data.media.length);
-          }}
-          className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full"
-        >
-          <FiChevronRight />
-        </button>
-      </>
-    )}
-  </div>
-)}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // ✅ don't open modal
+                    setMediaIndex((mediaIndex + 1) % data.media.length);
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full"
+                >
+                  <FiChevronRight />
+                </button>
+              </>
+            )}
+          </div>
+        )}
 
 
         {/* COUNTS */}
@@ -232,9 +232,8 @@ export default function Post({ data }) {
               e.stopPropagation(); // ✅ prevent modal open
               handleLike();
             }}
-            className={`flex items-center gap-2 px-4 py-1 rounded-md hover:bg-gray-100 ${
-              liked ? "text-blue-600 font-medium" : ""
-            }`}
+            className={`flex items-center gap-2 px-4 py-1 rounded-md hover:bg-gray-100 ${liked ? "text-blue-600 font-medium" : ""
+              }`}
           >
             <FiThumbsUp /> Like
           </button>

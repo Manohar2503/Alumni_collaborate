@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const cloudinary = require("../config/cloudinary");
 const streamifier = require("streamifier");
 
-/* 🔥 Cloudinary Upload Helper (same as posts) */
+/*  Cloudinary Upload Helper (same as posts) */
 const uploadToCloudinary = (file, folder, resourceType = "image") => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
@@ -17,7 +17,7 @@ const uploadToCloudinary = (file, folder, resourceType = "image") => {
   });
 };
 
-/* ✅ GET MY PROFILE */
+/*  GET MY PROFILE */
 const getMyProfile = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   console.log("Fetching profile for userId:", userId);
@@ -31,7 +31,7 @@ const getMyProfile = asyncHandler(async (req, res) => {
   res.status(200).json(profile);
 });
 
-/* ✅ CREATE / UPDATE PROFILE */
+/* CREATE / UPDATE PROFILE */
 const upsertProfile = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 

@@ -44,7 +44,6 @@ const createPost = async (req, res) => {
       return res.status(400).json({ message: "Post cannot be empty" });
     }
 
-    // 🔥 FETCH PROFILE
     const profile = await Profile.findOne({ userId: req.user._id });
 
     const post = await Post.create({
@@ -52,13 +51,14 @@ const createPost = async (req, res) => {
       content,
       media,
 
-      // 🔥 AUTHOR SNAPSHOT
+      //  AUTHOR SNAPSHOT
       author: {
         name: profile?.name || req.user.name,
         profileImage: profile?.profileImage || "",
         headline: profile?.headline || "",
         role: req.user.role,
       },
+
     });
 
     res.status(201).json({
@@ -72,56 +72,87 @@ const createPost = async (req, res) => {
 };
 
 
-
-
-
 // GET ALL POSTS (FEED)
 const getAllPosts = async (req, res) => {
-  const posts = await Post.find()
-    .populate("comments.user", "name")
-    .sort({ createdAt: -1 });
+  try {
+    const posts = await Post.find()
+      .populate("user", "name role")
+      .populate("comments.user", "name")
+      .sort({ createdAt: -1 });
 
-  const formatted = posts.map((p) => ({
-    // id: p._id,
-    _id: p._id,
-    author: p.author,
-    time: p.createdAt,
-    content: p.content,
-    media: p.media,
-    likes: p.likes.length,
-    liked: p.likes.some(
-      (id) => id.toString() === req.user._id.toString()
-    ),
-    comments: p.comments.map((c) => ({
-      _id: c._id,
-      userId: c.user._id,
-      name: c.user?.name || "User",
-      text: c.text,
-      createdAt: c.createdAt,
-    })),
-  }));
+    const formatted = await Promise.all(
+      posts.map(async (p) => {
+        const profile = await Profile.findOne({ userId: p.user?._id });
 
-  res.json(formatted);
+        const author = {
+          name: profile?.name || p.user?.name || "User",
+          profileImage: profile?.profileImage || "",
+          headline: profile?.headline || "",
+          role: p.user?.role || "",
+        };
+
+        return {
+          _id: p._id,
+          author,
+          time: p.createdAt,
+          content: p.content,
+          media: p.media,
+          likes: p.likes.length,
+          liked: p.likes.some(
+            (id) => id.toString() === req.user._id.toString()
+          ),
+          comments: p.comments.map((c) => ({
+            _id: c._id,
+            userId: c.user?._id,
+            name: c.user?.name || "User",
+            text: c.text,
+            createdAt: c.createdAt,
+          })),
+        };
+      })
+    );
+
+    res.json(formatted);
+  } catch (error) {
+    console.error("getAllPosts error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
+
 
 
 // GET POSTS BY USER
 const getPostsByUser = async (req, res) => {
   try {
     const myPosts = await Post.find({ user: req.user._id })
+      .populate("user", "name role")
       .sort({ createdAt: -1 });
 
-    // ✅ Format like feed (frontend friendly)
-    const formatted = myPosts.map((p) => ({
-      _id: p._id,
-      author: p.author,
-      time: p.createdAt,
-      content: p.content,
-      media: p.media,
-      likes: p.likes.length,
-      liked: p.likes.some((id) => id.toString() === req.user._id.toString()),
-      comments: p.comments || [],
-    }));
+    const formatted = await Promise.all(
+      myPosts.map(async (p) => {
+        const profile = await Profile.findOne({ userId: p.user?._id });
+
+        const author = {
+          name: profile?.name || p.user?.name || "User",
+          profileImage: profile?.profileImage || "",
+          headline: profile?.headline || "",
+          role: p.user?.role || "",
+        };
+
+        return {
+          _id: p._id,
+          author,
+          time: p.createdAt,
+          content: p.content,
+          media: p.media,
+          likes: p.likes.length,
+          liked: p.likes.some(
+            (id) => id.toString() === req.user._id.toString()
+          ),
+          comments: p.comments || [],
+        };
+      })
+    );
 
     res.status(200).json(formatted);
   } catch (err) {
@@ -129,6 +160,7 @@ const getPostsByUser = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 
 
@@ -224,8 +256,8 @@ const likePost = async (req, res) => {
   const post = await Post.findById(postId);
 
   if (!postId || postId === "undefined") {
-  return res.status(400).json({ message: "Invalid Post ID" });
-}
+    return res.status(400).json({ message: "Invalid Post ID" });
+  }
 
   const userId = req.user._id;
 
