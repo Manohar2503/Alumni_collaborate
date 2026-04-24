@@ -21,7 +21,7 @@ const SignupPage = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // 🔥 refs for hover reveal
+
   const heroRef = useRef(null);
   const revealRef = useRef(null);
 
@@ -96,19 +96,19 @@ const SignupPage = () => {
   // Framer Motion Variants
   const cardVariant = {
     hidden: { opacity: 0, x: 100 },
-    visible: { 
-      opacity: 1, 
-      x: 0, 
-      transition: { type: 'spring', stiffness: 70, damping: 12 } 
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { type: 'spring', stiffness: 70, damping: 12 }
     },
   };
 
   const formItemVariant = {
     hidden: { opacity: 0, y: 10 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { type: 'spring', stiffness: 70, damping: 12 } 
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: 'spring', stiffness: 70, damping: 12 }
     },
   };
 
@@ -134,13 +134,13 @@ const SignupPage = () => {
       ></div>
 
       {/* SIGNUP CARD */}
-      <motion.div 
+      <motion.div
         className="signup-card"
         variants={cardVariant}
         initial="hidden"
         animate="visible"
       >
-        <motion.h2 
+        <motion.h2
           className="signup-title"
           variants={formItemVariant}
         >
@@ -148,7 +148,7 @@ const SignupPage = () => {
         </motion.h2>
 
         {error && (
-          <motion.p 
+          <motion.p
             className="error-text"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -158,8 +158,8 @@ const SignupPage = () => {
           </motion.p>
         )}
 
-        <motion.form 
-          onSubmit={submitHandler} 
+        <motion.form
+          onSubmit={submitHandler}
           className="signup-form"
           variants={containerVariant}
           initial="hidden"
@@ -211,7 +211,7 @@ const SignupPage = () => {
             <option value="alumni">Alumni</option>
           </motion.select>
 
-          <motion.button 
+          <motion.button
             variants={formItemVariant}
             type="submit"
             whileHover={{ scale: 1.02 }}

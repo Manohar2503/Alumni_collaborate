@@ -5,13 +5,23 @@ const API = axios.create({
   withCredentials: true,
 });
 
-// ✅ Get all posts (Feed)
-export const getAllPosts = async () => {
-  const res = await API.get("/posts");
-  return res.data;
+const extractPosts = (payload) => {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (Array.isArray(payload?.data)) {
+    return payload.data;
+  }
+
+  return [];
 };
 
-// ✅ Create a new post
+export const getAllPosts = async () => {
+  const res = await API.get("/posts");
+  return extractPosts(res.data);
+};
+
 export const createPost = async (formData) => {
   const res = await API.post("/posts", formData, {
     headers: { "Content-Type": "multipart/form-data" },
@@ -19,19 +29,16 @@ export const createPost = async (formData) => {
   return res.data;
 };
 
-// ✅ Get only logged-in user posts
 export const getMyPosts = async () => {
   const res = await API.get("/posts/my-posts");
-  return res.data;
+  return extractPosts(res.data);
 };
 
-// ✅ Like / Unlike
 export const likePost = async (postId) => {
   const res = await API.post(`/posts/${postId}/like`);
   return res.data;
 };
 
-// ✅ Add Comment
 export const addComment = async (postId, text) => {
   const res = await API.post(`/posts/${postId}/comment`, { text });
   return res.data;

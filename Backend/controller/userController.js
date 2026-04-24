@@ -1,14 +1,14 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const User = require("../models/userModel");
-const Profile=require("../models/profileModel")
-const Review=require("../models/ReviewsModel")
-const asyncHandler = require("express-async-handler");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
+const asyncHandler = require("express-async-handler");
 
+const User = require("../models/userModel");
+const Profile = require("../models/profileModel");
+const Review = require("../models/ReviewsModel");
+const emailQueue = require("../queues/emailQueue");
+const { getCache, setCache, deleteCache } = require("../services/cacheService");
 
-// controller/userController.js
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, collegeMail, password, role } = req.body;
 
@@ -23,7 +23,7 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const exists = await User.findOne({
-    $or: [{ email }, { collegeMail }]
+    $or: [{ email }, { collegeMail }],
   });
 
   if (exists) {
@@ -33,7 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await User.create({
+  await User.create({
     name,
     email,
     collegeMail,
@@ -45,9 +45,6 @@ const registerUser = asyncHandler(async (req, res) => {
     message: "Registered successfully",
   });
 });
-
-
-
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password, role } = req.body;
@@ -84,8 +81,7 @@ const loginUser = asyncHandler(async (req, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "none",
-    secure : true,
-   // secure: process.env.NODE_ENV === "production",
+    secure: true,
   });
 
   res.json({
@@ -95,27 +91,43 @@ const loginUser = asyncHandler(async (req, res) => {
   });
 });
 
-const getCurrentUser=async(req, res)=>{
-  try{
-    const user=await User.findById(req.userId).select('-password');
-    if(!user){
-      return res.status(404).json({message: "User not found"});
+const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    res.status(200).json({user});
-  }catch(err){
-    res.status(500).json({message: "server error"});
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(500).json({ message: "server error" });
   }
-}
+};
 
 const logoutUser = asyncHandler(async (req, res) => {
-    res.clearCookie("token");
-    console.log(res.clearCookie("token")+"cookie cleared")
-    res.json({ message: 'User logged out' });
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+  });
+
+  res.json({ message: "User logged out" });
 });
 
 const getReviews = asyncHandler(async (req, res) => {
-  const data = await Review.find()
-    .populate("user", "name profileImage"); 
+  const cacheKey = "reviews:all";
+  const cachedReviews = await getCache(cacheKey);
+
+  if (cachedReviews) {
+    return res.status(200).json({
+      message: "Got all reviews successfully",
+      data: cachedReviews,
+      cached: true,
+    });
+  }
+
+  const data = await Review.find().populate("user", "name profileImage").lean();
+
+  await setCache(cacheKey, data, 300);
 
   res.status(200).json({
     message: "Got all reviews successfully",
@@ -125,7 +137,6 @@ const getReviews = asyncHandler(async (req, res) => {
 
 const postReview = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-
   const profile = await Profile.findOne({ userId });
 
   if (!profile) {
@@ -135,20 +146,19 @@ const postReview = asyncHandler(async (req, res) => {
   const { review, stars } = req.body;
 
   const newReview = new Review({
-    user: profile._id, // ✅ profile id
+    user: profile._id,
     review,
     stars,
   });
 
   await newReview.save();
+  await deleteCache("reviews:all");
 
   res.status(201).json({
     message: "Successfully posted review",
     review: newReview,
   });
 });
-
-
 
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -159,10 +169,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   }
 
   const user = await User.findOne({
-    $or: [
-      { email: email },
-      { collegeMail: email }
-    ]
+    $or: [{ email }, { collegeMail: email }],
   });
 
   if (!user) {
@@ -170,37 +177,33 @@ const forgotPassword = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 
-  // Generate token
   const resetToken = crypto.randomBytes(32).toString("hex");
 
   user.resetPasswordToken = resetToken;
-  user.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
+  user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
   await user.save();
 
   const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL,
-      pass: process.env.EMAIL_PASS,
+  await emailQueue.add(
+    "forgot-password",
+    {
+      email,
+      resetLink,
     },
-  });
+    {
+      attempts: 3,
+      backoff: {
+        type: "exponential",
+        delay: 1000,
+      },
+      removeOnComplete: 50,
+      removeOnFail: 50,
+    }
+  );
 
-  // 🔥 Send mail to the SAME email user entered
-  await transporter.sendMail({
-    to: email, // important
-    subject: "Password Reset Request",
-    html: `
-      <p>You requested to reset your password.</p>
-      <p>Click the link below (valid for 15 minutes):</p>
-      <a href="${resetLink}">${resetLink}</a>
-    `,
-  });
-
-  res.json({ message: "Password reset link sent to email" });
+  res.json({ message: "Password reset link queued for delivery" });
 });
-
 
 const resetPassword = asyncHandler(async (req, res) => {
   const { token } = req.params;
@@ -213,7 +216,7 @@ const resetPassword = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({
     resetPasswordToken: token,
-    resetPasswordExpires: { $gt: Date.now() }
+    resetPasswordExpires: { $gt: Date.now() },
   });
 
   if (!user) {
@@ -232,19 +235,13 @@ const resetPassword = asyncHandler(async (req, res) => {
   res.json({ message: "Password reset successful" });
 });
 
-
-
-
-
 module.exports = {
-    registerUser,
-    loginUser,
-    logoutUser,
-    forgotPassword,
-    resetPassword,
-    getCurrentUser,
-    getReviews,
-    postReview
-    // getProfileInfo,
-    // updateProfile
+  registerUser,
+  loginUser,
+  logoutUser,
+  forgotPassword,
+  resetPassword,
+  getCurrentUser,
+  getReviews,
+  postReview,
 };

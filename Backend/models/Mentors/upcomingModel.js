@@ -71,4 +71,6 @@ const upcomingSessionSchema = new mongoose.Schema(
   }
 );
 
+upcomingSessionSchema.index({ dateTime: 1 });
+
 module.exports = mongoose.model('UpcomingSession', upcomingSessionSchema);

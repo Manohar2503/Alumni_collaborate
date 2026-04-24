@@ -2,7 +2,7 @@ const Post = require("../models/postModel");
 const Profile = require("../models/profileModel");
 const cloudinary = require("../config/cloudinary");
 const streamifier = require("streamifier");
-
+const { getPagination } = require("../utils/pagination");
 
 const uploadToCloudinary = (file, folder, resourceType = "image") => {
   return new Promise((resolve, reject) => {
@@ -18,13 +18,11 @@ const uploadToCloudinary = (file, folder, resourceType = "image") => {
   });
 };
 
-
 const createPost = async (req, res) => {
   try {
     const { content } = req.body;
     let media = [];
 
-    // Upload images
     if (req.files?.images) {
       for (const file of req.files.images) {
         const result = await uploadToCloudinary(file, "alumni/images", "image");
@@ -32,7 +30,6 @@ const createPost = async (req, res) => {
       }
     }
 
-    // Upload videos
     if (req.files?.videos) {
       for (const file of req.files.videos) {
         const result = await uploadToCloudinary(file, "alumni/videos", "video");
@@ -50,15 +47,12 @@ const createPost = async (req, res) => {
       user: req.user._id,
       content,
       media,
-
-      //  AUTHOR SNAPSHOT
       author: {
         name: profile?.name || req.user.name,
         profileImage: profile?.profileImage || "",
         headline: profile?.headline || "",
         role: req.user.role,
       },
-
     });
 
     res.status(201).json({
@@ -71,100 +65,89 @@ const createPost = async (req, res) => {
   }
 };
 
-
-// GET ALL POSTS (FEED)
 const getAllPosts = async (req, res) => {
   try {
+    const { page, limit, skip } = getPagination(req.query);
+
     const posts = await Post.find()
       .populate("user", "name role")
       .populate("comments.user", "name")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
 
-    const formatted = await Promise.all(
-      posts.map(async (p) => {
-        const profile = await Profile.findOne({ userId: p.user?._id });
+    const formatted = posts.map((p) => ({
+      _id: p._id,
+      author: {
+        name: p.author?.name || p.user?.name || "User",
+        profileImage: p.author?.profileImage || "",
+        headline: p.author?.headline || "",
+        role: p.author?.role || p.user?.role || "",
+      },
+      time: p.createdAt,
+      content: p.content,
+      media: p.media,
+      likes: p.likes.length,
+      liked: p.likes.some((id) => id.toString() === req.user._id.toString()),
+      comments: p.comments.map((c) => ({
+        _id: c._id,
+        userId: c.user?._id,
+        name: c.user?.name || "User",
+        text: c.text,
+        createdAt: c.createdAt,
+      })),
+    }));
 
-        const author = {
-          name: profile?.name || p.user?.name || "User",
-          profileImage: profile?.profileImage || "",
-          headline: profile?.headline || "",
-          role: p.user?.role || "",
-        };
-
-        return {
-          _id: p._id,
-          author,
-          time: p.createdAt,
-          content: p.content,
-          media: p.media,
-          likes: p.likes.length,
-          liked: p.likes.some(
-            (id) => id.toString() === req.user._id.toString()
-          ),
-          comments: p.comments.map((c) => ({
-            _id: c._id,
-            userId: c.user?._id,
-            name: c.user?.name || "User",
-            text: c.text,
-            createdAt: c.createdAt,
-          })),
-        };
-      })
-    );
-
-    res.json(formatted);
+    res.json({
+      page,
+      limit,
+      data: formatted,
+    });
   } catch (error) {
     console.error("getAllPosts error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-
-
-// GET POSTS BY USER
 const getPostsByUser = async (req, res) => {
   try {
+    const { page, limit, skip } = getPagination(req.query);
+
     const myPosts = await Post.find({ user: req.user._id })
       .populate("user", "name role")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
 
-    const formatted = await Promise.all(
-      myPosts.map(async (p) => {
-        const profile = await Profile.findOne({ userId: p.user?._id });
+    const formatted = myPosts.map((p) => ({
+      _id: p._id,
+      author: {
+        name: p.author?.name || p.user?.name || "User",
+        profileImage: p.author?.profileImage || "",
+        headline: p.author?.headline || "",
+        role: p.author?.role || p.user?.role || "",
+      },
+      time: p.createdAt,
+      content: p.content,
+      media: p.media,
+      likes: p.likes.length,
+      liked: p.likes.some((id) => id.toString() === req.user._id.toString()),
+      comments: p.comments || [],
+    }));
 
-        const author = {
-          name: profile?.name || p.user?.name || "User",
-          profileImage: profile?.profileImage || "",
-          headline: profile?.headline || "",
-          role: p.user?.role || "",
-        };
-
-        return {
-          _id: p._id,
-          author,
-          time: p.createdAt,
-          content: p.content,
-          media: p.media,
-          likes: p.likes.length,
-          liked: p.likes.some(
-            (id) => id.toString() === req.user._id.toString()
-          ),
-          comments: p.comments || [],
-        };
-      })
-    );
-
-    res.status(200).json(formatted);
+    res.status(200).json({
+      page,
+      limit,
+      data: formatted,
+    });
   } catch (err) {
     console.error("getPostsByUser error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
 
-
-
-
-// DELETE POST (OWNER ONLY)
 const deletePost = async (req, res) => {
   const post = await Post.findById(req.params.postId);
 
@@ -180,7 +163,6 @@ const deletePost = async (req, res) => {
   res.json({ message: "Post deleted" });
 };
 
-// ADD COMMENT
 const addComment = async (req, res) => {
   const post = await Post.findById(req.params.postId);
 
@@ -196,8 +178,7 @@ const addComment = async (req, res) => {
   await post.save();
   res.json({ message: "Comment added" });
 };
-//editing the comment
-// EDIT COMMENT (OWNER ONLY)
+
 const editComment = async (req, res) => {
   const { postId, commentId } = req.params;
   const { text } = req.body;
@@ -212,7 +193,6 @@ const editComment = async (req, res) => {
     return res.status(404).json({ message: "Comment not found" });
   }
 
-  // 🔐 ownership check
   if (comment.user.toString() !== req.user._id.toString()) {
     return res.status(403).json({ message: "Not authorized" });
   }
@@ -223,8 +203,6 @@ const editComment = async (req, res) => {
   res.json({ message: "Comment updated" });
 };
 
-// DELETE COMMENT (OWNER ONLY)
-// DELETE COMMENT (OWNER ONLY)
 const deleteComment = async (req, res) => {
   const { postId, commentId } = req.params;
 
@@ -238,7 +216,6 @@ const deleteComment = async (req, res) => {
     return res.status(404).json({ message: "Comment not found" });
   }
 
-  // 🔐 ownership check
   if (comment.user.toString() !== req.user._id.toString()) {
     return res.status(403).json({ message: "Not authorized" });
   }
@@ -249,14 +226,16 @@ const deleteComment = async (req, res) => {
   res.json({ message: "Comment deleted" });
 };
 
-
-// LIKE / UNLIKE
 const likePost = async (req, res) => {
   const { postId } = req.params;
   const post = await Post.findById(postId);
 
   if (!postId || postId === "undefined") {
     return res.status(400).json({ message: "Invalid Post ID" });
+  }
+
+  if (!post) {
+    return res.status(404).json({ message: "Post not found" });
   }
 
   const userId = req.user._id;
@@ -277,7 +256,7 @@ module.exports = {
   getPostsByUser,
   deletePost,
   addComment,
-  editComment,    // ✅
+  editComment,
   deleteComment,
   likePost,
 };

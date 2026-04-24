@@ -1,17 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  upsertLearningTrack,
-  getAllLearningTracks,
-  
-} = require("../controller/learningController");
+const authMiddleware = require("../MiddleWares/authMiddleware");
+const { requireRole } = require("../MiddleWares/roleMiddleware");
+const { upsertLearningTrack, getAllLearningTracks } = require("../controller/learningController");
 
-// CREATE TRACK
-router.post("/upsert", upsertLearningTrack);
-
-// GET ALL TRACKS
+router.post("/upsert", authMiddleware, requireRole("alumni"), upsertLearningTrack);
 router.get("/gettracks", getAllLearningTracks);
-
 
 module.exports = router;

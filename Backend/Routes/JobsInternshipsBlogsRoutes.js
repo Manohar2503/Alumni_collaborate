@@ -1,14 +1,12 @@
-const express=require('express');
-const router=express.Router();
+const express = require("express");
+const router = express.Router();
 
-const{
-    getJobs,postOppurtunity, getInternships,
-}=require('../controller/oppurtunityController');
+const authMiddleware = require("../MiddleWares/authMiddleware");
+const { requireRole } = require("../MiddleWares/roleMiddleware");
+const { getJobs, postOppurtunity, getInternships } = require("../controller/oppurtunityController");
 
-router.get('/getJobs', getJobs);
-router.post('/postOppurtunity', postOppurtunity);
-router.get('/getInternships', getInternships);
-// router.post('/getBlogs', getBlogs);
-// router.post('/postBlog', postBlog);
+router.get("/getJobs", getJobs);
+router.post("/postOppurtunity", authMiddleware, requireRole("alumni"), postOppurtunity);
+router.get("/getInternships", getInternships);
 
-module.exports=router;
+module.exports = router;

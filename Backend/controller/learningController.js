@@ -1,4 +1,6 @@
 const LearningTrack = require("../models/learningModel");
+const { getCache, setCache, deleteByPattern } = require("../services/cacheService");
+const { getPagination } = require("../utils/pagination");
 
 const upsertLearningTrack = async (req, res) => {
   try {
@@ -31,12 +33,9 @@ const upsertLearningTrack = async (req, res) => {
       });
     }
 
-    const finalCategoryId =
-      categoryId || categoryTitle.toLowerCase().replace(/\s+/g, "-");
+    const finalCategoryId = categoryId || categoryTitle.toLowerCase().replace(/\s+/g, "-");
 
-    const existingCategory = track.categories.find(
-      (c) => c.categoryId === finalCategoryId
-    );
+    const existingCategory = track.categories.find((c) => c.categoryId === finalCategoryId);
 
     if (existingCategory) {
       existingCategory.links.paid.push(...paidLinks);
@@ -53,6 +52,7 @@ const upsertLearningTrack = async (req, res) => {
     }
 
     await track.save();
+    await deleteByPattern("learningtracks:list:*");
 
     res.status(200).json({
       message: "Category updated successfully",
@@ -68,8 +68,24 @@ const upsertLearningTrack = async (req, res) => {
 
 const getAllLearningTracks = async (req, res) => {
   try {
-    const tracks = await LearningTrack.find();
-    res.status(200).json(tracks);
+    const { page, limit, skip } = getPagination(req.query);
+    const cacheKey = `learningtracks:list:${page}:${limit}`;
+    const cached = await getCache(cacheKey);
+
+    if (cached) {
+      return res.status(200).json(cached);
+    }
+
+    const tracks = await LearningTrack.find()
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const payload = { page, limit, data: tracks };
+    await setCache(cacheKey, payload, 300);
+
+    res.status(200).json(payload);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

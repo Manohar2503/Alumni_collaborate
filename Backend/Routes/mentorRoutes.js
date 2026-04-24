@@ -1,29 +1,22 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
+const authMiddleware = require("../MiddleWares/authMiddleware");
+const { requireRole } = require("../MiddleWares/roleMiddleware");
 const {
-    mentorApplication,
-    acceptMentorApplication,
-    postUpcomingSession,
-    getMentors,
-    getUpcomingSessions,
-    getPreviousSessions
-} = require('../controller/mentorController');
+  mentorApplication,
+  acceptMentorApplication,
+  postUpcomingSession,
+  getMentors,
+  getUpcomingSessions,
+  getPreviousSessions,
+} = require("../controller/mentorController");
 
-// Mentor applies to become a mentor
-router.post('/mentor-applications', mentorApplication);
-
-// Admin accepts mentor application
-router.post('/mentor-applications/:id/accept', acceptMentorApplication);
-
-// Sessions
-router.get('/sessions/upcoming', getUpcomingSessions);
-router.get('/sessions/previous', getPreviousSessions);
-
-// Mentor posts an upcoming session
-router.post('/sessions/upcoming/:id', postUpcomingSession);
-
-// Mentors
-router.get('/allmentors', getMentors);
+router.post("/mentor-applications", authMiddleware, requireRole("alumni"), mentorApplication);
+router.post("/mentor-applications/:id/accept", authMiddleware, acceptMentorApplication);
+router.get("/sessions/upcoming", getUpcomingSessions);
+router.get("/sessions/previous", getPreviousSessions);
+router.post("/sessions/upcoming/:id", authMiddleware, requireRole("alumni"), postUpcomingSession);
+router.get("/allmentors", getMentors);
 
 module.exports = router;

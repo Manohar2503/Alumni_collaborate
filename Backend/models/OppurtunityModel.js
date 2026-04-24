@@ -26,4 +26,7 @@ const oppurtunitySchema=new mongoose.Schema(
         timestamps: true
     }
 )
+
+oppurtunitySchema.index({ type: 1, createdAt: -1 });
+
 module.exports=mongoose.model("Oppurtunity", oppurtunitySchema)

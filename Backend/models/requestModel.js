@@ -26,4 +26,6 @@ status :{
     timestamps:true,
 })
 
+requestSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true });
+
 module.exports = mongoose.model("RequestModel",requestSchema);

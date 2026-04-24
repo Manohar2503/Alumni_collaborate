@@ -23,11 +23,9 @@ const LoginPage = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // ✅ Back button always goes to Home page
   const handleBackToHome = () => {
     navigate("/body");
   };
-
   const submitHandler = async (e) => {
     e.preventDefault();
     setError("");
@@ -39,12 +37,8 @@ const LoginPage = () => {
         form,
         { withCredentials: true }
       );
-
-      // ✅ Correct: store user data in context
       dispatch({ type: "USER", payload: res.data });
       sessionStorage.setItem("skipAuthOnce", "1");
-
-      // ✅ after login go to alumni dashboard
       navigate("/alumni-page", { replace: true });
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
@@ -55,16 +49,14 @@ const LoginPage = () => {
 
   return (
     <div className="relative h-screen overflow-hidden flex items-center justify-center">
-      {/* 🔴 Background */}
+
       <div
         className="absolute inset-0 stranger-bg"
         style={{ backgroundImage: `url(${pic3})` }}
       />
 
-      {/* 🔥 Login Card */}
       <div className="relative z-10 bg-black bg-opacity-80 p-8 rounded-xl shadow-2xl w-11/12 max-w-md float-card">
-        
-        {/* ✅ BACK TO HOME BUTTON */}
+
         <button
           onClick={handleBackToHome}
           className="absolute top-4 left-4 flex items-center gap-2 text-gray-200 hover:text-red-400 transition text-sm"
