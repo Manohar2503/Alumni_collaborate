@@ -1,25 +1,14 @@
 import axios from "axios";
+import { extractCollection } from "./responseUtils";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_REACT_APP_API_URL,
   withCredentials: true,
 });
 
-const extractPosts = (payload) => {
-  if (Array.isArray(payload)) {
-    return payload;
-  }
-
-  if (Array.isArray(payload?.data)) {
-    return payload.data;
-  }
-
-  return [];
-};
-
 export const getAllPosts = async () => {
   const res = await API.get("/posts");
-  return extractPosts(res.data);
+  return extractCollection(res.data);
 };
 
 export const createPost = async (formData) => {
@@ -31,7 +20,7 @@ export const createPost = async (formData) => {
 
 export const getMyPosts = async () => {
   const res = await API.get("/posts/my-posts");
-  return extractPosts(res.data);
+  return extractCollection(res.data);
 };
 
 export const likePost = async (postId) => {

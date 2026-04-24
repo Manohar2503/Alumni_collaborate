@@ -1,29 +1,27 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+import { extractCollection } from "../../api/responseUtils";
+
 const AlumniCategoryUpdate = () => {
   const [tracks, setTracks] = useState([]);
   const [categories, setCategories] = useState([]);
-
   const [trackId, setTrackId] = useState("");
   const [trackTitle, setTrackTitle] = useState("");
   const [trackDescription, setTrackDescription] = useState("");
   const [isTrackOther, setIsTrackOther] = useState(false);
-
   const [categoryId, setCategoryId] = useState("");
   const [categoryTitle, setCategoryTitle] = useState("");
   const [isCategoryOther, setIsCategoryOther] = useState(false);
-
   const [paidLinks, setPaidLinks] = useState("");
   const [unpaidLinks, setUnpaidLinks] = useState("");
-
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/gettracks`)
-      .then((res) => setTracks(res.data))
+      .then((res) => setTracks(extractCollection(res.data)))
       .catch(() => setError("Failed to load tracks"));
   }, []);
 
@@ -37,6 +35,7 @@ const AlumniCategoryUpdate = () => {
       setTrackDescription("");
     } else {
       const track = tracks.find((t) => t.trackId === value);
+      if (!track) return;
       setTrackId(track.trackId);
       setTrackTitle(track.title);
       setTrackDescription(track.description || "");
@@ -53,6 +52,7 @@ const AlumniCategoryUpdate = () => {
       setCategoryTitle("");
     } else {
       const cat = categories.find((c) => c.categoryId === value);
+      if (!cat) return;
       setCategoryId(cat.categoryId);
       setCategoryTitle(cat.title);
       setIsCategoryOther(false);
@@ -70,24 +70,22 @@ const AlumniCategoryUpdate = () => {
     }
 
     try {
-      await axios.post(`${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/upsert`, {
-        trackId:
-          trackId === "other"
-            ? trackTitle.toLowerCase().replace(/\s+/g, "-")
-            : trackId,
-        title: trackTitle,
-        description: trackDescription || undefined, // optional
-        categoryId,
-        categoryTitle,
-        paidLinks: paidLinks
-          ? paidLinks.split(",").map((l) => l.trim())
-          : [],
-        unpaidLinks: unpaidLinks
-          ? unpaidLinks.split(",").map((l) => l.trim())
-          : [],
-      });
+      await axios.post(
+        `${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/upsert`,
+        {
+          trackId:
+            trackId === "other" ? trackTitle.toLowerCase().replace(/\s+/g, "-") : trackId,
+          title: trackTitle,
+          description: trackDescription || undefined,
+          categoryId,
+          categoryTitle,
+          paidLinks: paidLinks ? paidLinks.split(",").map((l) => l.trim()) : [],
+          unpaidLinks: unpaidLinks ? unpaidLinks.split(",").map((l) => l.trim()) : [],
+        },
+        { withCredentials: true }
+      );
 
-      setSuccess("Submitted successfully 🎉");
+      setSuccess("Submitted successfully");
       setPaidLinks("");
       setUnpaidLinks("");
     } catch (err) {
@@ -97,25 +95,15 @@ const AlumniCategoryUpdate = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-100">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-xl space-y-4 transition-all duration-300"
-      >
-        <h2 className="text-2xl font-bold text-center">
-          Alumni Category Update
-        </h2>
-
+      <form onSubmit={handleSubmit} className="w-full max-w-lg bg-white p-8 rounded-2xl shadow-xl space-y-4 transition-all duration-300">
+        <h2 className="text-2xl font-bold text-center">Alumni Category Update</h2>
         {error && <p className="text-red-600">{error}</p>}
         {success && <p className="text-green-600">{success}</p>}
 
         <label className="block font-medium">
           Select Track <span className="text-red-600">*</span>
         </label>
-        <select
-          className="w-full p-3 border rounded-lg"
-          onChange={handleTrackChange}
-          required
-        >
+        <select className="w-full p-3 border rounded-lg" onChange={handleTrackChange} required>
           <option value="">Select Track</option>
           {tracks.map((t) => (
             <option key={t.trackId} value={t.trackId}>
@@ -148,11 +136,7 @@ const AlumniCategoryUpdate = () => {
             <label className="block font-medium">
               Select Category <span className="text-red-600">*</span>
             </label>
-            <select
-              className="w-full p-3 border rounded-lg"
-              onChange={handleCategoryChange}
-              required
-            >
+            <select className="w-full p-3 border rounded-lg" onChange={handleCategoryChange} required>
               <option value="">Select Category</option>
               {categories.map((c) => (
                 <option key={c.categoryId} value={c.categoryId}>
@@ -165,16 +149,13 @@ const AlumniCategoryUpdate = () => {
         )}
 
         {isCategoryOther && (
-          <>
-            <input
-              className="w-full p-3 border rounded-lg animate-fade-in"
-              placeholder="Enter new category"
-              value={categoryTitle}
-              onChange={(e) => setCategoryTitle(e.target.value)}
-              required
-            />
-            
-          </>
+          <input
+            className="w-full p-3 border rounded-lg animate-fade-in"
+            placeholder="Enter new category"
+            value={categoryTitle}
+            onChange={(e) => setCategoryTitle(e.target.value)}
+            required
+          />
         )}
 
         <input

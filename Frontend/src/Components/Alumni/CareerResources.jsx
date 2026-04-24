@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Course from "./Course";
 import { Menu, X } from "lucide-react";
+
+import Course from "./Course";
+import { extractCollection } from "../../api/responseUtils";
 
 const CareerResources = () => {
   const [data, setData] = useState([]);
@@ -11,11 +13,11 @@ const CareerResources = () => {
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/gettracks`)
-
       .then((res) => {
-        setData(res.data);
-        if (res.data.length > 0) {
-          setActiveTab(res.data[0].trackId);
+        const tracks = extractCollection(res.data);
+        setData(tracks);
+        if (tracks.length > 0) {
+          setActiveTab(tracks[0].trackId);
         }
       })
       .catch((err) => console.error(err));

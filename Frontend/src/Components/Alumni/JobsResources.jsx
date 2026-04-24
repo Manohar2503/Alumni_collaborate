@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import PostOppurtunity from "./PostOppurtunity"
+
+import PostOppurtunity from "./PostOppurtunity";
+import { extractCollection } from "../../api/responseUtils";
 
 const JobsResources = ({ page, filters }) => {
   const [data, setData] = useState([]);
@@ -12,11 +14,11 @@ const JobsResources = ({ page, filters }) => {
       try {
         const url =
           page === "jobs"
-          ? `${import.meta.env.VITE_REACT_APP_API_URL}/oppurtunities/getJobs`
+            ? `${import.meta.env.VITE_REACT_APP_API_URL}/oppurtunities/getJobs`
             : `${import.meta.env.VITE_REACT_APP_API_URL}/oppurtunities/getInternships`;
 
         const res = await axios.get(url);
-        setData(Array.isArray(res.data) ? res.data : []);
+        setData(extractCollection(res.data));
       } catch (err) {
         console.error(err);
         setData([]);
@@ -27,7 +29,7 @@ const JobsResources = ({ page, filters }) => {
   }, [page]);
 
   if (page === "postOpportunity") {
-    return <PostOppurtunity/>
+    return <PostOppurtunity />;
   }
 
   const filteredJobs = data.filter(
@@ -37,27 +39,11 @@ const JobsResources = ({ page, filters }) => {
   );
 
   return (
-    <div
-      className="
-        grid
-        grid-cols-1
-        sm:grid-cols-2
-        lg:grid-cols-3
-        gap-5
-      "
-    >
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
       {filteredJobs.map((item) => (
         <div
           key={item._id}
-          className="
-            bg-white
-            p-5
-            border
-            rounded-xl
-            shadow-sm
-            hover:shadow-lg
-            transition
-          "
+          className="bg-white p-5 border rounded-xl shadow-sm hover:shadow-lg transition"
         >
           <p className="font-semibold text-lg">{item.company}</p>
           <p className="text-gray-600">{item.role}</p>
@@ -68,7 +54,7 @@ const JobsResources = ({ page, filters }) => {
             rel="noopener noreferrer"
             className="inline-block mt-3 text-blue-600 text-sm underline"
           >
-            Apply Now →
+            Apply Now
           </a>
         </div>
       ))}

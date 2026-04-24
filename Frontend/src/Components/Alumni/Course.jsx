@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
+
 import Accordian from "./Accordian";
+import { extractCollection } from "../../api/responseUtils";
 
 const Course = ({ tab }) => {
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(null);
 
-  // Fetch learning tracks from backend
   useEffect(() => {
     const fetchTracks = async () => {
       try {
-       const res = await fetch(
-  `${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/gettracks`,
-  { credentials: "include" }
-); // Your API endpoint
+        const res = await fetch(
+          `${import.meta.env.VITE_REACT_APP_API_URL}/learningtracks/gettracks`,
+          { credentials: "include" }
+        );
         const result = await res.json();
-        setData(result);
+        setData(extractCollection(result));
       } catch (error) {
         console.error("Failed to fetch learning tracks:", error);
       }
@@ -31,9 +32,7 @@ const Course = ({ tab }) => {
 
       return {
         domain,
-        label: lastPath
-          ? lastPath.replace(/-/g, " ").slice(0, 30)
-          : "Resource",
+        label: lastPath ? lastPath.replace(/-/g, " ").slice(0, 30) : "Resource",
       };
     } catch {
       return { domain: "Link", label: "Open Source" };
@@ -46,18 +45,13 @@ const Course = ({ tab }) => {
         (path) =>
           tab === path.trackId && (
             <div key={path.trackId} className="space-y-8">
-              {/* Header */}
               <div>
-                <h2 className="text-3xl font-bold text-gray-900">
-                  {path.title}
-                </h2>
+                <h2 className="text-3xl font-bold text-gray-900">{path.title}</h2>
                 <p className="text-gray-600 mt-2">
-                  {path.description}{" "}
-                  <span className="font-medium">One concept at a time 🚀</span>
+                  {path.description} <span className="font-medium">One concept at a time</span>
                 </p>
               </div>
 
-              {/* Category Pills */}
               <div className="flex flex-wrap gap-3">
                 {path.categories.map((resource) => (
                   <button
@@ -75,7 +69,6 @@ const Course = ({ tab }) => {
                 ))}
               </div>
 
-              {/* Accordions */}
               <div className="space-y-5">
                 {path.categories.map((category) => (
                   <Accordian
@@ -83,15 +76,10 @@ const Course = ({ tab }) => {
                     title={category.title}
                     isOpen={open === category.categoryId}
                     onToggle={() =>
-                      setOpen(
-                        open === category.categoryId
-                          ? null
-                          : category.categoryId
-                      )
+                      setOpen(open === category.categoryId ? null : category.categoryId)
                     }
                   >
                     <div className="space-y-8">
-                      {/* Paid */}
                       <div>
                         <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
                           <span className="w-2 h-2 bg-green-500 rounded-full" />
@@ -107,10 +95,7 @@ const Course = ({ tab }) => {
                                 href={link}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="flex items-center gap-3 p-4 rounded-xl
-                                bg-white border border-gray-200
-                                hover:shadow-lg hover:-translate-y-1
-                                transition-all duration-300"
+                                className="flex items-center gap-3 p-4 rounded-xl bg-white border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
                               >
                                 <img
                                   src={`https://www.google.com/s2/favicons?domain=${domain}`}
@@ -118,12 +103,8 @@ const Course = ({ tab }) => {
                                   className="w-6 h-6"
                                 />
                                 <div>
-                                  <p className="text-sm text-blue-600 capitalize">
-                                    {label}
-                                  </p>
-                                  <p className="text-xs text-gray-600">
-                                    {domain}
-                                  </p>
+                                  <p className="text-sm text-blue-600 capitalize">{label}</p>
+                                  <p className="text-xs text-gray-600">{domain}</p>
                                 </div>
                               </a>
                             );
@@ -131,7 +112,6 @@ const Course = ({ tab }) => {
                         </div>
                       </div>
 
-                      {/* Unpaid */}
                       <div>
                         <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
                           <span className="w-2 h-2 bg-blue-500 rounded-full" />
@@ -147,10 +127,7 @@ const Course = ({ tab }) => {
                                 href={link}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="flex items-center gap-3 p-4 rounded-xl
-                                bg-white border border-gray-200
-                                hover:shadow-lg hover:-translate-y-1
-                                transition-all duration-300"
+                                className="flex items-center gap-3 p-4 rounded-xl bg-white border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
                               >
                                 <img
                                   src={`https://www.google.com/s2/favicons?domain=${domain}`}
@@ -158,12 +135,8 @@ const Course = ({ tab }) => {
                                   className="w-6 h-6"
                                 />
                                 <div>
-                                  <p className="text-sm text-blue-600 capitalize">
-                                    {label}
-                                  </p>
-                                  <p className="text-xs text-gray-600">
-                                    {domain}
-                                  </p>
+                                  <p className="text-sm text-blue-600 capitalize">{label}</p>
+                                  <p className="text-xs text-gray-600">{domain}</p>
                                 </div>
                               </a>
                             );
